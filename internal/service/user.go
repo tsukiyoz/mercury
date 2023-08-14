@@ -8,6 +8,7 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"webook/internal/domain"
 	"webook/internal/repository"
@@ -29,19 +30,28 @@ func (s *UserService) SignUp(ctx context.Context, u domain.User) error {
 	return s.repo.Create(ctx, u)
 }
 
-func (s *UserService) Login(ctx context.Context, email string, password string) error {
+func (s *UserService) Login(ctx context.Context, email string, password string) (domain.User, error) {
 	user, err := s.repo.FindByEmail(ctx, email)
 	if err == repository.ErrUserNoFound {
-		return ErrInvalidUserOrPassword
+		return domain.User{}, ErrInvalidUserOrPassword
 	}
 	if err != nil {
-		return err
+		return domain.User{}, err
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return ErrInvalidUserOrPassword
+		return domain.User{}, ErrInvalidUserOrPassword
 	}
-	return nil
+	return user, nil
+}
+
+func (s *UserService) Edit(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error {
+	return s.repo.Edit(ctx, uid, nickname, birthday, biography)
+}
+
+func (s *UserService) Profile(ctx *gin.Context, uid int64) (domain.User, error) {
+	user, err := s.repo.Profile(ctx, uid)
+	return user, err
 }
 
 func NewUserService(r *repository.UserRepository) *UserService {
