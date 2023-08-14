@@ -6,9 +6,12 @@
 package api
 
 import (
+	"fmt"
 	regexp "github.com/dlclark/regexp2"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 	"webook/internal/domain"
 	"webook/internal/service"
 )
@@ -40,10 +43,12 @@ func (u *UserHandler) SignUp(ctx *gin.Context) {
 	}
 	if !ok {
 		ctx.String(http.StatusOK, "email format invalid")
+		return
 	}
 
 	if req.Password != req.ConfirmPassword {
 		ctx.String(http.StatusOK, "confirm_password doesn't match password")
+		return
 	}
 
 	ok, err = u.passwordExp.MatchString(req.Password)
@@ -78,12 +83,10 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 	}
 	var req LoginReq
 	if err := ctx.Bind(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "req param error",
-		})
+		ctx.String(http.StatusOK, "req param error")
 		return
 	}
-	err := u.service.Login(ctx, req.Email, req.Password)
+	user, err := u.service.Login(ctx, req.Email, req.Password)
 	if err == service.ErrInvalidUserOrPassword {
 		ctx.String(http.StatusOK, "incorrect account or password")
 		return
@@ -93,15 +96,55 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 		return
 	}
 
+	ss := sessions.Default(ctx)
+	ss.Set("user_id", user.Id)
+	ss.Save()
+
 	ctx.String(http.StatusOK, "login success")
+	return
 }
 
 func (u *UserHandler) Edit(ctx *gin.Context) {
-
+	type Req struct {
+		Nickname  string
+		Birthday  string
+		Biography string
+	}
+	var req Req
+	if err := ctx.Bind(&req); err != nil {
+		ctx.String(http.StatusOK, "req param error")
+		return
+	}
+	uid, ok := sessions.Default(ctx).Get("user_id").(int64)
+	if !ok {
+		ctx.String(http.StatusUnauthorized, "no user login")
+		return
+	}
+	ctx.String(http.StatusOK, fmt.Sprintf("%v %v \n", uid, req))
+	birthdayTime, err := time.Parse(time.DateOnly, req.Birthday)
+	if err != nil {
+		ctx.String(http.StatusOK, "req param invalid")
+		return
+	}
+	if err := u.service.Edit(ctx, uid, req.Nickname, birthdayTime.UnixMilli(), req.Biography); err != nil {
+		ctx.String(http.StatusOK, "internal error")
+		return
+	}
+	ctx.String(http.StatusOK, "edit success")
 }
 
 func (u *UserHandler) Profile(ctx *gin.Context) {
-
+	uid, ok := sessions.Default(ctx).Get("user_id").(int64)
+	if !ok {
+		ctx.String(http.StatusUnauthorized, "no user login")
+		return
+	}
+	profile, err := u.service.Profile(ctx, uid)
+	if err != nil {
+		ctx.String(http.StatusOK, "internal error")
+		return
+	}
+	ctx.String(http.StatusOK, fmt.Sprintf("%v\n", profile))
 }
 
 func (u *UserHandler) RegisterRoutes(server *gin.Engine) {

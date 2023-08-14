@@ -7,7 +7,7 @@ package repository
 
 import (
 	"context"
-	"time"
+	"github.com/gin-gonic/gin"
 	"webook/internal/domain"
 	"webook/internal/repository/dao"
 )
@@ -23,8 +23,6 @@ func (r *UserRepository) Create(ctx context.Context, u domain.User) error {
 	return r.dao.Create(ctx, dao.User{
 		Email:    u.Email,
 		Password: u.Password,
-		CreateAt: time.Now().UnixMilli(),
-		UpdateAt: time.Now().UnixMilli(),
 	})
 }
 
@@ -34,9 +32,31 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (domain.
 		return domain.User{}, err
 	}
 	return domain.User{
+		Id:       u.Id,
 		Email:    u.Email,
 		Password: u.Password,
 	}, nil
+}
+
+func (r *UserRepository) Edit(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error {
+	return r.dao.UpdateById(ctx, uid, nickname, birthday, biography)
+}
+
+func (r *UserRepository) Profile(ctx *gin.Context, uid int64) (domain.User, error) {
+	user, err := r.dao.GetById(ctx, uid)
+	if err == ErrUserNoFound {
+		return domain.User{}, err
+	}
+	if err != nil {
+		return domain.User{}, err
+	}
+	return domain.User{
+		Id:        user.Id,
+		Email:     user.Email,
+		NickName:  user.NickName,
+		Birthday:  user.Birthday,
+		Biography: user.Biography,
+	}, err
 }
 
 func NewUserRepository(dao *dao.UserDao) *UserRepository {

@@ -6,6 +6,10 @@
 package domain
 
 type User struct {
-	Email    string
-	Password string
+	Id        int64
+	Email     string
+	Password  string
+	NickName  string
+	Biography string
+	Birthday  int64
 }
