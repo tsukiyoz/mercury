@@ -53,7 +53,7 @@ func (u *UserHandler) SignUp(ctx *gin.Context) {
 
 	ok, err = u.passwordExp.MatchString(req.Password)
 	if err != nil {
-		ctx.String(http.StatusOK, "system error"+err.Error())
+		ctx.String(http.StatusOK, "system error: "+err.Error())
 		return
 	}
 	if !ok {
@@ -156,7 +156,7 @@ func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
 
 func NewHandler(userService *service.UserService) *UserHandler {
 	const (
-		emailRegexPattern    = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$"
+		emailRegexPattern    = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?"
 		passwordRegexPattern = "^(?![a-zA-Z]+$)(?!\\d+$)(?![^\\da-zA-Z\\s]+$).{8,72}$"
 	)
 	return &UserHandler{

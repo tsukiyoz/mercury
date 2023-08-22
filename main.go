@@ -30,11 +30,13 @@ import (
 func main() {
 	db := initDB()
 	r := initServer()
-
+	//r := gin.Default()
 	u := initUser(db)
 	u.RegisterRoutes(r)
-
-	startServer(r, ":8080")
+	r.GET("/hello", func(c *gin.Context) {
+		c.String(http.StatusOK, "hello world!")
+	})
+	startServer(r, ":8081")
 }
 
 func initUser(db *gorm.DB) *api.UserHandler {
@@ -59,7 +61,7 @@ func initServer() *gin.Engine {
 
 	//store := cookie.NewStore([]byte("secret"))
 	//store := memstore.NewStore([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
-	newStore, err := redis.NewStore(12, "tcp", "localhost:6379", "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
+	newStore, err := redis.NewStore(12, "tcp", "redis-service:6380", "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
 	if err != nil {
 		panic(err)
 	}
@@ -97,7 +99,8 @@ func startServer(r *gin.Engine, addr string) {
 }
 
 func initDB() *gorm.DB {
-	db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(localhost:3306)/webook"))
+	db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(mysql-service:3308)/webook"))
+	//db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(124.70.190.134:3306)/webook"))
 	if err != nil {
 		panic(err)
 	}
