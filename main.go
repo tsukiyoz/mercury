@@ -8,6 +8,8 @@ package main
 import (
 	"context"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -34,7 +36,7 @@ func main() {
 	r.GET("/hello", func(c *gin.Context) {
 		c.String(http.StatusOK, "hello world!")
 	})
-	startServer(r, ":8080")
+	startServer(r, ":8081")
 }
 
 func initUser(db *gorm.DB) *api.UserHandler {
@@ -59,12 +61,12 @@ func initServer() *gin.Engine {
 
 	//store := cookie.NewStore([]byte("secret"))
 	//store := memstore.NewStore([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
-	//newStore, err := redis.NewStore(12, "tcp", "localhost:6379", "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
-	//if err != nil {
-	//	panic(err)
-	//}
-	//store := newStore
-	//r.Use(sessions.Sessions("mysession", store))
+	newStore, err := redis.NewStore(12, "tcp", "redis-service:6380", "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
+	if err != nil {
+		panic(err)
+	}
+	store := newStore
+	r.Use(sessions.Sessions("mysession", store))
 
 	r.Use(middleware.NewLoginMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login").Build())
 	return r
@@ -97,7 +99,8 @@ func startServer(r *gin.Engine, addr string) {
 }
 
 func initDB() *gorm.DB {
-	db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(mysql-service:3309)/webook"))
+	db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(mysql-service:3308)/webook"))
+	//db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(124.70.190.134:3306)/webook"))
 	if err != nil {
 		panic(err)
 	}

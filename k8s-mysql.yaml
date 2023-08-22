@@ -7,7 +7,7 @@ spec:
     app: mysql-pod
   ports:
     - protocol: TCP
-      port: 3309
+      port: 3308
       targetPort: 3306
   type: LoadBalancer
 ---

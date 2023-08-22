@@ -10,7 +10,7 @@ spec:
     - name: http
       port: 88
       protocol: TCP
-      targetPort: 8080
+      targetPort: 8081
 ---
 apiVersion: apps/v1
 # 声明我这里配置的是 Deployment
@@ -18,7 +18,7 @@ kind: Deployment
 metadata:
   name: webook-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app:  webook-pod
@@ -32,3 +32,4 @@ spec:
           image: webook:v0.0.1
           ports:
             - containerPort: 8080
+      restartPolicy: Always
