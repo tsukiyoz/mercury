@@ -6,36 +6,60 @@
 package middleware
 
 import (
+	"encoding/gob"
+	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
-type loginMiddlewareBuilder struct {
+type LoginMiddlewareBuilder struct {
 	ignorePaths []string
 }
 
-func (l *loginMiddlewareBuilder) IgnorePaths(paths ...string) *loginMiddlewareBuilder {
+func (l *LoginMiddlewareBuilder) IgnorePaths(paths ...string) *LoginMiddlewareBuilder {
 	l.ignorePaths = append(l.ignorePaths, paths...)
 	return l
 }
 
-func (l *loginMiddlewareBuilder) Build() gin.HandlerFunc {
+func (l *LoginMiddlewareBuilder) Build() gin.HandlerFunc {
+	gob.Register(time.Now())
 	return func(c *gin.Context) {
 		for _, p := range l.ignorePaths {
 			if c.Request.URL.Path == p {
 				return
 			}
 		}
-		ss := sessions.Default(c)
-		id := ss.Get("user_id")
+		sess := sessions.Default(c)
+		id := sess.Get("user_id")
+
 		if id == nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
+
+		sess.Set("user_id", id)
+		sess.Options(sessions.Options{
+			MaxAge: 30,
+		})
+		updateTimeVal := sess.Get("update_time")
+		currentTime := time.Now()
+
+		if updateTimeVal == nil {
+			sess.Set("update_time", currentTime)
+			sess.Save()
+		}
+
+		updateTime, _ := updateTimeVal.(time.Time)
+		if currentTime.Sub(updateTime) > time.Second*15 {
+			sess.Set("update_time", currentTime)
+			sess.Save()
+			fmt.Println("login status refreshed")
+		}
 	}
 }
 
-func NewLoginMiddlewareBuilder() *loginMiddlewareBuilder {
-	return &loginMiddlewareBuilder{}
+func NewLoginMiddlewareBuilder() *LoginMiddlewareBuilder {
+	return &LoginMiddlewareBuilder{}
 }

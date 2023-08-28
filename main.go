@@ -61,14 +61,12 @@ func initServer() *gin.Engine {
 		MaxAge: 20 * time.Second,
 	}))
 
-	//store := cookie.NewStore([]byte("secret"))
-	//store := memstore.NewStore([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
-	newStore, err := redis.NewStore(12, "tcp", config.Config.Redis.Addr, "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
+	store, err := redis.NewStore(12, "tcp", config.Config.Redis.Addr, "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
 	if err != nil {
 		panic(err)
 	}
-	store := newStore
-	r.Use(sessions.Sessions("mysession", store))
+
+	r.Use(sessions.Sessions("ssid", store))
 
 	r.Use(middleware.NewLoginMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login").Build())
 	return r

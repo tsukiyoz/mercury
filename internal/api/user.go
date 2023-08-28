@@ -98,10 +98,24 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 
 	ss := sessions.Default(ctx)
 	ss.Set("user_id", user.Id)
+	ss.Options(sessions.Options{
+		Secure:   true,
+		HttpOnly: true,
+		MaxAge:   30,
+	})
 	ss.Save()
 
 	ctx.String(http.StatusOK, "login success")
 	return
+}
+
+func (u *UserHandler) Logout(ctx *gin.Context) {
+	sess := sessions.Default(ctx)
+	sess.Options(sessions.Options{
+		MaxAge: -1,
+	})
+	sess.Save()
+	ctx.String(http.StatusOK, "logout success")
 }
 
 func (u *UserHandler) Edit(ctx *gin.Context) {
@@ -152,6 +166,7 @@ func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
 	server.POST("/user/login", u.Login)
 	server.POST("/user/edit", u.Edit)
 	server.GET("/user/profile", u.Profile)
+	server.POST("/user/logout", u.Logout)
 }
 
 func NewHandler(userService *service.UserService) *UserHandler {
