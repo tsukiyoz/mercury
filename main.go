@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
@@ -20,6 +21,7 @@ import (
 	"strings"
 	"syscall"
 	"time"
+	"webook/config"
 	"webook/internal/api"
 	"webook/internal/api/middleware"
 	"webook/internal/repository"
@@ -61,7 +63,7 @@ func initServer() *gin.Engine {
 
 	//store := cookie.NewStore([]byte("secret"))
 	//store := memstore.NewStore([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
-	newStore, err := redis.NewStore(12, "tcp", "redis-service:6380", "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
+	newStore, err := redis.NewStore(12, "tcp", config.Config.Redis.Addr, "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
 	if err != nil {
 		panic(err)
 	}
@@ -73,6 +75,7 @@ func initServer() *gin.Engine {
 }
 
 func startServer(r *gin.Engine, addr string) {
+	fmt.Println("server started at ", addr)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: r,
@@ -99,8 +102,7 @@ func startServer(r *gin.Engine, addr string) {
 }
 
 func initDB() *gorm.DB {
-	db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(mysql-service:3308)/webook"))
-	//db, err := gorm.Open(mysql.Open("root:for.nothing@tcp(124.70.190.134:3306)/webook"))
+	db, err := gorm.Open(mysql.Open(config.Config.DB.DSN))
 	if err != nil {
 		panic(err)
 	}
