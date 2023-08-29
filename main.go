@@ -58,7 +58,8 @@ func initServer() *gin.Engine {
 		AllowOriginFunc: func(origin string) bool {
 			return strings.HasPrefix(origin, "http://localhost") || strings.HasPrefix(origin, "http://124.70.190.134")
 		},
-		MaxAge: 20 * time.Second,
+		ExposeHeaders: []string{"x-jwt-token"},
+		MaxAge:        20 * time.Second,
 	}))
 
 	store, err := redis.NewStore(12, "tcp", config.Config.Redis.Addr, "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
@@ -68,7 +69,7 @@ func initServer() *gin.Engine {
 
 	r.Use(sessions.Sessions("ssid", store))
 
-	r.Use(middleware.NewLoginMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login").Build())
+	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login").Build())
 	return r
 }
 

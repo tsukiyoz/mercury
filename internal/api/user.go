@@ -10,6 +10,7 @@ import (
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	jwt "github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"time"
 	"webook/internal/domain"
@@ -109,6 +110,43 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 	return
 }
 
+func (u *UserHandler) LoginWithJwt(ctx *gin.Context) {
+	type LoginReq struct {
+		Email    string
+		Password string
+	}
+	var req LoginReq
+	if err := ctx.Bind(&req); err != nil {
+		ctx.String(http.StatusOK, "req param error")
+		return
+	}
+	user, err := u.service.Login(ctx, req.Email, req.Password)
+	if err == service.ErrInvalidUserOrPassword {
+		ctx.String(http.StatusOK, "incorrect account or password")
+		return
+	}
+	if err != nil {
+		ctx.String(http.StatusOK, "internal error")
+		return
+	}
+
+	claims := UserClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 4)),
+		},
+		Uid:          user.Id,
+		RefreshCount: 1,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
+	signedString, err := token.SignedString([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"))
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, "internal error")
+	}
+	ctx.Header("x-jwt-token", signedString)
+	ctx.String(http.StatusOK, "login success")
+	return
+}
+
 func (u *UserHandler) Logout(ctx *gin.Context) {
 	sess := sessions.Default(ctx)
 	sess.Options(sessions.Options{
@@ -161,11 +199,26 @@ func (u *UserHandler) Profile(ctx *gin.Context) {
 	ctx.String(http.StatusOK, fmt.Sprintf("%v\n", profile))
 }
 
+func (u *UserHandler) ProfileJWT(ctx *gin.Context) {
+	c, _ := ctx.Get("claims")
+	claims, ok := c.(*UserClaims)
+	if !ok {
+		ctx.String(http.StatusOK, "internal error")
+	}
+
+	profile, err := u.service.Profile(ctx, claims.Uid)
+	if err != nil {
+		ctx.String(http.StatusOK, "internal error")
+		return
+	}
+	ctx.String(http.StatusOK, fmt.Sprintf("%v\n", profile))
+}
+
 func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
 	server.POST("/user/signup", u.SignUp)
-	server.POST("/user/login", u.Login)
+	server.POST("/user/login", u.LoginWithJwt)
 	server.POST("/user/edit", u.Edit)
-	server.GET("/user/profile", u.Profile)
+	server.GET("/user/profile", u.ProfileJWT)
 	server.POST("/user/logout", u.Logout)
 }
 
@@ -179,4 +232,10 @@ func NewHandler(userService *service.UserService) *UserHandler {
 		emailExp:    regexp.MustCompile(emailRegexPattern, regexp.None),
 		passwordExp: regexp.MustCompile(passwordRegexPattern, regexp.None),
 	}
+}
+
+type UserClaims struct {
+	jwt.RegisteredClaims
+	Uid          int64
+	RefreshCount int64
 }
