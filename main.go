@@ -10,8 +10,9 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/redis"
+	redis_session "github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -27,6 +28,7 @@ import (
 	"webook/internal/repository"
 	"webook/internal/repository/dao"
 	"webook/internal/service"
+	"webook/pkg/middleware/ratelimit"
 )
 
 func main() {
@@ -51,6 +53,12 @@ func initUser(db *gorm.DB) *api.UserHandler {
 
 func initServer() *gin.Engine {
 	r := gin.Default()
+
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: config.Config.Redis.Addr,
+	})
+
+	r.Use(ratelimit.NewBuilder(redisClient, time.Second, 200).Build())
 	r.Use(cors.New(cors.Config{
 		//AllowOrigins:     []string{"http://localhost:3000"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
@@ -62,14 +70,14 @@ func initServer() *gin.Engine {
 		MaxAge:        20 * time.Second,
 	}))
 
-	store, err := redis.NewStore(12, "tcp", config.Config.Redis.Addr, "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
+	store, err := redis_session.NewStore(12, "tcp", config.Config.Redis.Addr, "", []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), []byte("qG3mAvjIqTl2X9Hh75qaIpQg9nHU2zJf"))
 	if err != nil {
 		panic(err)
 	}
 
 	r.Use(sessions.Sessions("ssid", store))
 
-	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login").Build())
+	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login", "/hello").Build())
 	return r
 }
 
