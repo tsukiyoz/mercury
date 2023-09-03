@@ -136,6 +136,7 @@ func (u *UserHandler) LoginWithJwt(ctx *gin.Context) {
 		},
 		Uid:          user.Id,
 		RefreshCount: 1,
+		UserAgent:    ctx.Request.UserAgent(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	signedString, err := token.SignedString([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"))
@@ -238,4 +239,5 @@ type UserClaims struct {
 	jwt.RegisteredClaims
 	Uid          int64
 	RefreshCount int64
+	UserAgent    string
 }
