@@ -27,7 +27,7 @@ func (b *Builder) Prefix(prefix string) *Builder {
 
 func (b *Builder) limit(ctx *gin.Context) (bool, error) {
 	key := fmt.Sprintf("%s:%s", b.prefix, ctx.ClientIP())
-	return b.cmd.Eval(ctx, luaScript, []string{key}, b.internal.Milliseconds(), b.rate, time.Now()).Bool()
+	return b.cmd.Eval(ctx, luaScript, []string{key}, b.internal.Milliseconds(), b.rate, time.Now().UnixMilli()).Bool()
 }
 
 func (b *Builder) Build() gin.HandlerFunc {
