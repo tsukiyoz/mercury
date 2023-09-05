@@ -50,7 +50,7 @@ func (s *UserService) Edit(ctx *gin.Context, uid int64, nickname string, birthda
 }
 
 func (s *UserService) Profile(ctx *gin.Context, uid int64) (domain.User, error) {
-	user, err := s.repo.Profile(ctx, uid)
+	user, err := s.repo.FindById(ctx, uid)
 	return user, err
 }
 

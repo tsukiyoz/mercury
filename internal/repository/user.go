@@ -9,6 +9,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"webook/internal/domain"
+	"webook/internal/repository/cache"
 	"webook/internal/repository/dao"
 )
 
@@ -16,7 +17,8 @@ var ErrUserDuplicateEmail = dao.ErrUserDuplicateEmail
 var ErrUserNoFound = dao.ErrUserNotFound
 
 type UserRepository struct {
-	dao *dao.UserDao
+	dao   *dao.UserDao
+	cache *cache.UserCache
 }
 
 func (r *UserRepository) Create(ctx context.Context, u domain.User) error {
@@ -42,25 +44,42 @@ func (r *UserRepository) Edit(ctx *gin.Context, uid int64, nickname string, birt
 	return r.dao.UpdateById(ctx, uid, nickname, birthday, biography)
 }
 
-func (r *UserRepository) Profile(ctx *gin.Context, uid int64) (domain.User, error) {
-	user, err := r.dao.GetById(ctx, uid)
-	if err == ErrUserNoFound {
-		return domain.User{}, err
+func (r *UserRepository) FindById(ctx *gin.Context, id int64) (domain.User, error) {
+	u, err := r.cache.Get(ctx, id)
+	if err == nil {
+		// 有数据
+		return u, nil
 	}
+	//if err == cache.ErrKeyNotExist {
+	//	// 无数据
+	//}
+	// 缓存出错
+	// TODO 数据库限流
+
+	uv, err := r.dao.FindById(ctx, id)
 	if err != nil {
 		return domain.User{}, err
 	}
-	return domain.User{
-		Id:        user.Id,
-		Email:     user.Email,
-		NickName:  user.NickName,
-		Birthday:  user.Birthday,
-		Biography: user.Biography,
-	}, err
+	u = domain.User{
+		Id:        uv.Id,
+		Email:     uv.Email,
+		NickName:  uv.NickName,
+		Birthday:  uv.Birthday,
+		Biography: uv.Biography,
+	}
+
+	go func() {
+		err = r.cache.Set(ctx, u)
+		if err != nil {
+			// 日志
+		}
+	}()
+	return u, err
 }
 
-func NewUserRepository(dao *dao.UserDao) *UserRepository {
+func NewUserRepository(dao *dao.UserDao, cache *cache.UserCache) *UserRepository {
 	return &UserRepository{
-		dao: dao,
+		dao:   dao,
+		cache: cache,
 	}
 }

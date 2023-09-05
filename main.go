@@ -58,7 +58,7 @@ func initServer() *gin.Engine {
 		Addr: config.Config.Redis.Addr,
 	})
 
-	r.Use(ratelimit.NewBuilder(redisClient, time.Second, 250).Build())
+	r.Use(ratelimit.NewBuilder(redisClient, time.Second, 180).Build())
 	r.Use(cors.New(cors.Config{
 		//AllowOrigins:     []string{"http://localhost:3000"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
