@@ -26,6 +26,7 @@ import (
 	"webook/internal/api"
 	"webook/internal/api/middleware"
 	"webook/internal/repository"
+	"webook/internal/repository/cache"
 	"webook/internal/repository/dao"
 	"webook/internal/service"
 	"webook/pkg/middleware/ratelimit"
@@ -33,22 +34,22 @@ import (
 
 func main() {
 	db := initDB()
+	redisCmd := initRedis()
 	r := initServer()
-	//r := gin.Default()
-	u := initUser(db)
-	u.RegisterRoutes(r)
+	initUser(r, db, redisCmd)
 	r.GET("/hello", func(c *gin.Context) {
 		c.String(http.StatusOK, "hello world!")
 	})
 	startServer(r, ":8081")
 }
 
-func initUser(db *gorm.DB) *api.UserHandler {
+func initUser(r *gin.Engine, db *gorm.DB, redisClient redis.Cmdable) {
 	ud := dao.NewUserDao(db)
-	ur := repository.NewUserRepository(ud)
+	uc := cache.NewUserCache(redisClient)
+	ur := repository.NewUserRepository(ud, uc)
 	us := service.NewUserService(ur)
 	uh := api.NewHandler(us)
-	return uh
+	uh.RegisterRoutes(r)
 }
 
 func initServer() *gin.Engine {
@@ -118,4 +119,14 @@ func initDB() *gorm.DB {
 		panic(err)
 	}
 	return db
+}
+
+func initRedis() redis.Cmdable {
+	rCfg := config.Config.Redis
+	cmd := redis.NewClient(&redis.Options{
+		Addr:     rCfg.Addr,
+		Password: rCfg.Password,
+		DB:       rCfg.DB,
+	})
+	return cmd
 }

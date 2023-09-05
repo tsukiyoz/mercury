@@ -7,6 +7,8 @@ var Config = config{
 		DSN: "root:for.nothing@tcp(124.70.190.134:3306)/webook",
 	},
 	Redis: RedisConfig{
-		Addr: "124.70.190.134:6379",
+		Addr:     "124.70.190.134:6379",
+		Password: "",
+		DB:       1,
 	},
 }

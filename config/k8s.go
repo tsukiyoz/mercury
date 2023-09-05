@@ -7,6 +7,8 @@ var Config = config{
 		DSN: "root:for.nothing@tcp(mysql-service:3308)/webook",
 	},
 	Redis: RedisConfig{
-		Addr: "redis-service:6380",
+		Addr:     "redis-service:6380",
+		Password: "",
+		DB:       1,
 	},
 }
