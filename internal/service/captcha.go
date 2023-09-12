@@ -1,0 +1,43 @@
+package service
+
+import (
+	"context"
+	"fmt"
+	"math/rand"
+	"webook/internal/repository"
+	"webook/internal/service/sms"
+)
+
+type CaptchaService struct {
+	repo    repository.CaptchaRepository
+	sms     sms.Service
+	tplId   string
+	argName string
+}
+
+func (svc *CaptchaService) Send(ctx context.Context, biz string, phone string) error {
+	captcha := svc.generateCaptcha()
+	err := svc.repo.Store(ctx, biz, phone, captcha)
+	if err != nil {
+		return err
+	}
+	err = svc.sms.Send(ctx, svc.tplId, []sms.ArgVal{
+		{
+			Name: svc.argName,
+			Val:  captcha,
+		},
+	})
+	if err != nil {
+		// TODO
+		return err
+	}
+	return nil
+}
+
+func (svc *CaptchaService) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
+	return svc.repo.Verify(ctx, biz, phone, inputCaptcha)
+}
+
+func (svc *CaptchaService) generateCaptcha() string {
+	return fmt.Sprintf("%06d", rand.Intn(1000000))
+}

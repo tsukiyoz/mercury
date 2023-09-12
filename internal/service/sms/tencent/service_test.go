@@ -8,6 +8,7 @@ import (
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
 	"os"
 	"testing"
+	isms "webook/internal/service/sms"
 )
 
 func TestSender(t *testing.T) {
@@ -29,14 +30,18 @@ func TestSender(t *testing.T) {
 	testCases := []struct {
 		name    string
 		tplId   string
-		params  []string
+		params  []isms.ArgVal
 		phones  []string
 		wantErr error
 	}{
 		{
-			name:   "发送验证码",
-			tplId:  "1877556",
-			params: []string{"123456"},
+			name:  "发送验证码",
+			tplId: "1877556",
+			params: []isms.ArgVal{
+				{
+					Val: "123456",
+				},
+			},
 			// 改成你的手机号码
 			phones: []string{"13017794139"},
 		},

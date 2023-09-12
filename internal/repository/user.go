@@ -6,6 +6,7 @@
 package repository
 
 import (
+	"log"
 	"context"
 	"github.com/gin-gonic/gin"
 	"webook/internal/domain"
@@ -71,7 +72,7 @@ func (r *UserRepository) FindById(ctx *gin.Context, id int64) (domain.User, erro
 	go func() {
 		err = r.cache.Set(ctx, u)
 		if err != nil {
-			// 日志
+			log.Printf("cache set failed! reason:%v \n", err)
 		}
 	}()
 	return u, err
