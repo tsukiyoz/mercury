@@ -37,8 +37,8 @@ func main() {
 	redisCmd := initRedis()
 	r := initServer()
 	initUser(r, db, redisCmd)
-	r.GET("/hello", func(c *gin.Context) {
-		c.String(http.StatusOK, "hello world!")
+	r.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "welcome to tsukiyo's website!")
 	})
 	startServer(r, ":8081")
 }
@@ -65,7 +65,7 @@ func initServer() *gin.Engine {
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			return strings.HasPrefix(origin, "http://localhost") || strings.HasPrefix(origin, "http://124.70.190.134")
+			return strings.HasPrefix(origin, "http://localhost") || strings.HasPrefix(origin, "http://124.70.190.134") || strings.HasSuffix(origin, "tsukiyo.top")
 		},
 		ExposeHeaders: []string{"x-jwt-token"},
 		MaxAge:        20 * time.Second,
@@ -78,7 +78,7 @@ func initServer() *gin.Engine {
 
 	r.Use(sessions.Sessions("ssid", store))
 
-	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login", "/hello").Build())
+	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login", "/").Build())
 	return r
 }
 
