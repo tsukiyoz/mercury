@@ -29,6 +29,7 @@ import (
 	"webook/internal/repository/cache"
 	"webook/internal/repository/dao"
 	"webook/internal/service"
+	"webook/internal/service/sms/memory"
 	"webook/pkg/middleware/ratelimit"
 )
 
@@ -43,12 +44,16 @@ func main() {
 	startServer(r, ":8081")
 }
 
-func initUser(r *gin.Engine, db *gorm.DB, redisClient redis.Cmdable) {
-	ud := dao.NewUserDao(db)
-	uc := cache.NewUserCache(redisClient)
-	ur := repository.NewUserRepository(ud, uc)
-	us := service.NewUserService(ur)
-	uh := api.NewHandler(us)
+func initUser(r *gin.Engine, db *gorm.DB, rdb redis.Cmdable) {
+	userDao := dao.NewUserDao(db)
+	userCache := cache.NewUserCache(rdb)
+	userRepo := repository.NewUserRepository(userDao, userCache)
+	userService := service.NewUserService(userRepo)
+	captchaCache := cache.NewCaptchaCache(rdb)
+	captchaRepo := repository.NewCaptchaRepository(captchaCache)
+	smsService := memory.NewService()
+	captchaService := service.NewCaptchaService(captchaRepo, smsService)
+	uh := api.NewHandler(userService, captchaService)
 	uh.RegisterRoutes(r)
 }
 
@@ -78,7 +83,7 @@ func initServer() *gin.Engine {
 
 	r.Use(sessions.Sessions("ssid", store))
 
-	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login", "/").Build())
+	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login", "/", "/user/login_sms/captchaService/send").Build())
 	return r
 }
 

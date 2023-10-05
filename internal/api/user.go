@@ -18,9 +18,10 @@ import (
 )
 
 type UserHandler struct {
-	service     *service.UserService
-	emailExp    *regexp.Regexp
-	passwordExp *regexp.Regexp
+	userService    *service.UserService
+	captchaService *service.CaptchaService
+	emailExp       *regexp.Regexp
+	passwordExp    *regexp.Regexp
 }
 
 func (u *UserHandler) SignUp(ctx *gin.Context) {
@@ -62,7 +63,7 @@ func (u *UserHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 
-	err = u.service.SignUp(ctx, domain.User{
+	err = u.userService.SignUp(ctx, domain.User{
 		Email:    req.Email,
 		Password: req.Password,
 	})
@@ -87,7 +88,7 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "req param error")
 		return
 	}
-	user, err := u.service.Login(ctx, req.Email, req.Password)
+	user, err := u.userService.Login(ctx, req.Email, req.Password)
 	if err == service.ErrInvalidUserOrPassword {
 		ctx.String(http.StatusOK, "incorrect account or password")
 		return
@@ -120,7 +121,7 @@ func (u *UserHandler) LoginWithJwt(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "req param error")
 		return
 	}
-	user, err := u.service.Login(ctx, req.Email, req.Password)
+	user, err := u.userService.Login(ctx, req.Email, req.Password)
 	if err == service.ErrInvalidUserOrPassword {
 		ctx.String(http.StatusOK, "incorrect account or password")
 		return
@@ -179,7 +180,7 @@ func (u *UserHandler) Edit(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "req param invalid")
 		return
 	}
-	if err := u.service.Edit(ctx, uid, req.Nickname, birthdayTime.UnixMilli(), req.Biography); err != nil {
+	if err := u.userService.Edit(ctx, uid, req.Nickname, birthdayTime.UnixMilli(), req.Biography); err != nil {
 		ctx.String(http.StatusOK, "internal error")
 		return
 	}
@@ -192,7 +193,7 @@ func (u *UserHandler) Profile(ctx *gin.Context) {
 		ctx.String(http.StatusUnauthorized, "no user login")
 		return
 	}
-	profile, err := u.service.Profile(ctx, uid)
+	profile, err := u.userService.Profile(ctx, uid)
 	if err != nil {
 		ctx.String(http.StatusOK, "internal error")
 		return
@@ -207,7 +208,7 @@ func (u *UserHandler) ProfileJWT(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "internal error")
 	}
 
-	profile, err := u.service.Profile(ctx, claims.Uid)
+	profile, err := u.userService.Profile(ctx, claims.Uid)
 	if err != nil {
 		ctx.String(http.StatusOK, "internal error")
 		return
@@ -215,23 +216,50 @@ func (u *UserHandler) ProfileJWT(ctx *gin.Context) {
 	ctx.String(http.StatusOK, fmt.Sprintf("%v\n", profile))
 }
 
-func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
-	server.POST("/user/signup", u.SignUp)
-	server.POST("/user/login", u.LoginWithJwt)
-	server.POST("/user/edit", u.Edit)
-	server.GET("/user/profile", u.ProfileJWT)
-	server.POST("/user/logout", u.Logout)
+func (u *UserHandler) SendLoginCaptcha(ctx *gin.Context) {
+	type Req struct {
+		Phone string `json:"phone"`
+	}
+	const biz = "login"
+	var req Req
+	if err := ctx.Bind(&req); err != nil {
+		return
+	}
+	err := u.captchaService.Send(ctx, biz, req.Phone)
+	if err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "send success",
+	})
 }
 
-func NewHandler(userService *service.UserService) *UserHandler {
+func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
+	ug := server.Group("/user")
+	ug.POST("/signup", u.SignUp)
+	ug.POST("/login", u.LoginWithJwt)
+	ug.POST("/edit", u.Edit)
+	ug.GET("/profile", u.ProfileJWT)
+	ug.POST("/logout", u.Logout)
+	ug.POST("/login_sms/captchaService/send", u.SendLoginCaptcha)
+	//ug.POST("/login/captchaService", u.LoginSMS)
+}
+
+func NewHandler(userService *service.UserService, captchaService *service.CaptchaService) *UserHandler {
 	const (
 		emailRegexPattern    = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?"
 		passwordRegexPattern = "^(?![a-zA-Z]+$)(?!\\d+$)(?![^\\da-zA-Z\\s]+$).{8,72}$"
 	)
 	return &UserHandler{
-		service:     userService,
-		emailExp:    regexp.MustCompile(emailRegexPattern, regexp.None),
-		passwordExp: regexp.MustCompile(passwordRegexPattern, regexp.None),
+		userService:    userService,
+		captchaService: captchaService,
+		emailExp:       regexp.MustCompile(emailRegexPattern, regexp.None),
+		passwordExp:    regexp.MustCompile(passwordRegexPattern, regexp.None),
 	}
 }
 

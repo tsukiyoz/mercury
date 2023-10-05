@@ -12,6 +12,6 @@ elseif expectedCaptcha == captcha then
     return 0
 else
     -- wrong captcha
-    redis.call("decr", cntKey, -1)
+    redis.call("decr", cntKey)
     return -2
 end

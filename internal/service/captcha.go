@@ -9,8 +9,8 @@ import (
 )
 
 type CaptchaService struct {
-	repo    repository.CaptchaRepository
-	sms     sms.Service
+	repo    *repository.CaptchaRepository
+	smsSvc  sms.Service
 	tplId   string
 	argName string
 }
@@ -21,12 +21,12 @@ func (svc *CaptchaService) Send(ctx context.Context, biz string, phone string) e
 	if err != nil {
 		return err
 	}
-	err = svc.sms.Send(ctx, svc.tplId, []sms.ArgVal{
+	err = svc.smsSvc.Send(ctx, svc.tplId, []sms.ArgVal{
 		{
 			Name: svc.argName,
 			Val:  captcha,
 		},
-	})
+	}, phone)
 	if err != nil {
 		// TODO
 		return err
@@ -40,4 +40,11 @@ func (svc *CaptchaService) Verify(ctx context.Context, biz string, phone string,
 
 func (svc *CaptchaService) generateCaptcha() string {
 	return fmt.Sprintf("%06d", rand.Intn(1000000))
+}
+
+func NewCaptchaService(repo *repository.CaptchaRepository, smsSvc sms.Service) *CaptchaService {
+	return &CaptchaService{
+		repo:   repo,
+		smsSvc: smsSvc,
+	}
 }

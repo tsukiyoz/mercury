@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials"
-	dysmsapi "github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"github.com/bytedance/sonic"
 	"strings"
 	"time"

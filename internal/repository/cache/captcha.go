@@ -63,8 +63,8 @@ func (c *CaptchaCache) key(biz string, phone string) string {
 	return fmt.Sprintf("phone_captcha:%s:%s", biz, phone)
 }
 
-func NewCaptchaCache(client redis.Cmdable) *CaptchaCache {
-	return &CaptchaCache{
+func NewCaptchaCache(client redis.Cmdable) CaptchaCache {
+	return CaptchaCache{
 		client: client,
 	}
 }
