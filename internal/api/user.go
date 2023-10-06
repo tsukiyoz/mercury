@@ -14,8 +14,11 @@ import (
 	"net/http"
 	"time"
 	"webook/internal/domain"
+	"webook/internal/repository"
 	"webook/internal/service"
 )
+
+const biz = "login"
 
 type UserHandler struct {
 	userService    *service.UserService
@@ -67,7 +70,7 @@ func (u *UserHandler) SignUp(ctx *gin.Context) {
 		Email:    req.Email,
 		Password: req.Password,
 	})
-	if err == service.ErrUserDuplicateEmail {
+	if err == service.ErrUserDuplicate {
 		ctx.String(http.StatusOK, err.Error())
 		return
 	}
@@ -131,22 +134,30 @@ func (u *UserHandler) LoginWithJwt(ctx *gin.Context) {
 		return
 	}
 
+	if err = u.setJWTToken(ctx, user.Id); err != nil {
+		ctx.String(http.StatusOK, "internal error")
+		return
+	}
+	ctx.String(http.StatusOK, "login success")
+	return
+}
+
+func (u *UserHandler) setJWTToken(ctx *gin.Context, userId int64) error {
 	claims := UserClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 15)),
 		},
-		Uid:          user.Id,
+		Uid:          userId,
 		RefreshCount: 1,
 		UserAgent:    ctx.Request.UserAgent(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	signedString, err := token.SignedString([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"))
 	if err != nil {
-		ctx.String(http.StatusInternalServerError, "internal error")
+		return err
 	}
 	ctx.Header("x-jwt-token", signedString)
-	ctx.String(http.StatusOK, "login success")
-	return
+	return nil
 }
 
 func (u *UserHandler) Logout(ctx *gin.Context) {
@@ -220,12 +231,51 @@ func (u *UserHandler) SendLoginCaptcha(ctx *gin.Context) {
 	type Req struct {
 		Phone string `json:"phone"`
 	}
-	const biz = "login"
 	var req Req
 	if err := ctx.Bind(&req); err != nil {
 		return
 	}
+	// TODO reg validate
+	if req.Phone == "" {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "input error",
+		})
+		return
+	}
+
 	err := u.captchaService.Send(ctx, biz, req.Phone)
+	switch err {
+	case nil:
+		ctx.JSON(http.StatusOK, Result{
+			Code: 2,
+			Msg:  "send success",
+		})
+	case repository.ErrCaptchaSendTooManyTimes:
+		ctx.JSON(http.StatusOK, Result{
+			Code: 2,
+			Msg:  "send too often, please try again later",
+		})
+	default:
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
+}
+
+func (u *UserHandler) LoginSMS(ctx *gin.Context) {
+	type Req struct {
+		Phone   string `json:"phone"`
+		Captcha string `json:"captcha"`
+	}
+	var req Req
+	if err := ctx.Bind(&req); err != nil {
+		return
+	}
+
+	ok, err := u.captchaService.Verify(ctx, biz, req.Phone, req.Captcha)
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
@@ -233,9 +283,34 @@ func (u *UserHandler) SendLoginCaptcha(ctx *gin.Context) {
 		})
 		return
 	}
+	if !ok {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "captcha invalidated",
+		})
+		return
+	}
+
+	user, err := u.userService.FindOrCreate(ctx, req.Phone)
+	if err != nil && err != repository.ErrUserDuplicate {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
+
+	if err = u.setJWTToken(ctx, user.Id); err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, Result{
 		Code: 2,
-		Msg:  "send success",
+		Msg:  "captcha validate success",
 	})
 }
 
@@ -246,8 +321,8 @@ func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
 	ug.POST("/edit", u.Edit)
 	ug.GET("/profile", u.ProfileJWT)
 	ug.POST("/logout", u.Logout)
-	ug.POST("/login_sms/captchaService/send", u.SendLoginCaptcha)
-	//ug.POST("/login/captchaService", u.LoginSMS)
+	ug.POST("/login_sms/captcha/send", u.SendLoginCaptcha)
+	ug.POST("/login_sms/captcha/validate", u.LoginSMS)
 }
 
 func NewHandler(userService *service.UserService, captchaService *service.CaptchaService) *UserHandler {

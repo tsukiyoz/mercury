@@ -83,7 +83,7 @@ func initServer() *gin.Engine {
 
 	r.Use(sessions.Sessions("ssid", store))
 
-	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login", "/", "/user/login_sms/captchaService/send").Build())
+	r.Use(middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths("/user/signup", "/user/login", "/", "/user/login_sms/captcha/send", "/user/login_sms/captcha/validate").Build())
 	return r
 }
 

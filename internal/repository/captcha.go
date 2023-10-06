@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ErrCaptchaSendFrequently   = cache.ErrSetCaptchaFrequently
-	ErrCaptchaVerifyFrequently = cache.ErrCaptchaVerifyFrequently
+	ErrCaptchaSendTooManyTimes   = cache.ErrSetCaptchaTooManyTimes
+	ErrCaptchaVerifyTooManyTimes = cache.ErrCaptchaVerifyTooManyTimes
 )
 
 type CaptchaRepository struct {

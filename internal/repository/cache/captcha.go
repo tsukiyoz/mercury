@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	ErrSetCaptchaFrequently    = errors.New("send captcha too frequently")
-	ErrInternal                = errors.New("internal error")
-	ErrCaptchaVerifyFrequently = errors.New("verify captcha too frequently")
-	ErrUnknownForCode          = errors.New("unknown error for code")
+	ErrSetCaptchaTooManyTimes    = errors.New("send captcha too frequently")
+	ErrInternal                  = errors.New("internal error")
+	ErrCaptchaVerifyTooManyTimes = errors.New("verify captcha too frequently")
+	ErrUnknownForCode            = errors.New("unknown error for code")
 )
 
 //go:embed lua/set_code.lua
@@ -34,7 +34,7 @@ func (c *CaptchaCache) Set(ctx context.Context, biz string, phone string, code s
 	case 0:
 		return nil
 	case -1:
-		return ErrSetCaptchaFrequently
+		return ErrSetCaptchaTooManyTimes
 	default:
 		return ErrInternal
 	}
@@ -50,7 +50,7 @@ func (c *CaptchaCache) Verify(ctx context.Context, biz string, phone string, inp
 		return true, nil
 	case -1:
 		// TODO LOG
-		return false, ErrCaptchaVerifyFrequently
+		return false, ErrCaptchaVerifyTooManyTimes
 	case -2:
 		return false, nil
 	default:

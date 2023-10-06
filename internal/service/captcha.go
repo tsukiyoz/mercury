@@ -8,6 +8,11 @@ import (
 	"webook/internal/service/sms"
 )
 
+var (
+	ErrCodeSendTooManyTimes   = repository.ErrCaptchaSendTooManyTimes
+	ErrCodeVerifyTooManyTimes = repository.ErrCaptchaVerifyTooManyTimes
+)
+
 type CaptchaService struct {
 	repo    *repository.CaptchaRepository
 	smsSvc  sms.Service
