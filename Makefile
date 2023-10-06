@@ -27,9 +27,23 @@ k8s-setup-web:
 	@kubectl apply -f k8s-webook.yaml
 	@kubectl apply -f k8s-ingress-nginx.yaml
 
-.PHONY: k8s-teardown
-k8s-teardown:
+.PHONY: k8s-teardown-web
+k8s-teardown-web:
 	@kubectl delete ing webook-ingress || true
 	@kubectl delete deployment webook-deployment || true
+
+.PHONY: k8s-teardown-db
+k8s-teardown-db:
 	@kubectl delete deployment mysql-deployment || true
 	@kubectl delete deployment redis-deployment || true
+
+.PHONY: k8s-teardown
+k8s-teardown:
+	make k8s-teardown-web
+	make k8s-teardown-db
+
+.PHONY: k8s-reload-web
+k8s-reload-web:
+	make k8s-teardown-web
+	make docker-k8s
+	make k8s-setup-web

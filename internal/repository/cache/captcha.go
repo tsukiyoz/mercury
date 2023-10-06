@@ -21,11 +21,18 @@ var luaSetCaptcha string
 //go:embed lua/verify_code.lua
 var luaVerifyCode string
 
-type CaptchaCache struct {
+var _ CaptchaCache = (*RedisCaptchaCache)(nil)
+
+type CaptchaCache interface {
+	Set(ctx context.Context, biz string, phone string, code string) error
+	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)
+}
+
+type RedisCaptchaCache struct {
 	client redis.Cmdable
 }
 
-func (c *CaptchaCache) Set(ctx context.Context, biz string, phone string, code string) error {
+func (c *RedisCaptchaCache) Set(ctx context.Context, biz string, phone string, code string) error {
 	ret, err := c.client.Eval(ctx, luaSetCaptcha, []string{c.key(biz, phone)}, code).Int()
 	if err != nil {
 		return err
@@ -40,7 +47,7 @@ func (c *CaptchaCache) Set(ctx context.Context, biz string, phone string, code s
 	}
 }
 
-func (c *CaptchaCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
+func (c *RedisCaptchaCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
 	ret, err := c.client.Eval(ctx, luaVerifyCode, []string{c.key(biz, phone)}, inputCaptcha).Int()
 	if err != nil {
 		return false, err
@@ -59,12 +66,12 @@ func (c *CaptchaCache) Verify(ctx context.Context, biz string, phone string, inp
 	}
 }
 
-func (c *CaptchaCache) key(biz string, phone string) string {
+func (c *RedisCaptchaCache) key(biz string, phone string) string {
 	return fmt.Sprintf("phone_captcha:%s:%s", biz, phone)
 }
 
-func NewCaptchaCache(client redis.Cmdable) CaptchaCache {
-	return CaptchaCache{
+func NewRedisCaptchaCache(client redis.Cmdable) CaptchaCache {
+	return &RedisCaptchaCache{
 		client: client,
 	}
 }

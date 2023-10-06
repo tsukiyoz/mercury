@@ -23,8 +23,8 @@ const biz = "login"
 var _ handler = (*UserHandler)(nil)
 
 type UserHandler struct {
-	userService    *service.UserService
-	captchaService *service.CaptchaService
+	userService    service.UserService
+	captchaService service.CaptchaService
 	emailExp       *regexp.Regexp
 	passwordExp    *regexp.Regexp
 }
@@ -327,7 +327,7 @@ func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
 	ug.POST("/login_sms/captcha/validate", u.LoginSMS)
 }
 
-func NewUserHandler(userService *service.UserService, captchaService *service.CaptchaService) *UserHandler {
+func NewUserHandler(userService service.UserService, captchaService service.CaptchaService) *UserHandler {
 	const (
 		emailRegexPattern    = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?"
 		passwordRegexPattern = "^(?![a-zA-Z]+$)(?!\\d+$)(?![^\\da-zA-Z\\s]+$).{8,72}$"

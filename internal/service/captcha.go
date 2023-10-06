@@ -13,14 +13,21 @@ var (
 	ErrCodeVerifyTooManyTimes = repository.ErrCaptchaVerifyTooManyTimes
 )
 
-type CaptchaService struct {
-	repo    *repository.CaptchaRepository
+var _ CaptchaService = (*CaptchaServiceV1)(nil)
+
+type CaptchaService interface {
+	Send(ctx context.Context, biz string, phone string) error
+	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)
+}
+
+type CaptchaServiceV1 struct {
+	repo    repository.CaptchaRepository
 	smsSvc  sms.Service
 	tplId   string
 	argName string
 }
 
-func (svc *CaptchaService) Send(ctx context.Context, biz string, phone string) error {
+func (svc *CaptchaServiceV1) Send(ctx context.Context, biz string, phone string) error {
 	captcha := svc.generateCaptcha()
 	err := svc.repo.Store(ctx, biz, phone, captcha)
 	if err != nil {
@@ -39,16 +46,16 @@ func (svc *CaptchaService) Send(ctx context.Context, biz string, phone string) e
 	return nil
 }
 
-func (svc *CaptchaService) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
+func (svc *CaptchaServiceV1) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
 	return svc.repo.Verify(ctx, biz, phone, inputCaptcha)
 }
 
-func (svc *CaptchaService) generateCaptcha() string {
+func (svc *CaptchaServiceV1) generateCaptcha() string {
 	return fmt.Sprintf("%06d", rand.Intn(1000000))
 }
 
-func NewCaptchaService(repo *repository.CaptchaRepository, smsSvc sms.Service) *CaptchaService {
-	return &CaptchaService{
+func NewCaptchaServiceV1(repo repository.CaptchaRepository, smsSvc sms.Service) CaptchaService {
+	return &CaptchaServiceV1{
 		repo:   repo,
 		smsSvc: smsSvc,
 	}
