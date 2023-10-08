@@ -6,11 +6,11 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type RedisCaptchaCache struct {
+type CaptchaRedisCache struct {
 	client redis.Cmdable
 }
 
-func (c *RedisCaptchaCache) Set(ctx context.Context, biz string, phone string, code string) error {
+func (c *CaptchaRedisCache) Set(ctx context.Context, biz string, phone string, code string) error {
 	ret, err := c.client.Eval(ctx, luaSetCaptcha, []string{c.key(biz, phone)}, code).Int()
 	if err != nil {
 		return err
@@ -25,7 +25,7 @@ func (c *RedisCaptchaCache) Set(ctx context.Context, biz string, phone string, c
 	}
 }
 
-func (c *RedisCaptchaCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
+func (c *CaptchaRedisCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
 	ret, err := c.client.Eval(ctx, luaVerifyCode, []string{c.key(biz, phone)}, inputCaptcha).Int()
 	if err != nil {
 		return false, ErrInternal
@@ -44,12 +44,12 @@ func (c *RedisCaptchaCache) Verify(ctx context.Context, biz string, phone string
 	}
 }
 
-func (c *RedisCaptchaCache) key(biz string, phone string) string {
+func (c *CaptchaRedisCache) key(biz string, phone string) string {
 	return fmt.Sprintf("phone_captcha:%s:%s", biz, phone)
 }
 
-func NewRedisCaptchaCache(client redis.Cmdable) CaptchaCache {
-	return &RedisCaptchaCache{
+func NewCaptchaRedisCache(client redis.Cmdable) CaptchaCache {
+	return &CaptchaRedisCache{
 		client: client,
 	}
 }

@@ -21,7 +21,7 @@ func InitWebServer() *gin.Engine {
 		dao.NewUserGormDao,
 
 		user.NewUserRedisCache,
-		captcha.NewLocalCaptchaCache,
+		captcha.NewCaptchaLocalCache,
 
 		repository.NewCachedUserRepository,
 		repository.NewCachedCaptchaRepository,

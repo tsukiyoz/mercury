@@ -19,7 +19,7 @@ var luaSetCaptcha string
 //go:embed lua/verify_code.lua
 var luaVerifyCode string
 
-var _ CaptchaCache = (*RedisCaptchaCache)(nil)
+var _ CaptchaCache = (*CaptchaRedisCache)(nil)
 
 type CaptchaCache interface {
 	Set(ctx context.Context, biz string, phone string, code string) error

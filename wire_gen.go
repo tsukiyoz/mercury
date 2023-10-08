@@ -28,7 +28,7 @@ func InitWebServer() *gin.Engine {
 	userRepository := repository.NewCachedUserRepository(userDao, userCache)
 	userService := service.NewUserServiceV1(userRepository)
 	cache := ioc.InitLocalCache()
-	captchaCache := captcha.NewLocalCaptchaCache(cache)
+	captchaCache := captcha.NewCaptchaLocalCache(cache)
 	captchaRepository := repository.NewCachedCaptchaRepository(captchaCache)
 	smsService := ioc.InitSMSService()
 	captchaService := service.NewCaptchaServiceV1(captchaRepository, smsService)

@@ -8,12 +8,12 @@ import (
 	"sync"
 )
 
-type LocalCaptchaCache struct {
+type CaptchaLocalCache struct {
 	mu     sync.Mutex
 	client *freecache.Cache
 }
 
-func (c *LocalCaptchaCache) Set(ctx context.Context, biz string, phone string, code string) error {
+func (c *CaptchaLocalCache) Set(ctx context.Context, biz string, phone string, code string) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -38,7 +38,7 @@ func (c *LocalCaptchaCache) Set(ctx context.Context, biz string, phone string, c
 	}
 }
 
-func (c *LocalCaptchaCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
+func (c *CaptchaLocalCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -71,15 +71,15 @@ func (c *LocalCaptchaCache) Verify(ctx context.Context, biz string, phone string
 	}
 }
 
-func (c *LocalCaptchaCache) key(biz string, phone string, args ...string) string {
+func (c *CaptchaLocalCache) key(biz string, phone string, args ...string) string {
 	return fmt.Sprintf("phone_captcha:%s:%s", biz, phone)
 }
 
-func (c *LocalCaptchaCache) cntKey(biz string, phone string) string {
+func (c *CaptchaLocalCache) cntKey(biz string, phone string) string {
 	return fmt.Sprintf("phone_captcha:%s:%s:cnt", biz, phone)
 }
 
-func (c *LocalCaptchaCache) getCntAndTTL(cntKey []byte) (int, int, error) {
+func (c *CaptchaLocalCache) getCntAndTTL(cntKey []byte) (int, int, error) {
 	cnt, err := c.client.Get(cntKey)
 	if err != nil {
 		return 0, 0, err
@@ -95,8 +95,8 @@ func (c *LocalCaptchaCache) getCntAndTTL(cntKey []byte) (int, int, error) {
 	return cntRet, int(ttl), nil
 }
 
-func NewLocalCaptchaCache(client *freecache.Cache) CaptchaCache {
-	return &LocalCaptchaCache{
+func NewCaptchaLocalCache(client *freecache.Cache) CaptchaCache {
+	return &CaptchaLocalCache{
 		client: client,
 	}
 }
