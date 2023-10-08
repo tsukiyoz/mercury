@@ -256,7 +256,7 @@ func (u *UserHandler) SendLoginCaptcha(ctx *gin.Context) {
 	case repository.ErrCaptchaSendTooManyTimes:
 		ctx.JSON(http.StatusOK, Result{
 			Code: 2,
-			Msg:  "send too often, please try again later",
+			Msg:  "send too many times, please try again later",
 		})
 	default:
 		ctx.JSON(http.StatusOK, Result{
@@ -278,13 +278,23 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 	}
 
 	ok, err := u.captchaService.Verify(ctx, biz, req.Phone, req.Captcha)
-	if err != nil {
+	switch err {
+	case nil:
+		break
+	case repository.ErrCaptchaVerifyTooManyTimes:
+		ctx.JSON(http.StatusOK, Result{
+			Code: 2,
+			Msg:  "verify too many times, please resend the captcha",
+		})
+		return
+	default:
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",
 		})
 		return
 	}
+
 	if !ok {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 4,

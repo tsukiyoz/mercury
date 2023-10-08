@@ -10,7 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"webook/internal/api"
 	"webook/internal/repository"
-	"webook/internal/repository/cache"
+	"webook/internal/repository/cache/captcha"
+	"webook/internal/repository/cache/user"
 	"webook/internal/repository/dao"
 	"webook/internal/service"
 	"webook/ioc"
@@ -23,10 +24,11 @@ func InitWebServer() *gin.Engine {
 	v := ioc.InitMiddlewares(cmdable)
 	db := ioc.InitDB()
 	userDao := dao.NewUserGormDao(db)
-	userCache := cache.NewUserRedisCache(cmdable)
+	userCache := user.NewUserRedisCache(cmdable)
 	userRepository := repository.NewCachedUserRepository(userDao, userCache)
 	userService := service.NewUserServiceV1(userRepository)
-	captchaCache := cache.NewRedisCaptchaCache(cmdable)
+	cache := ioc.InitLocalCache()
+	captchaCache := captcha.NewLocalCaptchaCache(cache)
 	captchaRepository := repository.NewCachedCaptchaRepository(captchaCache)
 	smsService := ioc.InitSMSService()
 	captchaService := service.NewCaptchaServiceV1(captchaRepository, smsService)

@@ -7,7 +7,8 @@ import (
 	"github.com/google/wire"
 	"webook/internal/api"
 	"webook/internal/repository"
-	"webook/internal/repository/cache"
+	"webook/internal/repository/cache/captcha"
+	"webook/internal/repository/cache/user"
 	"webook/internal/repository/dao"
 	"webook/internal/service"
 	"webook/ioc"
@@ -19,8 +20,8 @@ func InitWebServer() *gin.Engine {
 
 		dao.NewUserGormDao,
 
-		cache.NewUserRedisCache,
-		cache.NewRedisCaptchaCache,
+		user.NewUserRedisCache,
+		captcha.NewLocalCaptchaCache,
 
 		repository.NewCachedUserRepository,
 		repository.NewCachedCaptchaRepository,
@@ -33,6 +34,7 @@ func InitWebServer() *gin.Engine {
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,
+		ioc.InitLocalCache,
 	)
 	return new(gin.Engine)
 }

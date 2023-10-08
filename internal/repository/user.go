@@ -12,7 +12,7 @@ import (
 	"log"
 	"time"
 	"webook/internal/domain"
-	"webook/internal/repository/cache"
+	"webook/internal/repository/cache/user"
 	"webook/internal/repository/dao"
 )
 
@@ -29,7 +29,7 @@ type UserRepository interface {
 
 type CachedUserRepository struct {
 	dao   dao.UserDao
-	cache cache.UserCache
+	cache user.UserCache
 }
 
 func (r *CachedUserRepository) Create(ctx context.Context, u domain.User) error {
@@ -83,7 +83,7 @@ func (r *CachedUserRepository) FindById(ctx *gin.Context, id int64) (domain.User
 	return u, err
 }
 
-func NewCachedUserRepository(dao dao.UserDao, cache cache.UserCache) UserRepository {
+func NewCachedUserRepository(dao dao.UserDao, cache user.UserCache) UserRepository {
 	return &CachedUserRepository{
 		dao:   dao,
 		cache: cache,

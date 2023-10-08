@@ -1,32 +1,10 @@
-package cache
+package captcha
 
 import (
 	"context"
-	_ "embed"
-	"errors"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 )
-
-var (
-	ErrSetCaptchaTooManyTimes    = errors.New("send captcha too frequently")
-	ErrInternal                  = errors.New("internal error")
-	ErrCaptchaVerifyTooManyTimes = errors.New("verify captcha too frequently")
-	ErrUnknownForCode            = errors.New("unknown error for code")
-)
-
-//go:embed lua/set_code.lua
-var luaSetCaptcha string
-
-//go:embed lua/verify_code.lua
-var luaVerifyCode string
-
-var _ CaptchaCache = (*RedisCaptchaCache)(nil)
-
-type CaptchaCache interface {
-	Set(ctx context.Context, biz string, phone string, code string) error
-	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)
-}
 
 type RedisCaptchaCache struct {
 	client redis.Cmdable
@@ -50,7 +28,7 @@ func (c *RedisCaptchaCache) Set(ctx context.Context, biz string, phone string, c
 func (c *RedisCaptchaCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
 	ret, err := c.client.Eval(ctx, luaVerifyCode, []string{c.key(biz, phone)}, inputCaptcha).Int()
 	if err != nil {
-		return false, err
+		return false, ErrInternal
 	}
 	switch ret {
 	case 0:
