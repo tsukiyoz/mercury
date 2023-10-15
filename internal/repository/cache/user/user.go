@@ -16,6 +16,7 @@ var _ UserCache = (*UserRedisCache)(nil)
 type UserCache interface {
 	Get(ctx context.Context, id int64) (domain.User, error)
 	Set(ctx context.Context, u domain.User) error
+	Delete(ctx context.Context, id int64) error
 }
 
 type UserRedisCache struct {
@@ -45,9 +46,13 @@ func (cache *UserRedisCache) key(id int64) string {
 	return fmt.Sprintf("user:info:%d", id)
 }
 
+func (cache *UserRedisCache) Delete(ctx context.Context, id int64) error {
+	return cache.client.Del(ctx, cache.key(id)).Err()
+}
+
 func NewUserRedisCache(client redis.Cmdable) UserCache {
 	return &UserRedisCache{
 		client:     client,
-		expiration: time.Minute * 15,
+		expiration: time.Second * 3,
 	}
 }

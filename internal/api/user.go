@@ -6,7 +6,6 @@
 package api
 
 import (
-	"fmt"
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -18,7 +17,12 @@ import (
 	"webook/internal/service"
 )
 
-const biz = "login"
+const (
+	bizLogin             = "login"
+	userIdKey            = "userId"
+	emailRegexPattern    = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?"
+	passwordRegexPattern = "^(?![a-zA-Z]+$)(?!\\d+$)(?![^\\da-zA-Z\\s]+$).{8,72}$"
+)
 
 var _ handler = (*UserHandler)(nil)
 
@@ -37,50 +41,73 @@ func (u *UserHandler) SignUp(ctx *gin.Context) {
 	}
 	var req SignUpReq
 	if err := ctx.Bind(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "signup failed",
+		return
+	}
+
+	isEmail, err := u.emailExp.MatchString(req.Email)
+	if err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
+	if !isEmail {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "email format invalid",
 		})
 		return
 	}
 
-	ok, err := u.emailExp.MatchString(req.Email)
-	if err != nil {
-		ctx.String(http.StatusOK, "system error"+err.Error())
-		return
-	}
-	if !ok {
-		ctx.String(http.StatusOK, "email format invalid")
-		return
-	}
-
 	if req.Password != req.ConfirmPassword {
-		ctx.String(http.StatusOK, "confirm_password doesn't match password")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "passwords doesn't match",
+		})
 		return
 	}
 
-	ok, err = u.passwordExp.MatchString(req.Password)
+	isPassword, err := u.passwordExp.MatchString(req.Password)
 	if err != nil {
-		ctx.String(http.StatusOK, "system error: "+err.Error())
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
 		return
 	}
-	if !ok {
-		ctx.String(http.StatusOK, "password format invalid")
+	if !isPassword {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "password format invalid",
+		})
 		return
 	}
 
 	err = u.userService.SignUp(ctx, domain.User{
 		Email:    req.Email,
 		Password: req.Password,
+		CreateAt: time.Now(),
+		UpdateAt: time.Now(),
 	})
 	if err == service.ErrUserDuplicate {
-		ctx.String(http.StatusOK, err.Error())
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "the email has been registered",
+		})
 		return
 	}
 	if err != nil {
-		ctx.String(http.StatusOK, "internal error")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
 		return
 	}
-	ctx.String(http.StatusOK, "signup success")
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "success",
+	})
 }
 
 func (u *UserHandler) Login(ctx *gin.Context) {
@@ -90,57 +117,78 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 	}
 	var req LoginReq
 	if err := ctx.Bind(&req); err != nil {
-		ctx.String(http.StatusOK, "req param error")
 		return
 	}
-	user, err := u.userService.Login(ctx, req.Email, req.Password)
+
+	user, err := u.userService.Login(ctx.Request.Context(), req.Email, req.Password)
 	if err == service.ErrInvalidUserOrPassword {
-		ctx.String(http.StatusOK, "incorrect account or password")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "incorrect account or password",
+		})
 		return
 	}
 	if err != nil {
-		ctx.String(http.StatusOK, "internal error")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
 		return
 	}
 
 	ss := sessions.Default(ctx)
-	ss.Set("user_id", user.Id)
+	ss.Set(userIdKey, user.Id)
 	ss.Options(sessions.Options{
 		Secure:   true,
 		HttpOnly: true,
 		MaxAge:   30,
 	})
-	ss.Save()
+	err = ss.Save()
+	if err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
 
-	ctx.String(http.StatusOK, "login success")
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "login success",
+	})
 	return
 }
 
-func (u *UserHandler) LoginWithJwt(ctx *gin.Context) {
+func (u *UserHandler) LoginJWT(ctx *gin.Context) {
 	type LoginReq struct {
 		Email    string
 		Password string
 	}
 	var req LoginReq
 	if err := ctx.Bind(&req); err != nil {
-		ctx.String(http.StatusOK, "req param error")
 		return
 	}
-	user, err := u.userService.Login(ctx, req.Email, req.Password)
+
+	user, err := u.userService.Login(ctx.Request.Context(), req.Email, req.Password)
 	if err == service.ErrInvalidUserOrPassword {
-		ctx.String(http.StatusOK, "incorrect account or password")
-		return
-	}
-	if err != nil {
-		ctx.String(http.StatusOK, "internal error")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "incorrect account or password",
+		})
 		return
 	}
 
 	if err = u.setJWTToken(ctx, user.Id); err != nil {
-		ctx.String(http.StatusOK, "internal error")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
 		return
 	}
-	ctx.String(http.StatusOK, "login success")
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "login success",
+	})
 	return
 }
 
@@ -154,7 +202,7 @@ func (u *UserHandler) setJWTToken(ctx *gin.Context, userId int64) error {
 		UserAgent:    ctx.Request.UserAgent(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	signedString, err := token.SignedString([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"))
+	signedString, err := token.SignedString(JWTKey)
 	if err != nil {
 		return err
 	}
@@ -173,60 +221,121 @@ func (u *UserHandler) Logout(ctx *gin.Context) {
 
 func (u *UserHandler) Edit(ctx *gin.Context) {
 	type Req struct {
-		Nickname  string
-		Birthday  string
-		Biography string
+		Nickname string `json:"nickname"`
+		Birthday string `json:"birthday"`
+		AboutMe  string `json:"about_me"`
 	}
+
 	var req Req
 	if err := ctx.Bind(&req); err != nil {
-		ctx.String(http.StatusOK, "req param error")
 		return
 	}
-	uid, ok := sessions.Default(ctx).Get("user_id").(int64)
-	if !ok {
-		ctx.String(http.StatusUnauthorized, "no user login")
+
+	if req.Nickname == "" {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "nickname cannot be empty",
+		})
 		return
 	}
-	ctx.String(http.StatusOK, fmt.Sprintf("%v %v \n", uid, req))
-	birthdayTime, err := time.Parse(time.DateOnly, req.Birthday)
+	if len(req.AboutMe) > 1024 {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "about me too long",
+		})
+		return
+	}
+	birthday, err := time.Parse(time.DateOnly, req.Birthday)
 	if err != nil {
-		ctx.String(http.StatusOK, "req param invalid")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "incorrect date format",
+		})
 		return
 	}
-	if err := u.userService.Edit(ctx, uid, req.Nickname, birthdayTime.UnixMilli(), req.Biography); err != nil {
-		ctx.String(http.StatusOK, "internal error")
+
+	claims := ctx.MustGet("user").(*UserClaims)
+	err = u.userService.UpdateNonSensitiveInfo(ctx, domain.User{
+		Id:       claims.Uid,
+		NickName: req.Nickname,
+		AboutMe:  req.AboutMe,
+		Birthday: birthday,
+		UpdateAt: time.Now(),
+	})
+	if err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
 		return
 	}
-	ctx.String(http.StatusOK, "edit success")
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "success",
+	})
 }
 
 func (u *UserHandler) Profile(ctx *gin.Context) {
-	uid, ok := sessions.Default(ctx).Get("user_id").(int64)
-	if !ok {
-		ctx.String(http.StatusUnauthorized, "no user login")
-		return
+	type Profile struct {
+		Email    string
+		Phone    string
+		NickName string
+		Birthday string
+		AboutMe  string
 	}
-	profile, err := u.userService.Profile(ctx, uid)
+	uid := sessions.Default(ctx).Get(userIdKey).(int64)
+	user, err := u.userService.Profile(ctx, uid)
 	if err != nil {
-		ctx.String(http.StatusOK, "internal error")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
 		return
 	}
-	ctx.String(http.StatusOK, fmt.Sprintf("%v\n", profile))
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "success",
+		Data: Profile{
+			Email:    user.Email,
+			Phone:    user.Phone,
+			NickName: user.NickName,
+			Birthday: user.Birthday.Format(time.DateOnly),
+			AboutMe:  user.AboutMe,
+		},
+	})
 }
 
 func (u *UserHandler) ProfileJWT(ctx *gin.Context) {
-	c, _ := ctx.Get("claims")
-	claims, ok := c.(*UserClaims)
-	if !ok {
-		ctx.String(http.StatusOK, "internal error")
+	type Profile struct {
+		Email    string
+		Phone    string
+		NickName string
+		Birthday string
+		AboutMe  string
 	}
 
-	profile, err := u.userService.Profile(ctx, claims.Uid)
+	claims := ctx.MustGet("user").(*UserClaims)
+
+	user, err := u.userService.Profile(ctx, claims.Uid)
 	if err != nil {
-		ctx.String(http.StatusOK, "internal error")
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
 		return
 	}
-	ctx.String(http.StatusOK, fmt.Sprintf("%v\n", profile))
+
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "success",
+		Data: Profile{
+			Email:    user.Email,
+			Phone:    user.Phone,
+			NickName: user.NickName,
+			Birthday: user.Birthday.Format(time.DateOnly),
+			AboutMe:  user.AboutMe,
+		},
+	})
 }
 
 func (u *UserHandler) SendLoginCaptcha(ctx *gin.Context) {
@@ -241,23 +350,25 @@ func (u *UserHandler) SendLoginCaptcha(ctx *gin.Context) {
 	if req.Phone == "" {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 4,
-			Msg:  "input error",
+			Msg:  "please input your phone number",
 		})
 		return
 	}
 
-	err := u.captchaService.Send(ctx, biz, req.Phone)
+	err := u.captchaService.Send(ctx, bizLogin, req.Phone)
 	switch err {
 	case nil:
 		ctx.JSON(http.StatusOK, Result{
 			Code: 2,
 			Msg:  "send success",
 		})
+		return
 	case repository.ErrCaptchaSendTooManyTimes:
 		ctx.JSON(http.StatusOK, Result{
 			Code: 2,
 			Msg:  "send too many times, please try again later",
 		})
+		return
 	default:
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
@@ -277,7 +388,7 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 		return
 	}
 
-	ok, err := u.captchaService.Verify(ctx, biz, req.Phone, req.Captcha)
+	ok, err := u.captchaService.Verify(ctx, bizLogin, req.Phone, req.Captcha)
 	switch err {
 	case nil:
 		break
@@ -329,7 +440,7 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
 	ug := server.Group("/user")
 	ug.POST("/signup", u.SignUp)
-	ug.POST("/login", u.LoginWithJwt)
+	ug.POST("/login", u.LoginJWT)
 	ug.POST("/edit", u.Edit)
 	ug.GET("/profile", u.ProfileJWT)
 	ug.POST("/logout", u.Logout)
@@ -338,21 +449,10 @@ func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
 }
 
 func NewUserHandler(userService service.UserService, captchaService service.CaptchaService) *UserHandler {
-	const (
-		emailRegexPattern    = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?"
-		passwordRegexPattern = "^(?![a-zA-Z]+$)(?!\\d+$)(?![^\\da-zA-Z\\s]+$).{8,72}$"
-	)
 	return &UserHandler{
 		userService:    userService,
 		captchaService: captchaService,
 		emailExp:       regexp.MustCompile(emailRegexPattern, regexp.None),
 		passwordExp:    regexp.MustCompile(passwordRegexPattern, regexp.None),
 	}
-}
-
-type UserClaims struct {
-	jwt.RegisteredClaims
-	Uid          int64
-	RefreshCount int64
-	UserAgent    string
 }

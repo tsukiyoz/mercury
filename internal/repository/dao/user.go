@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
+	"time"
 )
 
 var (
@@ -25,8 +26,8 @@ type UserDao interface {
 	Create(ctx context.Context, u User) error
 	FindByEmail(ctx context.Context, email string) (User, error)
 	FindByPhone(ctx context.Context, phone string) (User, error)
-	UpdateById(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error
 	FindById(ctx *gin.Context, uid int64) (User, error)
+	UpdateNonZeroFields(ctx *gin.Context, user User) error
 }
 
 type UserGormDao struct {
@@ -56,30 +57,37 @@ func (dao *UserGormDao) FindByPhone(ctx context.Context, phone string) (User, er
 	return user, err
 }
 
-func (dao *UserGormDao) UpdateById(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error {
-	return dao.db.WithContext(ctx).Model(&User{}).Where("id = ?", uid).Updates(map[string]interface{}{
-		"nick_name": nickname,
-		"birthday":  birthday,
-		"biography": biography,
-	}).Error
-}
-
 func (dao *UserGormDao) FindById(ctx *gin.Context, uid int64) (User, error) {
 	var user User
 	err := dao.db.WithContext(ctx).Model(&User{}).Where("id = ?", uid).First(&user).Error
 	return user, err
 }
 
+func (dao *UserGormDao) UpdateNonZeroFields(ctx *gin.Context, user User) error {
+	timeZeroMilli := time.Time{}.UnixMilli()
+	if user.Birthday.Int64 == (timeZeroMilli) {
+		user.Birthday.Int64 = 0
+		user.Birthday.Valid = false
+	}
+	if user.CreateAt == (timeZeroMilli) {
+		user.CreateAt = 0
+	}
+	if user.UpdateAt == (timeZeroMilli) {
+		user.UpdateAt = 0
+	}
+	return dao.db.Updates(&user).Error
+}
+
 type User struct {
-	Id        int64          `gorm:"primaryKey,autoIncrement"`
-	Birthday  int64          `gorm:"default:0"`
-	Email     sql.NullString `gorm:"unique"`
-	Phone     sql.NullString `gorm:"unique"`
-	NickName  string         `gorm:"default:小书虫"`
-	Password  string         `gorm:"not null"`
-	Biography string         `gorm:"default:这个用户很懒什么都没有留下"`
-	CreateAt  int64
-	UpdateAt  int64
+	Id       int64 `gorm:"primaryKey,autoIncrement"`
+	Birthday sql.NullInt64
+	Email    sql.NullString `gorm:"unique"`
+	Phone    sql.NullString `gorm:"unique"`
+	NickName sql.NullString
+	Password string         `gorm:"not null"`
+	AboutMe  sql.NullString `gorm:"default:这个用户很懒什么都没有留下;type=varchar(1024)"`
+	CreateAt int64
+	UpdateAt int64
 }
 
 func NewUserGormDao(db *gorm.DB) UserDao {

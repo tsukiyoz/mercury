@@ -23,7 +23,7 @@ type UserRepository interface {
 	Create(ctx context.Context, u domain.User) error
 	FindByEmail(ctx context.Context, email string) (domain.User, error)
 	FindByPhone(ctx context.Context, phone string) (domain.User, error)
-	Edit(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error
+	Update(ctx *gin.Context, user domain.User) error
 	FindById(ctx *gin.Context, id int64) (domain.User, error)
 }
 
@@ -52,8 +52,13 @@ func (r *CachedUserRepository) FindByPhone(ctx context.Context, phone string) (d
 	return r.entityToDomain(u), nil
 }
 
-func (r *CachedUserRepository) Edit(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error {
-	return r.dao.UpdateById(ctx, uid, nickname, birthday, biography)
+func (r *CachedUserRepository) Update(ctx *gin.Context, user domain.User) error {
+	v := r.domainToEntity(user)
+	err := r.dao.UpdateNonZeroFields(ctx, v)
+	if err != nil {
+		return err
+	}
+	return r.cache.Delete(ctx, user.Id)
 }
 
 func (r *CachedUserRepository) FindById(ctx *gin.Context, id int64) (domain.User, error) {
@@ -101,8 +106,21 @@ func (r *CachedUserRepository) domainToEntity(user domain.User) dao.User {
 			String: user.Phone,
 			Valid:  user.Phone != "",
 		},
+		Birthday: sql.NullInt64{
+			Int64: user.Birthday.UnixMilli(),
+			Valid: !user.Birthday.IsZero(),
+		},
+		NickName: sql.NullString{
+			String: user.NickName,
+			Valid:  user.NickName != "",
+		},
+		AboutMe: sql.NullString{
+			String: user.AboutMe,
+			Valid:  user.AboutMe != "",
+		},
 		Password: user.Password,
 		CreateAt: user.CreateAt.UnixMilli(),
+		UpdateAt: user.UpdateAt.UnixMilli(),
 	}
 }
 
@@ -112,6 +130,9 @@ func (r *CachedUserRepository) entityToDomain(user dao.User) domain.User {
 		Email:    user.Email.String,
 		Phone:    user.Phone.String,
 		Password: user.Password,
+		NickName: user.NickName.String,
+		AboutMe:  user.AboutMe.String,
 		CreateAt: time.UnixMilli(user.CreateAt),
+		UpdateAt: time.UnixMilli(user.UpdateAt),
 	}
 }

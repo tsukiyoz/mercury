@@ -46,7 +46,7 @@ func (l *LoginJWTMiddlewareBuilder) Build() gin.HandlerFunc {
 		token = segs[1]
 		claims := &api.UserClaims{}
 		signedString, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), nil
+			return api.JWTKey, nil
 		})
 		if err != nil || signedString == nil || !signedString.Valid || claims.Uid == 0 {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
@@ -72,7 +72,7 @@ func (l *LoginJWTMiddlewareBuilder) Build() gin.HandlerFunc {
 			ctx.Header("x-jwt-token", token)
 		}
 
-		ctx.Set("claims", claims)
+		ctx.Set("user", claims)
 	}
 }
 

@@ -24,7 +24,7 @@ var _ UserService = (*UserServiceV1)(nil)
 type UserService interface {
 	SignUp(ctx context.Context, u domain.User) error
 	Login(ctx context.Context, email string, password string) (domain.User, error)
-	Edit(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error
+	UpdateNonSensitiveInfo(ctx *gin.Context, u domain.User) error
 	Profile(ctx *gin.Context, uid int64) (domain.User, error)
 	FindOrCreate(ctx context.Context, phone string) (domain.User, error)
 }
@@ -57,8 +57,11 @@ func (svc *UserServiceV1) Login(ctx context.Context, email string, password stri
 	return user, nil
 }
 
-func (svc *UserServiceV1) Edit(ctx *gin.Context, uid int64, nickname string, birthday int64, biography string) error {
-	return svc.repo.Edit(ctx, uid, nickname, birthday, biography)
+func (svc *UserServiceV1) UpdateNonSensitiveInfo(ctx *gin.Context, user domain.User) error {
+	user.Email = ""
+	user.Phone = ""
+	user.Password = ""
+	return svc.repo.Update(ctx, user)
 }
 
 func (svc *UserServiceV1) Profile(ctx *gin.Context, uid int64) (domain.User, error) {
