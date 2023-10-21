@@ -53,8 +53,7 @@ func (r *CachedUserRepository) FindByPhone(ctx context.Context, phone string) (d
 }
 
 func (r *CachedUserRepository) Update(ctx *gin.Context, user domain.User) error {
-	v := r.domainToEntity(user)
-	err := r.dao.UpdateNonZeroFields(ctx, v)
+	err := r.dao.UpdateNonZeroFields(ctx, r.domainToEntity(user))
 	if err != nil {
 		return err
 	}
@@ -129,6 +128,7 @@ func (r *CachedUserRepository) entityToDomain(user dao.User) domain.User {
 		Id:       user.Id,
 		Email:    user.Email.String,
 		Phone:    user.Phone.String,
+		Birthday: time.UnixMilli(user.Birthday.Int64),
 		Password: user.Password,
 		NickName: user.NickName.String,
 		AboutMe:  user.AboutMe.String,

@@ -47,3 +47,9 @@ k8s-reload-web:
 	make k8s-teardown-web
 	make docker-k8s
 	make k8s-setup-web
+
+.PHONY: mock
+mock:
+	@mockgen -source=internal/service/user.go -package=svcmock -destination=internal/service/mock/user.mock.go
+	@mockgen -source=internal/service/captcha.go -package=svcmock -destination=internal/service/mock/captcha.mock.go
+	@go mod tidy
