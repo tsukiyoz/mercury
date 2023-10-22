@@ -13,10 +13,10 @@ var (
 	ErrUnknownForCode            = errors.New("unknown error for code")
 )
 
-//go:embed lua/set_code.lua
+//go:embed lua/set_captcha.lua
 var luaSetCaptcha string
 
-//go:embed lua/verify_code.lua
+//go:embed lua/verify_captcha.lua
 var luaVerifyCode string
 
 var _ CaptchaCache = (*CaptchaRedisCache)(nil)
