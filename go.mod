@@ -3,6 +3,7 @@ module webook
 go 1.20
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/aliyun/alibaba-cloud-sdk-go v1.62.548
 	github.com/bytedance/sonic v1.10.0-rc3
 	github.com/coocood/freecache v1.2.4

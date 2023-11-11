@@ -9,7 +9,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 	"time"
@@ -23,18 +22,21 @@ var (
 var _ UserDao = (*UserGormDao)(nil)
 
 type UserDao interface {
-	Create(ctx context.Context, u User) error
+	Insert(ctx context.Context, u User) error
 	FindByEmail(ctx context.Context, email string) (User, error)
 	FindByPhone(ctx context.Context, phone string) (User, error)
-	FindById(ctx *gin.Context, uid int64) (User, error)
-	UpdateNonZeroFields(ctx *gin.Context, user User) error
+	FindById(ctx context.Context, uid int64) (User, error)
+	UpdateNonZeroFields(ctx context.Context, user User) error
 }
 
 type UserGormDao struct {
 	db *gorm.DB
 }
 
-func (dao *UserGormDao) Create(ctx context.Context, u User) error {
+func (dao *UserGormDao) Insert(ctx context.Context, u User) error {
+	now := time.Now().UnixMilli()
+	u.CreateAt = now
+	u.UpdateAt = now
 	err := dao.db.WithContext(ctx).Create(&u).Error
 	if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 		const uniqueConflictsErrNo uint16 = 1062
@@ -57,24 +59,13 @@ func (dao *UserGormDao) FindByPhone(ctx context.Context, phone string) (User, er
 	return user, err
 }
 
-func (dao *UserGormDao) FindById(ctx *gin.Context, uid int64) (User, error) {
+func (dao *UserGormDao) FindById(ctx context.Context, uid int64) (User, error) {
 	var user User
 	err := dao.db.WithContext(ctx).Model(&User{}).Where("id = ?", uid).First(&user).Error
 	return user, err
 }
 
-func (dao *UserGormDao) UpdateNonZeroFields(ctx *gin.Context, user User) error {
-	timeZeroMilli := time.Time{}.UnixMilli()
-	if user.Birthday.Int64 == (timeZeroMilli) {
-		user.Birthday.Int64 = 0
-		user.Birthday.Valid = false
-	}
-	if user.CreateAt == (timeZeroMilli) {
-		user.CreateAt = 0
-	}
-	if user.UpdateAt == (timeZeroMilli) {
-		user.UpdateAt = 0
-	}
+func (dao *UserGormDao) UpdateNonZeroFields(ctx context.Context, user User) error {
 	return dao.db.Updates(&user).Error
 }
 

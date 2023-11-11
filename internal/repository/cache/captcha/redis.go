@@ -1,4 +1,4 @@
-package captcha
+package cache
 
 import (
 	"context"
@@ -10,8 +10,8 @@ type CaptchaRedisCache struct {
 	client redis.Cmdable
 }
 
-func (c *CaptchaRedisCache) Set(ctx context.Context, biz string, phone string, code string) error {
-	ret, err := c.client.Eval(ctx, luaSetCaptcha, []string{c.key(biz, phone)}, code).Int()
+func (c *CaptchaRedisCache) Set(ctx context.Context, biz string, phone string, captcha string) error {
+	ret, err := c.client.Eval(ctx, luaSetCaptcha, []string{c.key(biz, phone)}, captcha).Int()
 	if err != nil {
 		return err
 	}

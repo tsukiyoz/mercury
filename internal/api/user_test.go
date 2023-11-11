@@ -44,7 +44,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 				body   []byte
 			}{
 				method: http.MethodPost,
-				url:    "/user/signup",
+				url:    "/users/signup",
 				body: []byte(`{
 				"emails"="test@163.com",
 				"passwords": "for.nothing",
@@ -68,7 +68,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 				body   []byte
 			}{
 				method: http.MethodPost,
-				url:    "/user/signup",
+				url:    "/users/signup",
 				body: []byte(`{
 				"email": "test",
 				"password": "for.nothing",
@@ -94,7 +94,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 				body   []byte
 			}{
 				method: http.MethodPost,
-				url:    "/user/signup",
+				url:    "/users/signup",
 				body: []byte(`{
 				"email": "test@163.com",
 				"password": "for.nothing1",
@@ -120,7 +120,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 				body   []byte
 			}{
 				method: http.MethodPost,
-				url:    "/user/signup",
+				url:    "/users/signup",
 				body: []byte(`{
 				"email": "test@163.com",
 				"password": "for",
@@ -147,7 +147,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 				body   []byte
 			}{
 				method: http.MethodPost,
-				url:    "/user/signup",
+				url:    "/users/signup",
 				body: []byte(`{
 				"email": "test@163.com",
 				"password": "for.nothing",
@@ -174,7 +174,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 				body   []byte
 			}{
 				method: http.MethodPost,
-				url:    "/user/signup",
+				url:    "/users/signup",
 				body: []byte(`{
 				"email": "test@163.com",
 				"password": "for.nothing",
@@ -201,7 +201,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 				body   []byte
 			}{
 				method: http.MethodPost,
-				url:    "/user/signup",
+				url:    "/users/signup",
 				body: []byte(`{
 				"email": "test@163.com",
 				"password": "for.nothing",

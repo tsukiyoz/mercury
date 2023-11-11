@@ -45,6 +45,7 @@ k8s-teardown:
 .PHONY: k8s-reload-web
 k8s-reload-web:
 	make k8s-teardown-web
+	make mock
 	make docker-k8s
 	make k8s-setup-web
 
@@ -52,4 +53,9 @@ k8s-reload-web:
 mock:
 	@mockgen -source=internal/service/user.go -package=svcmock -destination=internal/service/mock/user.mock.go
 	@mockgen -source=internal/service/captcha.go -package=svcmock -destination=internal/service/mock/captcha.mock.go
+	@mockgen -source=internal/repository/user.go -package=repomock -destination=internal/repository/mock/user.mock.go
+	@mockgen -source=internal/repository/captcha.go -package=repomock -destination=internal/repository/mock/captcha.mock.go
+	@mockgen -source=internal/repository/dao/user.go -package=daomock -destination=internal/repository/mock/dao/user.mock.go
+	@mockgen -source=internal/repository/cache/user/user.go -package=cachemock -destination=internal/repository/mock/cache/user/user.mock.go
+	@mockgen -package=redismock -destination=internal/repository/mock/cache/redis/cmdable.mock.go github.com/redis/go-redis/v9 Cmdable
 	@go mod tidy

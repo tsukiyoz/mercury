@@ -1,4 +1,4 @@
-package captcha
+package cache
 
 import (
 	"context"
@@ -22,6 +22,6 @@ var luaVerifyCode string
 var _ CaptchaCache = (*CaptchaRedisCache)(nil)
 
 type CaptchaCache interface {
-	Set(ctx context.Context, biz string, phone string, code string) error
+	Set(ctx context.Context, biz string, phone string, captcha string) error
 	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)
 }

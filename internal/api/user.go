@@ -366,7 +366,7 @@ func (u *UserHandler) SendLoginCaptcha(ctx *gin.Context) {
 	case repository.ErrCaptchaSendTooManyTimes:
 		ctx.JSON(http.StatusOK, Result{
 			Code: 2,
-			Msg:  "send too many times, please try again later",
+			Msg:  "send too often, please try again later",
 		})
 		return
 	default:
@@ -438,7 +438,7 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 }
 
 func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
-	ug := server.Group("/user")
+	ug := server.Group("/users")
 	ug.POST("/signup", u.SignUp)
 	ug.POST("/login", u.LoginJWT)
 	ug.POST("/edit", u.Edit)

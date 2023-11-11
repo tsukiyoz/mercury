@@ -2,15 +2,13 @@
 
 package config
 
-import "os"
-
 var Config = config{
 	DB: DBConfig{
-		DSN: os.Getenv("MYSQL_DSN"),
+		DSN: "root:for.nothing@tcp(127.0.0.1:3306)/webook",
 	},
 	Redis: RedisConfig{
-		Addr:     os.Getenv("REDIS_ADDR"),
-		Password: os.Getenv("REDIS_PASSWORD"),
+		Addr:     "localhost:6379",
+		Password: "for.nothing",
 		DB:       1,
 	},
 }

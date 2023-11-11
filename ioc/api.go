@@ -22,11 +22,11 @@ func InitMiddlewares(redisClient redis.Cmdable) []gin.HandlerFunc {
 	return []gin.HandlerFunc{
 		corsHdl(),
 		middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths(
-			"/user/signup",
-			"/user/login",
+			"/users/signup",
+			"/users/login",
 			"/",
-			"/user/login_sms/captcha/send",
-			"/user/login_sms/captcha/validate",
+			"/users/login_sms/captcha/send",
+			"/users/login_sms/captcha/validate",
 		).Build(),
 		ratelimit.NewBuilder(redisClient, time.Second, 180).Build(),
 	}
