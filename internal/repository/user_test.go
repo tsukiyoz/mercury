@@ -9,9 +9,10 @@ import (
 	"testing"
 	"time"
 	"webook/internal/domain"
+	user "webook/internal/repository/cache/user"
 	"webook/internal/repository/dao"
-	cachemock "webook/internal/repository/mock/cache"
-	daomock "webook/internal/repository/mock/dao"
+	cachemock "webook/internal/repository/mocks/cache/user"
+	daomock "webook/internal/repository/mocks/dao"
 )
 
 func TestUserCachedRepository_FindById(t *testing.T) {

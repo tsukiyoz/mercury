@@ -10,7 +10,7 @@ import (
 	"time"
 	"webook/internal/domain"
 	"webook/internal/repository"
-	repomock "webook/internal/repository/mock"
+	repomock "webook/internal/repository/mocks"
 )
 
 func TestUserServiceV1_Login(t *testing.T) {

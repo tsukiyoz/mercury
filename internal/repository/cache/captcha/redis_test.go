@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"testing"
-	redismock "webook/internal/repository/mock/cache/redis"
+	redismock "webook/internal/repository/mocks/cache/redis"
 )
 
 func TestCaptchaRedisCache_Set(t *testing.T) {

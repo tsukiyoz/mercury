@@ -5,13 +5,17 @@ import (
 	"fmt"
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
 	isms "webook/internal/service/sms"
+	"webook/pkg/ratelimit"
 )
 
 type Service struct {
 	appId    *string
 	signName *string
 	client   *sms.Client
+	limiter  ratelimit.Limiter
 }
+
+const LimitKey = "sms:tencent"
 
 func (s *Service) Send(ctx context.Context, tplId string, args []isms.ArgVal, phones ...string) error {
 	req := sms.NewSendSmsRequest()
@@ -50,10 +54,11 @@ func (s *Service) argToStringPtrSlice(values []isms.ArgVal) []*string {
 	return res
 }
 
-func NewService(client *sms.Client, appId string, signName string) *Service {
+func NewService(client *sms.Client, appId string, signName string, limiter ratelimit.Limiter) *Service {
 	return &Service{
 		appId:    &appId,
 		signName: &signName,
 		client:   client,
+		limiter:  limiter,
 	}
 }
