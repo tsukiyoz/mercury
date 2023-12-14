@@ -9,9 +9,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
+
 	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
-	"time"
 )
 
 var (
@@ -66,7 +67,7 @@ func (dao *UserGormDao) FindById(ctx context.Context, uid int64) (User, error) {
 }
 
 func (dao *UserGormDao) UpdateNonZeroFields(ctx context.Context, user User) error {
-	return dao.db.Updates(&user).Error
+	return dao.db.WithContext(ctx).Updates(&user).Error
 }
 
 type User struct {

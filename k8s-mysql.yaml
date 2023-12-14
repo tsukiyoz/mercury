@@ -52,7 +52,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 10Gi
 
 ---
 apiVersion: v1
@@ -64,8 +64,8 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: 1Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/root/go/src/data"
+    path: "/home/tsukiyo/data/mysql"

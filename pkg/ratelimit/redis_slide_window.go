@@ -22,6 +22,14 @@ func (r *RedisSlidingWindowLimiter) Limit(ctx context.Context, key string) (bool
 	return r.cmd.Eval(ctx, luaSlideWindow, []string{key}, r.internal.Milliseconds(), r.rate, time.Now().UnixMilli()).Bool()
 }
 
+func (r *RedisSlidingWindowLimiter) Internal(internal time.Duration) {
+	r.internal = internal
+}
+
+func (r *RedisSlidingWindowLimiter) Rate(rate int) {
+	r.rate = rate
+}
+
 func NewRedisSlidingWindowLimiter(cmd redis.Cmdable, internal time.Duration, rate int) Limiter {
 	return &RedisSlidingWindowLimiter{
 		cmd:      cmd,
