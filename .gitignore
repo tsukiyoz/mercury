@@ -2,3 +2,4 @@
 webook
 **/*.mock.go
 .vscode/
+.env

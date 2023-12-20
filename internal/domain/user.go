@@ -8,13 +8,14 @@ package domain
 import "time"
 
 type User struct {
-	Id       int64
-	Email    string
-	Password string
-	NickName string
-	Phone    string
-	AboutMe  string
-	Birthday time.Time
-	CreateAt time.Time
-	UpdateAt time.Time
+	ID         int64
+	Email      string
+	Password   string
+	NickName   string
+	Phone      string
+	AboutMe    string
+	WechatInfo WechatInfo
+	Birthday   time.Time
+	CreateAt   time.Time
+	UpdateAt   time.Time
 }

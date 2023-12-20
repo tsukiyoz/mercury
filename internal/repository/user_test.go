@@ -38,7 +38,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 				userCache, userDao := cachemock.NewMockUserCache(ctrl), daomock.NewMockUserDao(ctrl)
 				userCache.EXPECT().Get(gomock.Any(), int64(123)).
 					Return(domain.User{
-						Id:       123,
+						ID:       123,
 						Password: "for.nothing",
 						Email:    "test@163.com",
 						Phone:    "18888888888",
@@ -62,7 +62,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 				err  error
 			}{
 				user: domain.User{
-					Id:       123,
+					ID:       123,
 					Password: "for.nothing",
 					Email:    "test@163.com",
 					Phone:    "18888888888",
@@ -125,7 +125,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 					}, nil)
 
 				userCache.EXPECT().Set(gomock.Any(), domain.User{
-					Id:       123,
+					ID:       123,
 					Password: "for.nothing",
 					Email:    "test@163.com",
 					Phone:    "18888888888",
@@ -149,7 +149,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 				err  error
 			}{
 				user: domain.User{
-					Id:       123,
+					ID:       123,
 					Password: "for.nothing",
 					Email:    "test@163.com",
 					Phone:    "18888888888",

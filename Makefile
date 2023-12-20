@@ -53,10 +53,15 @@ k8s-reload-web:
 mock:
 	@mockgen -source=internal/service/user.go -package=svcmock -destination=internal/service/mocks/user.mock.go
 	@mockgen -source=internal/service/captcha.go -package=svcmock -destination=internal/service/mocks/captcha.mock.go
+
 	@mockgen -source=internal/repository/user.go -package=repomock -destination=internal/repository/mocks/user.mock.go
 	@mockgen -source=internal/repository/captcha.go -package=repomock -destination=internal/repository/mocks/captcha.mock.go
+
 	@mockgen -source=internal/repository/dao/user.go -package=daomock -destination=internal/repository/mocks/dao/user.mock.go
 	@mockgen -source=internal/repository/cache/user/user.go -package=cachemock -destination=internal/repository/mocks/cache/user/user.mock.go
+
 	@mockgen -source=pkg/ratelimit/types.go -package=limitmock -destination=pkg/ratelimit/mocks/ratelimit.mock.go
+
 	@mockgen -package=redismock -destination=internal/repository/mocks/cache/redis/cmdable.mock.go github.com/redis/go-redis/v9 Cmdable
+
 	@go mod tidy

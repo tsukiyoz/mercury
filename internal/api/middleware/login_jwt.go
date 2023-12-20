@@ -64,7 +64,7 @@ func (l *LoginJWTMiddlewareBuilder) Build() gin.HandlerFunc {
 				claims.RefreshCount++
 			}
 			claims.ExpiresAt = jwt.NewNumericDate(currentTime.Add(time.Minute * 4 * time.Duration(claims.RefreshCount)))
-			token, err = signedString.SignedString([]byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"))
+			token, err = signedString.SignedString(api.JWTKey)
 			if err != nil {
 				// log
 				log.Println("jwt renewal failed")

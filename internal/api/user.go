@@ -9,7 +9,6 @@ import (
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	jwt "github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"time"
 	"webook/internal/domain"
@@ -31,6 +30,7 @@ type UserHandler struct {
 	captchaService service.CaptchaService
 	emailExp       *regexp.Regexp
 	passwordExp    *regexp.Regexp
+	*JWTHandler
 }
 
 func (u *UserHandler) SignUp(ctx *gin.Context) {
@@ -137,7 +137,7 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 	}
 
 	ss := sessions.Default(ctx)
-	ss.Set(userIdKey, user.Id)
+	ss.Set(userIdKey, user.ID)
 	ss.Options(sessions.Options{
 		Secure:   true,
 		HttpOnly: true,
@@ -177,8 +177,15 @@ func (u *UserHandler) LoginJWT(ctx *gin.Context) {
 		})
 		return
 	}
+	if err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
 
-	if err = u.setJWTToken(ctx, user.Id); err != nil {
+	if err = u.setJWTToken(ctx, user.ID); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",
@@ -190,24 +197,6 @@ func (u *UserHandler) LoginJWT(ctx *gin.Context) {
 		Msg:  "login success",
 	})
 	return
-}
-
-func (u *UserHandler) setJWTToken(ctx *gin.Context, userId int64) error {
-	claims := UserClaims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 15)),
-		},
-		Uid:          userId,
-		RefreshCount: 1,
-		UserAgent:    ctx.Request.UserAgent(),
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
-	signedString, err := token.SignedString(JWTKey)
-	if err != nil {
-		return err
-	}
-	ctx.Header("x-jwt-token", signedString)
-	return nil
 }
 
 func (u *UserHandler) Logout(ctx *gin.Context) {
@@ -256,7 +245,7 @@ func (u *UserHandler) Edit(ctx *gin.Context) {
 
 	claims := ctx.MustGet("user").(*UserClaims)
 	err = u.userService.UpdateNonSensitiveInfo(ctx, domain.User{
-		Id:       claims.Uid,
+		ID:       claims.Uid,
 		NickName: req.Nickname,
 		AboutMe:  req.AboutMe,
 		Birthday: birthday,
@@ -423,7 +412,7 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 		return
 	}
 
-	if err = u.setJWTToken(ctx, user.Id); err != nil {
+	if err = u.setJWTToken(ctx, user.ID); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",

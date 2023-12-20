@@ -26,6 +26,7 @@ type UserService interface {
 	UpdateNonSensitiveInfo(ctx context.Context, u domain.User) error
 	Profile(ctx context.Context, uid int64) (domain.User, error)
 	FindOrCreate(ctx context.Context, phone string) (domain.User, error)
+	FindOrCreateByWechat(ctx context.Context, info domain.WechatInfo) (domain.User, error)
 }
 
 type UserServiceV1 struct {
@@ -82,6 +83,21 @@ func (svc *UserServiceV1) FindOrCreate(ctx context.Context, phone string) (domai
 	}
 	// TODO master-slave delay ?
 	return svc.repo.FindByPhone(ctx, phone)
+}
+
+func (svc *UserServiceV1) FindOrCreateByWechat(ctx context.Context, info domain.WechatInfo) (domain.User, error) {
+	u, err := svc.repo.FindByWechat(ctx, info.OpenID)
+	if err != repository.ErrUserNoFound {
+		return u, err
+	}
+	u = domain.User{
+		WechatInfo: info,
+	}
+	err = svc.repo.Create(ctx, u)
+	if err != nil && err != repository.ErrUserDuplicate {
+		return u, err
+	}
+	return svc.repo.FindByWechat(ctx, info.OpenID)
 }
 
 func NewUserServiceV1(r repository.UserRepository) UserService {

@@ -12,15 +12,16 @@ import (
 	"webook/pkg/ratelimit"
 )
 
-func InitWebServer(mdls []gin.HandlerFunc, hdl *api.UserHandler) *gin.Engine {
+func InitWebServer(mdls []gin.HandlerFunc, userHdl *api.UserHandler, oAuth2Hdl *api.OAuth2WechatHandler) *gin.Engine {
 	server := gin.Default()
 	server.Use(mdls...)
-	hdl.RegisterRoutes(server)
+	userHdl.RegisterRoutes(server)
+	oAuth2Hdl.RegisterRoutes(server)
 	return server
 }
 
 func InitLimiter(cmd redis.Cmdable) ratelimit.Limiter {
-	r := ratelimit.NewRedisSlidingWindowLimiter(cmd, time.Second, 200)
+	r := ratelimit.NewRedisSlidingWindowLimiter(cmd, time.Second, 120)
 	return r
 }
 
@@ -33,6 +34,8 @@ func InitMiddlewares(limiter ratelimit.Limiter) []gin.HandlerFunc {
 			"/",
 			"/users/login_sms/captcha/send",
 			"/users/login_sms/captcha/validate",
+			"/oauth2/wechat/authurl",
+			"/oauth2/wechat/callback",
 		).Build(),
 		ginRatelimit.NewBuilder(limiter).Build(),
 	}

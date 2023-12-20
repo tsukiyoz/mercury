@@ -28,6 +28,7 @@ type UserDao interface {
 	FindByPhone(ctx context.Context, phone string) (User, error)
 	FindById(ctx context.Context, uid int64) (User, error)
 	UpdateNonZeroFields(ctx context.Context, user User) error
+	FindByWechat(ctx context.Context, openID string) (User, error)
 }
 
 type UserGormDao struct {
@@ -70,16 +71,24 @@ func (dao *UserGormDao) UpdateNonZeroFields(ctx context.Context, user User) erro
 	return dao.db.WithContext(ctx).Updates(&user).Error
 }
 
+func (dao *UserGormDao) FindByWechat(ctx context.Context, openID string) (User, error) {
+	var u User
+	err := dao.db.WithContext(ctx).Where("wechat_open_id = ?", openID).First(&u).Error
+	return u, err
+}
+
 type User struct {
-	Id       int64 `gorm:"primaryKey,autoIncrement"`
-	Birthday sql.NullInt64
-	Email    sql.NullString `gorm:"unique"`
-	Phone    sql.NullString `gorm:"unique"`
-	NickName sql.NullString
-	Password string         `gorm:"not null"`
-	AboutMe  sql.NullString `gorm:"default:这个用户很懒什么都没有留下;type=varchar(1024)"`
-	CreateAt int64
-	UpdateAt int64
+	Id            int64 `gorm:"primaryKey,autoIncrement"`
+	Birthday      sql.NullInt64
+	Email         sql.NullString `gorm:"unique"`
+	Phone         sql.NullString `gorm:"unique"`
+	NickName      sql.NullString
+	Password      string         `gorm:"not null"`
+	AboutMe       sql.NullString `gorm:"default:这个用户很懒什么都没有留下;type=varchar(1024)"`
+	WechatUnionID sql.NullString `gorm:"unique"`
+	WechatOpenID  sql.NullString `gorm:"unique"`
+	CreateAt      int64
+	UpdateAt      int64
 }
 
 func NewUserGormDao(db *gorm.DB) UserDao {

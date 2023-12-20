@@ -39,7 +39,7 @@ func (cache *UserRedisCache) Set(ctx context.Context, u domain.User) error {
 	if err != nil {
 		return err
 	}
-	return cache.client.Set(ctx, cache.key(u.Id), val, cache.expiration).Err()
+	return cache.client.Set(ctx, cache.key(u.ID), val, cache.expiration).Err()
 }
 
 func (cache *UserRedisCache) key(id int64) string {
