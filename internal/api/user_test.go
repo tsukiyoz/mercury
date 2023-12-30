@@ -3,10 +3,6 @@ package api
 import (
 	"bytes"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/mock/gomock"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -14,6 +10,11 @@ import (
 	"webook/internal/domain"
 	"webook/internal/service"
 	svcmock "webook/internal/service/mocks"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestUserHandler_SignUp(t *testing.T) {

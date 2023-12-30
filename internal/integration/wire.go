@@ -4,6 +4,7 @@ package integration
 
 import (
 	"webook/internal/api"
+	ijwt "webook/internal/api/jwt"
 	"webook/internal/repository"
 	captchacache "webook/internal/repository/cache/captcha"
 	usercache "webook/internal/repository/cache/user"
@@ -36,6 +37,7 @@ func InitWebServer() *gin.Engine {
 
 		api.NewUserHandler,
 		api.NewOAuth2Handler,
+		ijwt.NewRedisJWTHandler,
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,

@@ -3,4 +3,5 @@
 
 webook
 **/*.mock.go
+**/wire_gen.go
 .env
