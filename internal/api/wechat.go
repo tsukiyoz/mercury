@@ -1,10 +1,17 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
+	"errors"
+	"fmt"
 	"net/http"
+	"time"
+	ijwt "webook/internal/api/jwt"
 	"webook/internal/service"
 	"webook/internal/service/oauth2/wechat"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	uuid "github.com/lithammer/shortuuid/v4"
 )
 
 var _ handler = (*OAuth2WechatHandler)(nil)
@@ -12,13 +19,22 @@ var _ handler = (*OAuth2WechatHandler)(nil)
 type OAuth2WechatHandler struct {
 	svc     wechat.Service
 	userSvc service.UserService
-	*JWTHandler
+	ijwt.Handler
+	stateKey []byte
+	cfg      WechatHandlerConfig
 }
 
-func NewOAuth2Handler(svc wechat.Service, userSvc service.UserService) *OAuth2WechatHandler {
+type WechatHandlerConfig struct {
+	Secure bool
+}
+
+func NewOAuth2Handler(svc wechat.Service, userSvc service.UserService, cfg WechatHandlerConfig, jwtHdl ijwt.Handler) *OAuth2WechatHandler {
 	return &OAuth2WechatHandler{
-		svc:     svc,
-		userSvc: userSvc,
+		svc:      svc,
+		userSvc:  userSvc,
+		stateKey: []byte("mzkAG8HhKpRROKpsQ6dX7vZGhNnbRg2S"),
+		cfg:      cfg,
+		Handler:  jwtHdl,
 	}
 }
 
@@ -29,24 +45,56 @@ func (h *OAuth2WechatHandler) RegisterRoutes(server *gin.Engine) {
 }
 
 func (h *OAuth2WechatHandler) AuthURL(ctx *gin.Context) {
-	url, err := h.svc.AuthURL(ctx)
+	state := uuid.New()
+	url, err := h.svc.AuthURL(ctx, state)
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
-			Msg:  "generate scan login url failed",
+			Msg:  "internal error",
 		})
 		return
 	}
+
+	if h.setStateCookie(ctx, state) != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, Result{
 		Data: url,
 	})
 }
 
+func (h *OAuth2WechatHandler) setStateCookie(ctx *gin.Context, state string) error {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, ijwt.StateClaims{
+		State: state,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
+		},
+	})
+	tokenStr, err := token.SignedString(h.stateKey)
+	if err != nil {
+		return err
+	}
+	ctx.SetCookie("jwt-state", tokenStr, 600, "/oauth2/wechat/callback", "", h.cfg.Secure, true)
+	return nil
+}
+
 func (h *OAuth2WechatHandler) Callback(ctx *gin.Context) {
-	// verify wechat code
+	// verify wechat code and state
 	code := ctx.Query("code")
-	state := ctx.Query("state")
-	info, err := h.svc.VerifyCode(ctx, code, state)
+	if err := h.verifyState(ctx); err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 4,
+			Msg:  "login failed",
+		})
+		return
+	}
+
+	info, err := h.svc.VerifyCode(ctx, code)
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
@@ -64,23 +112,38 @@ func (h *OAuth2WechatHandler) Callback(ctx *gin.Context) {
 		return
 	}
 
-	err = h.setJWTToken(ctx, user.ID)
-	if err != nil {
+	if err = h.SetLoginToken(ctx, user.ID); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",
 		})
 		return
 	}
-	if err != nil {
-		ctx.JSON(http.StatusOK, Result{
-			Code: 5,
-			Msg:  "internal error",
-		})
-		return
-	}
+
 	ctx.JSON(http.StatusOK, Result{
 		Code: 2,
 		Msg:  "success",
 	})
+}
+
+func (h *OAuth2WechatHandler) verifyState(ctx *gin.Context) error {
+	state := ctx.Query("state")
+
+	cookie, err := ctx.Cookie("jwt-state")
+	if err != nil {
+		return fmt.Errorf("get state cookie failed, %w", err)
+	}
+
+	var stateClaims ijwt.StateClaims
+	token, err := jwt.ParseWithClaims(cookie, &stateClaims, func(token *jwt.Token) (interface{}, error) {
+		return h.stateKey, nil
+	})
+	if err != nil || !token.Valid {
+		return fmt.Errorf("token is expired, %w", err)
+	}
+
+	if stateClaims.State != state {
+		return errors.New("invalid state")
+	}
+	return nil
 }

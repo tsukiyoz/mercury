@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	ijwt "webook/internal/api/jwt"
 	"webook/internal/domain"
 	"webook/internal/service"
 	svcmock "webook/internal/service/mocks"
@@ -219,7 +220,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 
 			server := gin.Default()
 
-			h := NewUserHandler(tc.mock(ctrl), nil)
+			h := NewUserHandler(tc.mock(ctrl), nil, nil)
 			h.RegisterRoutes(server)
 
 			req, err := http.NewRequest(tc.in.method, tc.in.url, bytes.NewBuffer(tc.in.body))
@@ -351,7 +352,7 @@ func TestUserHandler_LoginJWT(t *testing.T) {
 
 			server := gin.Default()
 
-			h := NewUserHandler(tc.mock(ctrl), nil)
+			h := NewUserHandler(tc.mock(ctrl), nil, ijwt.NewRedisJWTHandler())
 			h.RegisterRoutes(server)
 
 			req, err := http.NewRequest(tc.in.method, tc.in.url, bytes.NewBuffer(tc.in.body))

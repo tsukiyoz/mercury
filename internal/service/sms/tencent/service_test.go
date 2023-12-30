@@ -2,13 +2,14 @@ package tencent
 
 import (
 	"context"
+	"os"
+	"testing"
+	isms "webook/internal/service/sms"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
-	"os"
-	"testing"
-	isms "webook/internal/service/sms"
 )
 
 func TestSender(t *testing.T) {
@@ -25,7 +26,7 @@ func TestSender(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	s := NewService(c, "1400842696", "tsukiyo")
+	s := NewService(c, "1400842696", "tsukiyo", nil)
 
 	testCases := []struct {
 		name    string

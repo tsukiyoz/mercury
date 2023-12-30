@@ -1,15 +1,17 @@
 package ioc
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 	"strings"
 	"time"
 	"webook/internal/api"
+	ijwt "webook/internal/api/jwt"
 	"webook/internal/api/middleware"
 	ginRatelimit "webook/pkg/gin/middleware/ratelimit"
 	"webook/pkg/ratelimit"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
 func InitWebServer(mdls []gin.HandlerFunc, userHdl *api.UserHandler, oAuth2Hdl *api.OAuth2WechatHandler) *gin.Engine {
@@ -25,13 +27,14 @@ func InitLimiter(cmd redis.Cmdable) ratelimit.Limiter {
 	return r
 }
 
-func InitMiddlewares(limiter ratelimit.Limiter) []gin.HandlerFunc {
+func InitMiddlewares(limiter ratelimit.Limiter, jwtHdl ijwt.Handler) []gin.HandlerFunc {
 	return []gin.HandlerFunc{
 		corsHdl(),
-		middleware.NewLoginJWTMiddlewareBuilder().IgnorePaths(
+		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
+			"/",
 			"/users/signup",
 			"/users/login",
-			"/",
+			"/users/refresh_token",
 			"/users/login_sms/captcha/send",
 			"/users/login_sms/captcha/validate",
 			"/oauth2/wechat/authurl",
@@ -48,7 +51,7 @@ func corsHdl() gin.HandlerFunc {
 		AllowOriginFunc: func(origin string) bool {
 			return strings.HasPrefix(origin, "http://localhost") || strings.HasPrefix(origin, "http://124.70.190.134") || strings.HasSuffix(origin, "tsukiyo.top")
 		},
-		ExposeHeaders: []string{"x-jwt-token"},
+		ExposeHeaders: []string{"x-jwt-token", "x-refresh-token"},
 		MaxAge:        20 * time.Second,
 	})
 }

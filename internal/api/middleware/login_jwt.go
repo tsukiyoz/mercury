@@ -6,17 +6,22 @@
 package middleware
 
 import (
+	"net/http"
+	ijwt "webook/internal/api/jwt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"log"
-	"net/http"
-	"strings"
-	"time"
-	"webook/internal/api"
 )
 
 type LoginJWTMiddlewareBuilder struct {
 	ignorePaths []string
+	ijwt.Handler
+}
+
+func NewLoginJWTMiddlewareBuilder(jwtHdl ijwt.Handler) *LoginJWTMiddlewareBuilder {
+	return &LoginJWTMiddlewareBuilder{
+		Handler: jwtHdl,
+	}
 }
 
 func (l *LoginJWTMiddlewareBuilder) IgnorePaths(paths ...string) *LoginJWTMiddlewareBuilder {
@@ -31,24 +36,13 @@ func (l *LoginJWTMiddlewareBuilder) Build() gin.HandlerFunc {
 				return
 			}
 		}
-		token := ctx.GetHeader("Authorization")
-		if token == "" {
-			ctx.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
 
-		segs := strings.Split(token, " ")
-		if len(segs) != 2 {
-			ctx.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
-		token = segs[1]
-		claims := &api.UserClaims{}
-		signedString, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-			return api.JWTKey, nil
+		signedString := l.ExtractJWTToken(ctx)
+		claims := &ijwt.UserClaims{}
+		token, err := jwt.ParseWithClaims(signedString, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte("mttAG8HhKpRROKpsQ9dX7vZGhNnbRg8S"), nil
 		})
-		if err != nil || signedString == nil || !signedString.Valid || claims.Uid == 0 {
+		if err != nil || token == nil || !token.Valid || claims.Uid == 0 {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -58,24 +52,14 @@ func (l *LoginJWTMiddlewareBuilder) Build() gin.HandlerFunc {
 			return
 		}
 
-		currentTime := time.Now()
-		if claims.ExpiresAt.Sub(currentTime) < 3*time.Minute*time.Duration(claims.RefreshCount) {
-			if claims.RefreshCount < 3600 {
-				claims.RefreshCount++
-			}
-			claims.ExpiresAt = jwt.NewNumericDate(currentTime.Add(time.Minute * 4 * time.Duration(claims.RefreshCount)))
-			token, err = signedString.SignedString(api.JWTKey)
-			if err != nil {
-				// log
-				log.Println("jwt renewal failed")
-			}
-			ctx.Header("x-jwt-token", token)
+		// TODO
+		// fallback if redis go wrong
+
+		if err = l.CheckSession(ctx, claims.Ssid); err != nil {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 
 		ctx.Set("user", claims)
 	}
-}
-
-func NewLoginJWTMiddlewareBuilder() *LoginJWTMiddlewareBuilder {
-	return &LoginJWTMiddlewareBuilder{}
 }

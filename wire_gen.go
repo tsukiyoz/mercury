@@ -9,6 +9,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"webook/internal/api"
+	"webook/internal/api/jwt"
 	"webook/internal/repository"
 	cache2 "webook/internal/repository/cache/captcha"
 	"webook/internal/repository/cache/user"
@@ -22,7 +23,8 @@ import (
 func InitWebServer() *gin.Engine {
 	cmdable := ioc.InitRedis()
 	limiter := ioc.InitLimiter(cmdable)
-	v := ioc.InitMiddlewares(limiter)
+	handler := jwt.NewRedisJWTHandler(cmdable)
+	v := ioc.InitMiddlewares(limiter, handler)
 	db := ioc.InitDB()
 	userDao := dao.NewUserGormDao(db)
 	userCache := cache.NewUserRedisCache(cmdable)
@@ -32,9 +34,10 @@ func InitWebServer() *gin.Engine {
 	captchaRepository := repository.NewCaptchaCachedRepository(captchaCache)
 	smsService := ioc.InitSMSService()
 	captchaService := service.NewCaptchaServiceV1(captchaRepository, smsService)
-	userHandler := api.NewUserHandler(userService, captchaService)
+	userHandler := api.NewUserHandler(userService, captchaService, handler)
 	wechatService := ioc.InitWechatService()
-	oAuth2WechatHandler := api.NewOAuth2Handler(wechatService, userService)
+	wechatHandlerConfig := ioc.NewWechatHandlerConfig()
+	oAuth2WechatHandler := api.NewOAuth2Handler(wechatService, userService, wechatHandlerConfig, handler)
 	engine := ioc.InitWebServer(v, userHandler, oAuth2WechatHandler)
 	return engine
 }

@@ -3,8 +3,6 @@
 package integration
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/google/wire"
 	"webook/internal/api"
 	"webook/internal/repository"
 	captchacache "webook/internal/repository/cache/captcha"
@@ -12,6 +10,9 @@ import (
 	"webook/internal/repository/dao"
 	"webook/internal/service"
 	"webook/ioc"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 )
 
 func InitWebServer() *gin.Engine {
@@ -30,8 +31,11 @@ func InitWebServer() *gin.Engine {
 		service.NewUserServiceV1,
 		service.NewCaptchaServiceV1,
 		ioc.InitSMSService,
+		ioc.InitWechatService,
+		ioc.NewWechatHandlerConfig,
 
 		api.NewUserHandler,
+		api.NewOAuth2Handler,
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,

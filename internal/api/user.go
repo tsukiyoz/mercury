@@ -6,14 +6,19 @@
 package api
 
 import (
-	regexp "github.com/dlclark/regexp2"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"net/http"
 	"time"
+	ijwt "webook/internal/api/jwt"
 	"webook/internal/domain"
 	"webook/internal/repository"
 	"webook/internal/service"
+
+	regexp "github.com/dlclark/regexp2"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -30,7 +35,79 @@ type UserHandler struct {
 	captchaService service.CaptchaService
 	emailExp       *regexp.Regexp
 	passwordExp    *regexp.Regexp
-	*JWTHandler
+	ijwt.Handler
+	cmd redis.Cmdable
+}
+
+func NewUserHandler(userService service.UserService, captchaService service.CaptchaService, jwtHandler ijwt.Handler) *UserHandler {
+	return &UserHandler{
+		userService:    userService,
+		captchaService: captchaService,
+		emailExp:       regexp.MustCompile(emailRegexPattern, regexp.None),
+		passwordExp:    regexp.MustCompile(passwordRegexPattern, regexp.None),
+		Handler:        jwtHandler,
+	}
+}
+func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
+	ug := server.Group("/users")
+	ug.POST("/signup", u.SignUp)
+	ug.POST("/login", u.LoginJWT)
+	ug.POST("/edit", u.Edit)
+	ug.GET("/profile", u.ProfileJWT)
+	ug.POST("/logout", u.LogoutJWT)
+	ug.POST("/login_sms/captcha/send", u.SendLoginCaptcha)
+	ug.POST("/login_sms/captcha/validate", u.LoginSMS)
+	ug.POST("/refresh_token", u.RefreshToken)
+}
+
+func (u *UserHandler) LogoutJWT(ctx *gin.Context) {
+	if err := u.ClearToken(ctx); err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 2,
+			Msg:  "internal error",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "logout success",
+	})
+}
+
+func (u *UserHandler) RefreshToken(ctx *gin.Context) {
+	refreshToken := u.ExtractJWTToken(ctx)
+
+	var refreshClaims ijwt.RefreshClaims
+	token, err := jwt.ParseWithClaims(refreshToken, &refreshClaims, func(token *jwt.Token) (interface{}, error) {
+		return ijwt.RtKey, nil
+	})
+
+	if err != nil || !token.Valid {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	if err = u.CheckSession(ctx, refreshClaims.Ssid); err != nil {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	if count, err := u.cmd.Exists(ctx, fmt.Sprintf("users:ssid:%s", refreshClaims.Ssid)).Result(); err != nil || count > 0 {
+		// redis wrong or token is expired
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	if u.SetJWTToken(ctx, refreshClaims.Uid, refreshClaims.Ssid) != nil {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "refresh success",
+	})
 }
 
 func (u *UserHandler) SignUp(ctx *gin.Context) {
@@ -156,7 +233,6 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 		Code: 2,
 		Msg:  "login success",
 	})
-	return
 }
 
 func (u *UserHandler) LoginJWT(ctx *gin.Context) {
@@ -185,18 +261,18 @@ func (u *UserHandler) LoginJWT(ctx *gin.Context) {
 		return
 	}
 
-	if err = u.setJWTToken(ctx, user.ID); err != nil {
+	if err = u.SetLoginToken(ctx, user.ID); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, Result{
 		Code: 2,
 		Msg:  "login success",
 	})
-	return
 }
 
 func (u *UserHandler) Logout(ctx *gin.Context) {
@@ -243,7 +319,7 @@ func (u *UserHandler) Edit(ctx *gin.Context) {
 		return
 	}
 
-	claims := ctx.MustGet("user").(*UserClaims)
+	claims := ctx.MustGet("user").(*ijwt.UserClaims)
 	err = u.userService.UpdateNonSensitiveInfo(ctx, domain.User{
 		ID:       claims.Uid,
 		NickName: req.Nickname,
@@ -303,7 +379,7 @@ func (u *UserHandler) ProfileJWT(ctx *gin.Context) {
 		AboutMe  string
 	}
 
-	claims := ctx.MustGet("user").(*UserClaims)
+	claims := ctx.MustGet("user").(*ijwt.UserClaims)
 
 	user, err := u.userService.Profile(ctx, claims.Uid)
 	if err != nil {
@@ -412,7 +488,7 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 		return
 	}
 
-	if err = u.setJWTToken(ctx, user.ID); err != nil {
+	if err = u.SetLoginToken(ctx, user.ID); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",
@@ -424,24 +500,4 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 		Code: 2,
 		Msg:  "captcha validate success",
 	})
-}
-
-func (u *UserHandler) RegisterRoutes(server *gin.Engine) {
-	ug := server.Group("/users")
-	ug.POST("/signup", u.SignUp)
-	ug.POST("/login", u.LoginJWT)
-	ug.POST("/edit", u.Edit)
-	ug.GET("/profile", u.ProfileJWT)
-	ug.POST("/logout", u.Logout)
-	ug.POST("/login_sms/captcha/send", u.SendLoginCaptcha)
-	ug.POST("/login_sms/captcha/validate", u.LoginSMS)
-}
-
-func NewUserHandler(userService service.UserService, captchaService service.CaptchaService) *UserHandler {
-	return &UserHandler{
-		userService:    userService,
-		captchaService: captchaService,
-		emailExp:       regexp.MustCompile(emailRegexPattern, regexp.None),
-		passwordExp:    regexp.MustCompile(passwordRegexPattern, regexp.None),
-	}
 }

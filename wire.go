@@ -3,15 +3,17 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/google/wire"
 	"webook/internal/api"
+	ijwt "webook/internal/api/jwt"
 	"webook/internal/repository"
 	captchacache "webook/internal/repository/cache/captcha"
 	usercache "webook/internal/repository/cache/user"
 	"webook/internal/repository/dao"
 	"webook/internal/service"
 	"webook/ioc"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 )
 
 func InitWebServer() *gin.Engine {
@@ -31,9 +33,11 @@ func InitWebServer() *gin.Engine {
 		service.NewCaptchaServiceV1,
 		ioc.InitSMSService,
 		ioc.InitWechatService,
+		ioc.NewWechatHandlerConfig,
 
 		api.NewUserHandler,
 		api.NewOAuth2Handler,
+		ijwt.NewRedisJWTHandler,
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,
