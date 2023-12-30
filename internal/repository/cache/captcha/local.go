@@ -3,16 +3,22 @@ package cache
 import (
 	"context"
 	"fmt"
-	"github.com/coocood/freecache"
 	"strconv"
+	"sync"
+
+	"github.com/coocood/freecache"
 )
 
 // CaptchaLocalCache development environment, ensure the concurrency safe on single machine
 type CaptchaLocalCache struct {
 	client *freecache.Cache
+	lock   sync.Mutex
 }
 
 func (c *CaptchaLocalCache) Set(ctx context.Context, biz string, phone string, code string) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
 	key, cntKey := []byte(c.key(biz, phone)), []byte(c.cntKey(biz, phone))
 	ttl, err := c.client.TTL(key)
 
@@ -35,6 +41,9 @@ func (c *CaptchaLocalCache) Set(ctx context.Context, biz string, phone string, c
 }
 
 func (c *CaptchaLocalCache) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
 	key, cntKey := []byte(c.key(biz, phone)), []byte(c.cntKey(biz, phone))
 	captcha, err := c.client.Get(key)
 	if err != nil {

@@ -11,8 +11,4 @@ var Config = config{
 		Password: "",
 		DB:       1,
 	},
-	Jwt: JwtConfig{
-		Secure:   true,
-		HttpOnly: true,
-	},
 }
