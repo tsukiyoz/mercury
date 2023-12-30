@@ -6,8 +6,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	ijwt "webook/internal/api/jwt"
+	"webook/internal/api/jwt"
 	"webook/internal/domain"
+	redismock "webook/internal/repository/mocks/cache/redis"
 	"webook/internal/service"
 	svcmock "webook/internal/service/mocks"
 
@@ -353,7 +354,7 @@ func TestUserHandler_LoginJWT(t *testing.T) {
 
 			server := gin.Default()
 
-			h := NewUserHandler(tc.mock(ctrl), nil, ijwt.NewRedisJWTHandler())
+			h := NewUserHandler(tc.mock(ctrl), nil, jwt.NewRedisJWTHandler(redismock.NewMockCmdable(ctrl)))
 			h.RegisterRoutes(server)
 
 			req, err := http.NewRequest(tc.in.method, tc.in.url, bytes.NewBuffer(tc.in.body))
