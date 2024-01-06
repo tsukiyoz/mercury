@@ -38,7 +38,7 @@ func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Han
 				Key:   "accessLog",
 				Value: aL,
 			})
-		}).Build(),
+		}).AllowReqBody().AllowRespBody().Build(),
 		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
 			"/",
 			"/users/signup",
