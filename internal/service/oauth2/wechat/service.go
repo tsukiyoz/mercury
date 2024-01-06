@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"webook/internal/domain"
+	"webook/pkg/logger"
 )
 
 var redirectURI = url.PathEscape("https://tsukiyo.top/oauth2/wechat/callback")
@@ -20,13 +21,15 @@ type service struct {
 	appId     string
 	appSecret string
 	client    *http.Client
+	logger    logger.Logger
 }
 
-func NewService(appId string, appSecret string) Service {
+func NewService(appId string, appSecret string, logger logger.Logger) Service {
 	return &service{
 		appId:     appId,
 		appSecret: appSecret,
 		client:    http.DefaultClient,
+		logger:    logger,
 	}
 }
 

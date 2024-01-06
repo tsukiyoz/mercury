@@ -101,14 +101,18 @@ func (h *RedisJWTHandler) SetJWTToken(ctx *gin.Context, userId int64, ssid strin
 }
 
 func (h *RedisJWTHandler) CheckSession(ctx *gin.Context, ssid string) error {
-	logout, err := h.cmd.Exists(ctx, fmt.Sprintf("users:ssid:%s", ssid)).Result()
-	if err != nil {
+	val, err := h.cmd.Exists(ctx, fmt.Sprintf("users:ssid:%s", ssid)).Result()
+	switch err {
+	case redis.Nil:
+		return nil
+	case nil:
+		if val == 0 {
+			return nil
+		}
+		return errors.New("session expired")
+	default:
 		return err
 	}
-	if logout > 0 {
-		return errors.New("user is logouted")
-	}
-	return nil
 }
 
 func (h *RedisJWTHandler) ClearToken(ctx *gin.Context) error {

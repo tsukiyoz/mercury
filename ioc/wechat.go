@@ -4,9 +4,10 @@ import (
 	"os"
 	"webook/internal/api"
 	"webook/internal/service/oauth2/wechat"
+	"webook/pkg/logger"
 )
 
-func InitWechatService() wechat.Service {
+func InitWechatService(logger logger.Logger) wechat.Service {
 	appId, ok := os.LookupEnv("WECHAT_APP_ID")
 	if !ok {
 		panic("no environment variables found WECHAT_APP_ID")
@@ -15,7 +16,7 @@ func InitWechatService() wechat.Service {
 	if !ok {
 		panic("no environment variables found WECHAT_APP_SECRET")
 	}
-	return wechat.NewService(appId, appSecret)
+	return wechat.NewService(appId, appSecret, logger)
 }
 
 func NewWechatHandlerConfig() api.WechatHandlerConfig {

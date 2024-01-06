@@ -12,6 +12,7 @@ import (
 	"time"
 	"webook/internal/domain"
 	"webook/internal/repository"
+	"webook/pkg/logger"
 )
 
 var ErrUserDuplicate = repository.ErrUserDuplicate
@@ -30,7 +31,15 @@ type UserService interface {
 }
 
 type UserServiceV1 struct {
-	repo repository.UserRepository
+	repo   repository.UserRepository
+	logger logger.Logger
+}
+
+func NewUserServiceV1(r repository.UserRepository, logger logger.Logger) UserService {
+	return &UserServiceV1{
+		repo:   r,
+		logger: logger,
+	}
 }
 
 func (svc *UserServiceV1) SignUp(ctx context.Context, u domain.User) error {
@@ -74,6 +83,7 @@ func (svc *UserServiceV1) FindOrCreate(ctx context.Context, phone string) (domai
 	if err != repository.ErrUserNoFound {
 		return u, err
 	}
+	svc.logger.Info("user not registered", logger.String("phone", phone))
 	err = svc.repo.Create(ctx, domain.User{
 		Phone:    phone,
 		CreateAt: time.Now(),
@@ -98,10 +108,4 @@ func (svc *UserServiceV1) FindOrCreateByWechat(ctx context.Context, info domain.
 		return u, err
 	}
 	return svc.repo.FindByWechat(ctx, info.OpenID)
-}
-
-func NewUserServiceV1(r repository.UserRepository) UserService {
-	return &UserServiceV1{
-		repo: r,
-	}
 }

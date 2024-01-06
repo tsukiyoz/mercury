@@ -1,12 +1,15 @@
 package ioc
 
 import (
+	"context"
 	"strings"
 	"time"
 	"webook/internal/api"
 	ijwt "webook/internal/api/jwt"
 	"webook/internal/api/middleware"
-	ginRatelimit "webook/pkg/gin/middleware/ratelimit"
+	ginxlogger "webook/pkg/ginx/middleware/logger"
+	ginRatelimit "webook/pkg/ginx/middleware/ratelimit"
+	"webook/pkg/logger"
 	"webook/pkg/ratelimit"
 
 	"github.com/gin-contrib/cors"
@@ -27,9 +30,15 @@ func InitLimiter(cmd redis.Cmdable) ratelimit.Limiter {
 	return r
 }
 
-func InitMiddlewares(limiter ratelimit.Limiter, jwtHdl ijwt.Handler) []gin.HandlerFunc {
+func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Handler) []gin.HandlerFunc {
 	return []gin.HandlerFunc{
 		corsHdl(),
+		ginxlogger.NewMiddlewareBuilder(func(ctx context.Context, aL *ginxlogger.AccessLog) {
+			l.Debug("HTTP request", logger.Field{
+				Key:   "accessLog",
+				Value: aL,
+			})
+		}).Build(),
 		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
 			"/",
 			"/users/signup",

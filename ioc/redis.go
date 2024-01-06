@@ -2,15 +2,23 @@ package ioc
 
 import (
 	"github.com/redis/go-redis/v9"
-	"webook/config"
+	"github.com/spf13/viper"
 )
 
 func InitRedis() redis.Cmdable {
-	rCfg := config.Config.Redis
+	type Config struct {
+		Addr     string `yaml:"addr"`
+		Password string `yaml:"password"`
+		DB       int    `yaml:"db"`
+	}
+
+	var cfg Config
+	viper.UnmarshalKey("redis", &cfg)
+
 	cmd := redis.NewClient(&redis.Options{
-		Addr:     rCfg.Addr,
-		Password: rCfg.Password,
-		DB:       rCfg.DB,
+		Addr:     cfg.Addr,
+		Password: cfg.Password,
+		DB:       cfg.DB,
 	})
 	return cmd
 }

@@ -20,6 +20,7 @@ func InitWebServer() *gin.Engine {
 	wire.Build(
 		ioc.InitDB, ioc.InitRedis,
 		ioc.InitLimiter,
+		ioc.InitLogger,
 
 		dao.NewUserGormDao,
 
@@ -30,6 +31,7 @@ func InitWebServer() *gin.Engine {
 		repository.NewCaptchaCachedRepository,
 
 		service.NewUserServiceV1,
+		//ioc.InitUserService,
 		service.NewCaptchaServiceV1,
 		ioc.InitSMSService,
 		ioc.InitWechatService,
