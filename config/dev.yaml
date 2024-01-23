@@ -5,3 +5,8 @@ redis:
   addr: "localhost:6379"
   password: "for.nothing"
   db: 1
+
+web:
+  log:
+    req: true
+    resp: true

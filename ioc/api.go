@@ -2,6 +2,8 @@ package ioc
 
 import (
 	"context"
+	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/viper"
 	"strings"
 	"time"
 	"webook/internal/api"
@@ -31,14 +33,19 @@ func InitLimiter(cmd redis.Cmdable) ratelimit.Limiter {
 }
 
 func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Handler) []gin.HandlerFunc {
+	bd := ginxlogger.NewMiddlewareBuilder(func(ctx context.Context, aL *ginxlogger.AccessLog) {
+		l.Debug("HTTP request", logger.Field{
+			Key:   "accessLog",
+			Value: aL,
+		})
+	}).AllowReqBody(viper.GetBool("web.log.req")).AllowRespBody(viper.GetBool("web.log.resp"))
+	viper.OnConfigChange(func(in fsnotify.Event) {
+		bd.AllowReqBody(viper.GetBool("web.log.req"))
+		bd.AllowRespBody(viper.GetBool("web.log.resp"))
+	})
 	return []gin.HandlerFunc{
 		corsHdl(),
-		ginxlogger.NewMiddlewareBuilder(func(ctx context.Context, aL *ginxlogger.AccessLog) {
-			l.Debug("HTTP request", logger.Field{
-				Key:   "accessLog",
-				Value: aL,
-			})
-		}).AllowReqBody().AllowRespBody().Build(),
+		bd.Build(),
 		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
 			"/",
 			"/users/signup",
