@@ -51,17 +51,21 @@ k8s-reload-web:
 
 .PHONY: mock
 mock:
-	@mockgen -source=internal/service/user.go -package=svcmock -destination=internal/service/mocks/user.mock.go
-	@mockgen -source=internal/service/captcha.go -package=svcmock -destination=internal/service/mocks/captcha.mock.go
+	@mockgen -source=internal/service/user.go -package=svcmocks -destination=internal/service/mocks/user.mock.go
+	@mockgen -source=internal/service/article.go -package=svcmocks -destination=internal/service/mocks/article.mock.go
+	@mockgen -source=internal/service/captcha.go -package=svcmocks -destination=internal/service/mocks/captcha.mock.go
 
-	@mockgen -source=internal/repository/user.go -package=repomock -destination=internal/repository/mocks/user.mock.go
-	@mockgen -source=internal/repository/captcha.go -package=repomock -destination=internal/repository/mocks/captcha.mock.go
+	@mockgen -source=internal/repository/user.go -package=repomocks -destination=internal/repository/mocks/user.mock.go
+	@mockgen -source=internal/repository/captcha.go -package=repomocks -destination=internal/repository/mocks/captcha.mock.go
+	@mockgen -source=internal/repository/article/article.go -package=articlerepomocks -destination=internal/repository/mocks/article/article.mock.go
+	@mockgen -source=internal/repository/article/article_author.go -package=articlerepomocks -destination=internal/repository/mocks/article/article_author.mock.go
+	@mockgen -source=internal/repository/article/article_reader.go -package=articlerepomocks -destination=internal/repository/mocks/article/article_reader.mock.go
 
-	@mockgen -source=internal/repository/dao/user.go -package=daomock -destination=internal/repository/mocks/dao/user.mock.go
-	@mockgen -source=internal/repository/cache/user/user.go -package=cachemock -destination=internal/repository/mocks/cache/user/user.mock.go
+	@mockgen -source=internal/repository/dao/user.go -package=daomocks -destination=internal/repository/mocks/dao/user.mock.go
+	@mockgen -source=internal/repository/cache/user/user.go -package=cachemocks -destination=internal/repository/mocks/cache/user/user.mock.go
 
-	@mockgen -source=pkg/ratelimit/types.go -package=limitmock -destination=pkg/ratelimit/mocks/ratelimit.mock.go
+	@mockgen -source=pkg/ratelimit/types.go -package=limitmocks -destination=pkg/ratelimit/mocks/ratelimit.mock.go
 
-	@mockgen -package=redismock -destination=internal/repository/mocks/cache/redis/cmdable.mock.go github.com/redis/go-redis/v9 Cmdable
+	@mockgen -package=redismocks -destination=internal/repository/mocks/cache/redis/cmdable.mock.go github.com/redis/go-redis/v9 Cmdable
 
 	@go mod tidy

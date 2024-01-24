@@ -6,6 +6,7 @@ import (
 	"github.com/tsukaychan/webook/internal/api"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/webook/internal/repository/article"
 	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
 	usercache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
@@ -29,7 +30,7 @@ func InitWebServer() *gin.Engine {
 
 		repository.NewCachedUserRepository,
 		repository.NewCachedCaptchaRepository,
-		repository.NewCachedArticleRepository,
+		article.NewCachedArticleRepository,
 
 		service.NewUserService,
 		//ioc.InitUserService,

@@ -26,15 +26,17 @@ func NewArticleHandler(articleSvc service.ArticleService, logger logger.Logger) 
 func (h *ArticleHandler) RegisterRoutes(server *gin.Engine) {
 	g := server.Group("/articles")
 	g.POST("/edit", h.Edit)
+	g.POST("publish", h.Publish)
+}
+
+type ArticleReq struct {
+	Id      int64  `json:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 func (h *ArticleHandler) Edit(ctx *gin.Context) {
-	type Req struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
-	}
-
-	var req Req
+	var req ArticleReq
 	if err := ctx.Bind(&req); err != nil {
 		return
 	}
@@ -49,13 +51,7 @@ func (h *ArticleHandler) Edit(ctx *gin.Context) {
 		h.logger.Error("no user session found")
 	}
 
-	id, err := h.articleSvc.Save(ctx, domain.Article{
-		Title:   req.Title,
-		Content: req.Content,
-		Author: domain.Author{
-			Id: claims.Uid,
-		},
-	})
+	id, err := h.articleSvc.Save(ctx, req.toDomain(claims.Uid))
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
@@ -71,4 +67,49 @@ func (h *ArticleHandler) Edit(ctx *gin.Context) {
 		Msg:  "success",
 		Data: id,
 	})
+}
+
+func (h *ArticleHandler) Publish(ctx *gin.Context) {
+	var req ArticleReq
+	if err := ctx.Bind(&req); err != nil {
+		return
+	}
+
+	c := ctx.MustGet("claims")
+	claims, ok := c.(*ijwt.UserClaims)
+	if !ok {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		h.logger.Error("no user session found")
+	}
+
+	id, err := h.articleSvc.Publish(ctx, req.toDomain(claims.Uid))
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, Result{
+			Code: 5,
+			Msg:  "internal error",
+		})
+		h.logger.Error("publish article failed", logger.Error(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, Result{
+		Code: 2,
+		Msg:  "success",
+		Data: id,
+	})
+}
+
+func (req ArticleReq) toDomain(uid int64) domain.Article {
+	return domain.Article{
+		Id:      req.Id,
+		Title:   req.Title,
+		Content: req.Content,
+		Author: domain.Author{
+			Id: uid,
+		},
+	}
 }

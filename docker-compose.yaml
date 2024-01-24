@@ -11,13 +11,13 @@ services:
     ports:
       - "3309:3306"
   redis:
-    image: 'bitnami/redis:latest'
+    image: 'bitnami/redis:7.2'
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - '6379:6379'
   etcd:
-    image: 'bitnami/etcd:latest'
+    image: 'bitnami/etcd:3.5.11'
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
     ports:

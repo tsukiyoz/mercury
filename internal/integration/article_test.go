@@ -63,7 +63,7 @@ func (s *ArticleTestSuite) TestEdit() {
 		wantResult Result[int64]
 	}{
 		{
-			name:   "create article - save success",
+			name:   "create article",
 			before: func(t *testing.T) {},
 			after: func(t *testing.T) {
 				// check db
@@ -90,6 +90,88 @@ func (s *ArticleTestSuite) TestEdit() {
 				Code: 2,
 				Msg:  "success",
 				Data: 1,
+			},
+		},
+		{
+			name: "update article",
+			before: func(t *testing.T) {
+				err := s.db.Create(dao.Article{
+					Id:       2,
+					Title:    "my title",
+					Content:  "this is a content",
+					AuthorId: 123,
+					Ctime:    123,
+					Utime:    234,
+				}).Error
+
+				assert.NoError(t, err)
+			},
+			after: func(t *testing.T) {
+				// check db
+				var article dao.Article
+				err := s.db.Where("id = ?", 2).First(&article).Error
+
+				assert.NoError(t, err)
+				assert.True(t, article.Utime > 234)
+				article.Utime = 0
+				assert.Equal(t, dao.Article{
+					Id:       2,
+					Title:    "my new title",
+					Content:  "this is a new content",
+					AuthorId: 123,
+					Ctime:    123,
+				}, article)
+			},
+			article: Article{
+				Id:      2,
+				Title:   "my new title",
+				Content: "this is a new content",
+			},
+			wantCode: http.StatusOK,
+			wantResult: Result[int64]{
+				Code: 2,
+				Msg:  "success",
+				Data: 2,
+			},
+		},
+		{
+			name: "update someone else's article",
+			before: func(t *testing.T) {
+				err := s.db.Create(dao.Article{
+					Id:       3,
+					Title:    "my title",
+					Content:  "this is a content",
+					AuthorId: 789,
+					Ctime:    123,
+					Utime:    234,
+				}).Error
+
+				assert.NoError(t, err)
+			},
+			after: func(t *testing.T) {
+				// check db
+				var article dao.Article
+				err := s.db.Where("id = ?", 3).First(&article).Error
+
+				assert.NoError(t, err)
+				assert.Equal(t, dao.Article{
+					Id:       3,
+					Title:    "my title",
+					Content:  "this is a content",
+					AuthorId: 789,
+					Ctime:    123,
+					Utime:    234,
+				}, article)
+			},
+			article: Article{
+				Id:      3,
+				Title:   "my new title",
+				Content: "this is a new content",
+			},
+			wantCode: http.StatusOK,
+			wantResult: Result[int64]{
+				Code: 5,
+				Msg:  "internal error",
 			},
 		},
 	}
@@ -125,6 +207,7 @@ func (s *ArticleTestSuite) TestEdit() {
 }
 
 type Article struct {
+	Id      int64  `json:"id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
