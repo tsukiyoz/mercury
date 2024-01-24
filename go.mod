@@ -1,4 +1,4 @@
-module webook
+module github.com/tsukaychan/webook
 
 go 1.21.4
 

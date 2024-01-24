@@ -8,7 +8,7 @@ package domain
 import "time"
 
 type User struct {
-	ID         int64
+	Id         int64
 	Email      string
 	Password   string
 	NickName   string
@@ -16,6 +16,6 @@ type User struct {
 	AboutMe    string
 	WechatInfo WechatInfo
 	Birthday   time.Time
-	CreateAt   time.Time
-	UpdateAt   time.Time
+	Ctime      time.Time
+	Utime      time.Time
 }

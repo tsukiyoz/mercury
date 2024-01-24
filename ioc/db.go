@@ -2,9 +2,9 @@ package ioc
 
 import (
 	"fmt"
+	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/webook/pkg/logger"
 	"time"
-	"webook/internal/repository/dao"
-	"webook/pkg/logger"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"

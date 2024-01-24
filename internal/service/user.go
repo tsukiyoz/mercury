@@ -8,18 +8,18 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/webook/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 	"time"
-	"webook/internal/domain"
-	"webook/internal/repository"
-	"webook/pkg/logger"
 )
 
 var ErrUserDuplicate = repository.ErrUserDuplicate
 var ErrInvalidUserOrPassword = errors.New("incorrect account or password")
 var ErrCaptchaSendFrequently = repository.ErrCaptchaSendTooManyTimes
 
-var _ UserService = (*UserServiceV1)(nil)
+var _ UserService = (*userService)(nil)
 
 type UserService interface {
 	SignUp(ctx context.Context, u domain.User) error
@@ -30,19 +30,19 @@ type UserService interface {
 	FindOrCreateByWechat(ctx context.Context, info domain.WechatInfo) (domain.User, error)
 }
 
-type UserServiceV1 struct {
+type userService struct {
 	repo   repository.UserRepository
 	logger logger.Logger
 }
 
-func NewUserServiceV1(r repository.UserRepository, logger logger.Logger) UserService {
-	return &UserServiceV1{
+func NewUserService(r repository.UserRepository, logger logger.Logger) UserService {
+	return &userService{
 		repo:   r,
 		logger: logger,
 	}
 }
 
-func (svc *UserServiceV1) SignUp(ctx context.Context, u domain.User) error {
+func (svc *userService) SignUp(ctx context.Context, u domain.User) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (svc *UserServiceV1) SignUp(ctx context.Context, u domain.User) error {
 	return svc.repo.Create(ctx, u)
 }
 
-func (svc *UserServiceV1) Login(ctx context.Context, email string, password string) (domain.User, error) {
+func (svc *userService) Login(ctx context.Context, email string, password string) (domain.User, error) {
 	user, err := svc.repo.FindByEmail(ctx, email)
 	if err == repository.ErrUserNoFound {
 		return domain.User{}, ErrInvalidUserOrPassword
@@ -66,27 +66,27 @@ func (svc *UserServiceV1) Login(ctx context.Context, email string, password stri
 	return user, nil
 }
 
-func (svc *UserServiceV1) UpdateNonSensitiveInfo(ctx context.Context, user domain.User) error {
+func (svc *userService) UpdateNonSensitiveInfo(ctx context.Context, user domain.User) error {
 	user.Email = ""
 	user.Phone = ""
 	user.Password = ""
 	return svc.repo.Update(ctx, user)
 }
 
-func (svc *UserServiceV1) Profile(ctx context.Context, uid int64) (domain.User, error) {
+func (svc *userService) Profile(ctx context.Context, uid int64) (domain.User, error) {
 	user, err := svc.repo.FindById(ctx, uid)
 	return user, err
 }
 
-func (svc *UserServiceV1) FindOrCreate(ctx context.Context, phone string) (domain.User, error) {
+func (svc *userService) FindOrCreate(ctx context.Context, phone string) (domain.User, error) {
 	u, err := svc.repo.FindByPhone(ctx, phone)
 	if err != repository.ErrUserNoFound {
 		return u, err
 	}
 	svc.logger.Info("user not registered", logger.String("phone", phone))
 	err = svc.repo.Create(ctx, domain.User{
-		Phone:    phone,
-		CreateAt: time.Now(),
+		Phone: phone,
+		Ctime: time.Now(),
 	})
 	if err != nil {
 		return u, err
@@ -95,7 +95,7 @@ func (svc *UserServiceV1) FindOrCreate(ctx context.Context, phone string) (domai
 	return svc.repo.FindByPhone(ctx, phone)
 }
 
-func (svc *UserServiceV1) FindOrCreateByWechat(ctx context.Context, info domain.WechatInfo) (domain.User, error) {
+func (svc *userService) FindOrCreateByWechat(ctx context.Context, info domain.WechatInfo) (domain.User, error) {
 	u, err := svc.repo.FindByWechat(ctx, info.OpenID)
 	if err != repository.ErrUserNoFound {
 		return u, err

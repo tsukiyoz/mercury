@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/webook/internal/service/sms"
 	"math/rand"
-	"webook/internal/repository"
-	"webook/internal/service/sms"
 )
 
 var (
@@ -13,21 +13,28 @@ var (
 	ErrCodeVerifyTooManyTimes = repository.ErrCaptchaVerifyTooManyTimes
 )
 
-var _ CaptchaService = (*CaptchaServiceV1)(nil)
+var _ CaptchaService = (*captchaService)(nil)
 
 type CaptchaService interface {
 	Send(ctx context.Context, biz string, phone string) error
 	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)
 }
 
-type CaptchaServiceV1 struct {
+type captchaService struct {
 	repo    repository.CaptchaRepository
 	smsSvc  sms.Service
 	tplId   string
 	argName string
 }
 
-func (svc *CaptchaServiceV1) Send(ctx context.Context, biz string, phone string) error {
+func NewCaptchaService(repo repository.CaptchaRepository, smsSvc sms.Service) CaptchaService {
+	return &captchaService{
+		repo:   repo,
+		smsSvc: smsSvc,
+	}
+}
+
+func (svc *captchaService) Send(ctx context.Context, biz string, phone string) error {
 	captcha := svc.generateCaptcha()
 	err := svc.repo.Store(ctx, biz, phone, captcha)
 	if err != nil {
@@ -46,17 +53,10 @@ func (svc *CaptchaServiceV1) Send(ctx context.Context, biz string, phone string)
 	return nil
 }
 
-func (svc *CaptchaServiceV1) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
+func (svc *captchaService) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
 	return svc.repo.Verify(ctx, biz, phone, inputCaptcha)
 }
 
-func (svc *CaptchaServiceV1) generateCaptcha() string {
+func (svc *captchaService) generateCaptcha() string {
 	return fmt.Sprintf("%06d", rand.Intn(1000000))
-}
-
-func NewCaptchaServiceV1(repo repository.CaptchaRepository, smsSvc sms.Service) CaptchaService {
-	return &CaptchaServiceV1{
-		repo:   repo,
-		smsSvc: smsSvc,
-	}
 }

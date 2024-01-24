@@ -3,7 +3,7 @@ package memory
 import (
 	"context"
 	"fmt"
-	"webook/internal/service/sms"
+	"github.com/tsukaychan/webook/internal/service/sms"
 )
 
 type Service struct {

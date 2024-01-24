@@ -3,11 +3,11 @@ package api
 import (
 	"errors"
 	"fmt"
+	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
+	"github.com/tsukaychan/webook/internal/service"
+	"github.com/tsukaychan/webook/internal/service/oauth2/wechat"
 	"net/http"
 	"time"
-	ijwt "webook/internal/api/jwt"
-	"webook/internal/service"
-	"webook/internal/service/oauth2/wechat"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -112,7 +112,7 @@ func (h *OAuth2WechatHandler) Callback(ctx *gin.Context) {
 		return
 	}
 
-	if err = h.SetLoginToken(ctx, user.ID); err != nil {
+	if err = h.SetLoginToken(ctx, user.Id); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",

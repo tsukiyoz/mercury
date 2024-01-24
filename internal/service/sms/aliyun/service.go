@@ -7,9 +7,9 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"github.com/bytedance/sonic"
+	"github.com/tsukaychan/webook/internal/service/sms"
 	"strings"
 	"time"
-	"webook/internal/service/sms"
 )
 
 type Service struct {

@@ -4,26 +4,27 @@ import (
 	"context"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	"github.com/tsukaychan/webook/internal/api"
+	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
+	"github.com/tsukaychan/webook/internal/api/middleware"
+	ginxlogger "github.com/tsukaychan/webook/pkg/ginx/middleware/logger"
+	ginRatelimit "github.com/tsukaychan/webook/pkg/ginx/middleware/ratelimit"
+	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/webook/pkg/ratelimit"
 	"strings"
 	"time"
-	"webook/internal/api"
-	ijwt "webook/internal/api/jwt"
-	"webook/internal/api/middleware"
-	ginxlogger "webook/pkg/ginx/middleware/logger"
-	ginRatelimit "webook/pkg/ginx/middleware/ratelimit"
-	"webook/pkg/logger"
-	"webook/pkg/ratelimit"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )
 
-func InitWebServer(mdls []gin.HandlerFunc, userHdl *api.UserHandler, oAuth2Hdl *api.OAuth2WechatHandler) *gin.Engine {
+func InitWebServer(mdls []gin.HandlerFunc, userHdl *api.UserHandler, oAuth2Hdl *api.OAuth2WechatHandler, articleHdl *api.ArticleHandler) *gin.Engine {
 	server := gin.Default()
 	server.Use(mdls...)
 	userHdl.RegisterRoutes(server)
 	oAuth2Hdl.RegisterRoutes(server)
+	articleHdl.RegisterRoutes(server)
 	return server
 }
 

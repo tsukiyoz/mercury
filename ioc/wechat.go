@@ -1,10 +1,10 @@
 package ioc
 
 import (
+	"github.com/tsukaychan/webook/internal/api"
+	"github.com/tsukaychan/webook/internal/service/oauth2/wechat"
+	"github.com/tsukaychan/webook/pkg/logger"
 	"os"
-	"webook/internal/api"
-	"webook/internal/service/oauth2/wechat"
-	"webook/pkg/logger"
 )
 
 func InitWechatService(logger logger.Logger) wechat.Service {

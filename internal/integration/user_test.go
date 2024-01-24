@@ -6,16 +6,17 @@ import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tsukaychan/webook/internal/api"
+	"github.com/tsukaychan/webook/internal/integration/startup"
+	"github.com/tsukaychan/webook/ioc"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
-	"webook/internal/api"
-	"webook/ioc"
 )
 
 func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
-	server := InitWebServer()
+	server := startup.InitWebServer()
 	rdb := ioc.InitRedis()
 	type in struct {
 		body string

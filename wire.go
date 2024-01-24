@@ -3,14 +3,14 @@
 package main
 
 import (
-	"webook/internal/api"
-	ijwt "webook/internal/api/jwt"
-	"webook/internal/repository"
-	captchacache "webook/internal/repository/cache/captcha"
-	usercache "webook/internal/repository/cache/user"
-	"webook/internal/repository/dao"
-	"webook/internal/service"
-	"webook/ioc"
+	"github.com/tsukaychan/webook/internal/api"
+	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
+	"github.com/tsukaychan/webook/internal/repository"
+	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
+	usercache "github.com/tsukaychan/webook/internal/repository/cache/user"
+	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/webook/internal/service"
+	"github.com/tsukaychan/webook/ioc"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -22,23 +22,26 @@ func InitWebServer() *gin.Engine {
 		ioc.InitLimiter,
 		ioc.InitLogger,
 
-		dao.NewUserGormDao,
+		dao.NewGORMUserDAO,
 
 		usercache.NewUserRedisCache,
 		captchacache.NewCaptchaRedisCache,
 
-		repository.NewUserCachedRepository,
-		repository.NewCaptchaCachedRepository,
+		repository.NewCachedUserRepository,
+		repository.NewCachedCaptchaRepository,
+		repository.NewCachedArticleRepository,
 
-		service.NewUserServiceV1,
+		service.NewUserService,
 		//ioc.InitUserService,
-		service.NewCaptchaServiceV1,
+		service.NewCaptchaService,
+		service.NewArticleService,
 		ioc.InitSMSService,
 		ioc.InitWechatService,
 		ioc.NewWechatHandlerConfig,
 
 		api.NewUserHandler,
 		api.NewOAuth2Handler,
+		api.NewArticleHandler,
 		ijwt.NewRedisJWTHandler,
 
 		ioc.InitWebServer,

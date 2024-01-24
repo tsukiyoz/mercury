@@ -5,14 +5,14 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/stretchr/testify/assert"
+	"github.com/tsukaychan/webook/internal/domain"
+	user "github.com/tsukaychan/webook/internal/repository/cache/user"
+	"github.com/tsukaychan/webook/internal/repository/dao"
+	cachemock "github.com/tsukaychan/webook/internal/repository/mocks/cache/user"
+	daomock "github.com/tsukaychan/webook/internal/repository/mocks/dao"
 	"go.uber.org/mock/gomock"
 	"testing"
 	"time"
-	"webook/internal/domain"
-	user "webook/internal/repository/cache/user"
-	"webook/internal/repository/dao"
-	cachemock "webook/internal/repository/mocks/cache/user"
-	daomock "webook/internal/repository/mocks/dao"
 )
 
 func TestUserCachedRepository_FindById(t *testing.T) {
@@ -20,7 +20,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		mock func(ctrl *gomock.Controller) (dao.UserDao, user.UserCache)
+		mock func(ctrl *gomock.Controller) (dao.UserDAO, user.UserCache)
 
 		in struct {
 			ctx context.Context
@@ -34,16 +34,16 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 	}{
 		{
 			name: "cache hit",
-			mock: func(ctrl *gomock.Controller) (dao.UserDao, user.UserCache) {
+			mock: func(ctrl *gomock.Controller) (dao.UserDAO, user.UserCache) {
 				userCache, userDao := cachemock.NewMockUserCache(ctrl), daomock.NewMockUserDao(ctrl)
 				userCache.EXPECT().Get(gomock.Any(), int64(123)).
 					Return(domain.User{
-						ID:       123,
+						Id:       123,
 						Password: "for.nothing",
 						Email:    "test@163.com",
 						Phone:    "18888888888",
-						CreateAt: now,
-						UpdateAt: now,
+						Ctime:    now,
+						Utime:    now,
 					}, nil)
 
 				return userDao, userCache
@@ -62,19 +62,19 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 				err  error
 			}{
 				user: domain.User{
-					ID:       123,
+					Id:       123,
 					Password: "for.nothing",
 					Email:    "test@163.com",
 					Phone:    "18888888888",
-					CreateAt: now,
-					UpdateAt: now,
+					Ctime:    now,
+					Utime:    now,
 				},
 				err: nil,
 			},
 		},
 		{
 			name: "cache miss and get data from dao failed",
-			mock: func(ctrl *gomock.Controller) (dao.UserDao, user.UserCache) {
+			mock: func(ctrl *gomock.Controller) (dao.UserDAO, user.UserCache) {
 				userCache, userDao := cachemock.NewMockUserCache(ctrl), daomock.NewMockUserDao(ctrl)
 				userCache.EXPECT().Get(gomock.Any(), int64(123)).
 					Return(domain.User{}, user.ErrKeyNotExist)
@@ -103,7 +103,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 		},
 		{
 			name: "cache miss and get data from dao",
-			mock: func(ctrl *gomock.Controller) (dao.UserDao, user.UserCache) {
+			mock: func(ctrl *gomock.Controller) (dao.UserDAO, user.UserCache) {
 				userCache, userDao := cachemock.NewMockUserCache(ctrl), daomock.NewMockUserDao(ctrl)
 				userCache.EXPECT().Get(gomock.Any(), int64(123)).
 					Return(domain.User{}, user.ErrKeyNotExist)
@@ -120,17 +120,17 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 							String: "18888888888",
 							Valid:  true,
 						},
-						CreateAt: now.UnixMilli(),
-						UpdateAt: now.UnixMilli(),
+						Ctime: now.UnixMilli(),
+						Utime: now.UnixMilli(),
 					}, nil)
 
 				userCache.EXPECT().Set(gomock.Any(), domain.User{
-					ID:       123,
+					Id:       123,
 					Password: "for.nothing",
 					Email:    "test@163.com",
 					Phone:    "18888888888",
-					CreateAt: now,
-					UpdateAt: now,
+					Ctime:    now,
+					Utime:    now,
 				}).Return(nil)
 
 				return userDao, userCache
@@ -149,12 +149,12 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 				err  error
 			}{
 				user: domain.User{
-					ID:       123,
+					Id:       123,
 					Password: "for.nothing",
 					Email:    "test@163.com",
 					Phone:    "18888888888",
-					CreateAt: now,
-					UpdateAt: now,
+					Ctime:    now,
+					Utime:    now,
 				},
 				err: nil,
 			},
@@ -167,7 +167,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 			defer ctrl.Finish()
 
 			userDao, userCache := tc.mock(ctrl)
-			repo := NewUserCachedRepository(userDao, userCache)
+			repo := NewCachedUserRepository(userDao, userCache)
 
 			user, err := repo.FindById(tc.in.ctx, tc.in.id)
 			assert.Equal(t, tc.want.err, err)

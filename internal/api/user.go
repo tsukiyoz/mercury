@@ -7,12 +7,12 @@ package api
 
 import (
 	"fmt"
+	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
+	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/webook/internal/service"
 	"net/http"
 	"time"
-	ijwt "webook/internal/api/jwt"
-	"webook/internal/domain"
-	"webook/internal/repository"
-	"webook/internal/service"
 
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-contrib/sessions"
@@ -164,8 +164,8 @@ func (u *UserHandler) SignUp(ctx *gin.Context) {
 	err = u.userService.SignUp(ctx, domain.User{
 		Email:    req.Email,
 		Password: req.Password,
-		CreateAt: time.Now(),
-		UpdateAt: time.Now(),
+		Ctime:    time.Now(),
+		Utime:    time.Now(),
 	})
 	if err == service.ErrUserDuplicate {
 		ctx.JSON(http.StatusOK, Result{
@@ -214,7 +214,7 @@ func (u *UserHandler) Login(ctx *gin.Context) {
 	}
 
 	ss := sessions.Default(ctx)
-	ss.Set(userIdKey, user.ID)
+	ss.Set(userIdKey, user.Id)
 	ss.Options(sessions.Options{
 		Secure:   true,
 		HttpOnly: true,
@@ -261,7 +261,7 @@ func (u *UserHandler) LoginJWT(ctx *gin.Context) {
 		return
 	}
 
-	if err = u.SetLoginToken(ctx, user.ID); err != nil {
+	if err = u.SetLoginToken(ctx, user.Id); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",
@@ -321,11 +321,11 @@ func (u *UserHandler) Edit(ctx *gin.Context) {
 
 	claims := ctx.MustGet("user").(*ijwt.UserClaims)
 	err = u.userService.UpdateNonSensitiveInfo(ctx, domain.User{
-		ID:       claims.Uid,
+		Id:       claims.Uid,
 		NickName: req.Nickname,
 		AboutMe:  req.AboutMe,
 		Birthday: birthday,
-		UpdateAt: time.Now(),
+		Utime:    time.Now(),
 	})
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
@@ -488,7 +488,7 @@ func (u *UserHandler) LoginSMS(ctx *gin.Context) {
 		return
 	}
 
-	if err = u.SetLoginToken(ctx, user.ID); err != nil {
+	if err = u.SetLoginToken(ctx, user.Id); err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
 			Msg:  "internal error",

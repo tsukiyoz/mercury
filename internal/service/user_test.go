@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 	"github.com/stretchr/testify/assert"
+	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/webook/internal/repository"
+	repomock "github.com/tsukaychan/webook/internal/repository/mocks"
 	"go.uber.org/mock/gomock"
 	"golang.org/x/crypto/bcrypt"
 	"testing"
 	"time"
-	"webook/internal/domain"
-	"webook/internal/repository"
-	repomock "webook/internal/repository/mocks"
 )
 
 func TestUserServiceV1_Login(t *testing.T) {
@@ -84,7 +84,7 @@ func TestUserServiceV1_Login(t *testing.T) {
 					Email:    "test@163.com",
 					Password: "$2a$10$qU/QSCQ7MuMOXvMet9Ng2urnLU8X20LYMlsgLY/8FXwfyivlGLGC5",
 					Phone:    "18888888888",
-					CreateAt: now,
+					Ctime:    now,
 				}, nil)
 				return repo
 			},
@@ -113,7 +113,7 @@ func TestUserServiceV1_Login(t *testing.T) {
 					Email:    "test@163.com",
 					Password: "$2a$10$qU/QSCQ7MuMOXvMet9Ng2urnLU8X20LYMlsgLY/8FXwfyivlGLGC6",
 					Phone:    "18888888888",
-					CreateAt: now,
+					Ctime:    now,
 				}, nil)
 				return repo
 			},
@@ -134,7 +134,7 @@ func TestUserServiceV1_Login(t *testing.T) {
 					Email:    "test@163.com",
 					Password: "$2a$10$qU/QSCQ7MuMOXvMet9Ng2urnLU8X20LYMlsgLY/8FXwfyivlGLGC6",
 					Phone:    "18888888888",
-					CreateAt: now,
+					Ctime:    now,
 				},
 				err: nil,
 			},
@@ -146,7 +146,7 @@ func TestUserServiceV1_Login(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			svc := NewUserServiceV1(tc.mock(ctrl))
+			svc := NewUserService(tc.mock(ctrl), nil)
 
 			user, err := svc.Login(tc.in.ctx, tc.in.email, tc.in.password)
 			assert.Equal(t, tc.want.err, err)

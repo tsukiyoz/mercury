@@ -3,7 +3,7 @@ package retryable
 import (
 	"context"
 	"errors"
-	"webook/internal/service/sms"
+	"github.com/tsukaychan/webook/internal/service/sms"
 )
 
 type RetryService struct {

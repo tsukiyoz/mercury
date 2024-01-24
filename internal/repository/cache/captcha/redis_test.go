@@ -5,9 +5,9 @@ import (
 	"errors"
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
+	redismock "github.com/tsukaychan/webook/internal/repository/mocks/cache/redis"
 	"go.uber.org/mock/gomock"
 	"testing"
-	redismock "webook/internal/repository/mocks/cache/redis"
 )
 
 func TestCaptchaRedisCache_Set(t *testing.T) {

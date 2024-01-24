@@ -3,8 +3,8 @@ package failover
 import (
 	"context"
 	"errors"
+	"github.com/tsukaychan/webook/internal/service/sms"
 	"sync/atomic"
-	"webook/internal/service/sms"
 )
 
 type FailoverSMSService struct {

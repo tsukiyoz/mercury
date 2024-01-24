@@ -3,8 +3,8 @@ package tencent
 import (
 	"context"
 	"fmt"
-	isms "webook/internal/service/sms"
-	"webook/pkg/ratelimit"
+	isms "github.com/tsukaychan/webook/internal/service/sms"
+	"github.com/tsukaychan/webook/pkg/ratelimit"
 
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
 )

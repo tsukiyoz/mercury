@@ -1,8 +1,8 @@
 package ioc
 
 import (
+	"github.com/tsukaychan/webook/pkg/logger"
 	"go.uber.org/zap"
-	"webook/pkg/logger"
 )
 
 func InitLogger() logger.Logger {

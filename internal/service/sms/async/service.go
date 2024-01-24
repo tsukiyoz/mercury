@@ -2,7 +2,7 @@ package async
 
 import (
 	"context"
-	"webook/internal/service/sms"
+	"github.com/tsukaychan/webook/internal/service/sms"
 )
 
 var _ sms.Service = (*SMSService)(nil)

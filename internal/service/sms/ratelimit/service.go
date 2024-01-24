@@ -3,9 +3,9 @@ package ratelimit
 import (
 	"context"
 	"fmt"
-	"webook/internal/service/sms"
-	"webook/internal/service/sms/tencent"
-	"webook/pkg/ratelimit"
+	"github.com/tsukaychan/webook/internal/service/sms"
+	"github.com/tsukaychan/webook/internal/service/sms/tencent"
+	"github.com/tsukaychan/webook/pkg/ratelimit"
 )
 
 var errLimited = fmt.Errorf("ratelimited")

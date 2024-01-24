@@ -1,10 +1,10 @@
 package ioc
 
 import (
+	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/webook/internal/service"
+	"github.com/tsukaychan/webook/pkg/logger"
 	"go.uber.org/zap"
-	"webook/internal/repository"
-	"webook/internal/service"
-	"webook/pkg/logger"
 )
 
 func InitUserService(repo repository.UserRepository) service.UserService {
@@ -12,5 +12,5 @@ func InitUserService(repo repository.UserRepository) service.UserService {
 	if err != nil {
 		panic(err)
 	}
-	return service.NewUserServiceV1(repo, logger.NewZapLogger(zapLogger))
+	return service.NewUserService(repo, logger.NewZapLogger(zapLogger))
 }

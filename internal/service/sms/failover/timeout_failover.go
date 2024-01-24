@@ -2,8 +2,8 @@ package failover
 
 import (
 	"context"
+	"github.com/tsukaychan/webook/internal/service/sms"
 	"sync/atomic"
-	"webook/internal/service/sms"
 )
 
 type TimeoutFailoverSMSService struct {

@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/webook/pkg/logger"
 	"net/http"
 	"net/url"
-	"webook/internal/domain"
-	"webook/pkg/logger"
 )
 
 var redirectURI = url.PathEscape("https://tsukiyo.top/oauth2/wechat/callback")
