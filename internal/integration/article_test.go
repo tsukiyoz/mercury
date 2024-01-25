@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/integration/startup"
-	"github.com/tsukaychan/webook/internal/repository/dao"
+	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"gorm.io/gorm"
 	"net/http"
 	"net/http/httptest"
@@ -67,14 +67,14 @@ func (s *ArticleTestSuite) TestEdit() {
 			before: func(t *testing.T) {},
 			after: func(t *testing.T) {
 				// check db
-				var article dao.Article
+				var article articleDao.Article
 				err := s.db.Where("id = ?", 1).First(&article).Error
 
 				assert.NoError(t, err)
 				assert.True(t, article.Ctime > 0)
 				assert.True(t, article.Utime > 0)
 				article.Ctime, article.Utime = 0, 0
-				assert.Equal(t, dao.Article{
+				assert.Equal(t, articleDao.Article{
 					Id:       1,
 					Title:    "my title",
 					Content:  "this is a content",
@@ -95,7 +95,7 @@ func (s *ArticleTestSuite) TestEdit() {
 		{
 			name: "update article",
 			before: func(t *testing.T) {
-				err := s.db.Create(dao.Article{
+				err := s.db.Create(articleDao.Article{
 					Id:       2,
 					Title:    "my title",
 					Content:  "this is a content",
@@ -108,13 +108,13 @@ func (s *ArticleTestSuite) TestEdit() {
 			},
 			after: func(t *testing.T) {
 				// check db
-				var article dao.Article
+				var article articleDao.Article
 				err := s.db.Where("id = ?", 2).First(&article).Error
 
 				assert.NoError(t, err)
 				assert.True(t, article.Utime > 234)
 				article.Utime = 0
-				assert.Equal(t, dao.Article{
+				assert.Equal(t, articleDao.Article{
 					Id:       2,
 					Title:    "my new title",
 					Content:  "this is a new content",
@@ -137,7 +137,7 @@ func (s *ArticleTestSuite) TestEdit() {
 		{
 			name: "update someone else's article",
 			before: func(t *testing.T) {
-				err := s.db.Create(dao.Article{
+				err := s.db.Create(articleDao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "this is a content",
@@ -150,11 +150,11 @@ func (s *ArticleTestSuite) TestEdit() {
 			},
 			after: func(t *testing.T) {
 				// check db
-				var article dao.Article
+				var article articleDao.Article
 				err := s.db.Where("id = ?", 3).First(&article).Error
 
 				assert.NoError(t, err)
-				assert.Equal(t, dao.Article{
+				assert.Equal(t, articleDao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "this is a content",
