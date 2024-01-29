@@ -68,8 +68,3 @@ func (s *Service) Send(ctx context.Context, tpl string, args []sms.ArgVal, phone
 	fmt.Printf("response is %v\n", response)
 	return nil
 }
-
-type ArgVal struct {
-	Val  string
-	Name string
-}
