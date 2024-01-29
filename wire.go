@@ -10,6 +10,7 @@ import (
 	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
 	usercache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
+	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/internal/service"
 	"github.com/tsukaychan/webook/ioc"
 
@@ -24,6 +25,7 @@ func InitWebServer() *gin.Engine {
 		ioc.InitLogger,
 
 		dao.NewGORMUserDAO,
+		articleDao.NewGORMArticleDAO,
 
 		usercache.NewUserRedisCache,
 		captchacache.NewCaptchaRedisCache,
