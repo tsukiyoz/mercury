@@ -65,7 +65,7 @@ func (dao *GORMArticleDAO) UpdateById(ctx context.Context, atcl Article) error {
 		return res.Error
 	}
 	if res.RowsAffected == 0 {
-		return fmt.Errorf("update atcl failed, perhaps invalid id: id %d author_id %d", atcl.Id, atcl.AuthorId)
+		return fmt.Errorf("update article failed, perhaps invalid id: id %d author_id %d", atcl.Id, atcl.AuthorId)
 	}
 	return nil
 }
