@@ -12,11 +12,11 @@ import (
 	"testing"
 )
 
-func Test_articleService_PublishV1(t *testing.T) {
+func Test_articleService_Publish(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		mock func(controller *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository)
+		mock func(controller *gomock.Controller) article.ArticleRepository
 
 		article domain.Article
 
@@ -26,27 +26,19 @@ func Test_articleService_PublishV1(t *testing.T) {
 		{
 			name: "create and publish success",
 
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
+			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
 
-				articleAuthorRepo.EXPECT().Create(gomock.Any(), domain.Article{
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(int64(1), nil)
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      1,
+				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{
 					Title:   "my title",
 					Content: "my content",
 					Author: domain.Author{
 						Id: 123,
 					},
+					Status: domain.ArticleStatusPublished,
 				}).Return(int64(1), nil)
 
-				return articleAuthorRepo, articleReaderRepo
+				return atclRepo
 			},
 
 			article: domain.Article{
@@ -60,272 +52,92 @@ func Test_articleService_PublishV1(t *testing.T) {
 			wantId: 1,
 		},
 		{
-			name: "create and publish into production library failed",
+			name: "create and publish failed",
 
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
+			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
 
-				articleAuthorRepo.EXPECT().Create(gomock.Any(), domain.Article{
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(int64(0), errors.New("mock db error"))
-
-				return articleAuthorRepo, articleReaderRepo
-			},
-
-			article: domain.Article{
-				Title:   "my title",
-				Content: "my content",
-				Author: domain.Author{
-					Id: 123,
-				},
-			},
-
-			wantId:  0,
-			wantErr: errors.New("mock db error"),
-		},
-		{
-			name: "create and publish into online library failed and retry success",
-
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
-
-				articleAuthorRepo.EXPECT().Create(gomock.Any(), domain.Article{
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(int64(3), nil)
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      3,
+				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{
 					Title:   "my title",
 					Content: "my content",
 					Author: domain.Author{
 						Id: 123,
 					},
-				}).Times(2).Return(int64(0), errors.New("mock db error"))
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      3,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					},
-				}).Return(int64(3), nil)
-
-				return articleAuthorRepo, articleReaderRepo
-			},
-
-			article: domain.Article{
-				Title:   "my title",
-				Content: "my content",
-				Author: domain.Author{
-					Id: 123,
-				},
-			},
-
-			wantId: 3,
-		},
-		{
-			name: "create and publish into online library failed and retry failed",
-
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
-
-				articleAuthorRepo.EXPECT().Create(gomock.Any(), domain.Article{
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(int64(4), nil)
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      4,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					},
-				}).Times(3).Return(int64(0), errors.New("mock db error"))
-				return articleAuthorRepo, articleReaderRepo
-			},
-
-			article: domain.Article{
-				Title:   "my title",
-				Content: "my content",
-				Author: domain.Author{
-					Id: 123,
-				},
-			},
-
-			wantId:  0,
-			wantErr: errors.New("mock db error"),
-		},
-		{
-			name: "modify and publish success",
-
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
-
-				articleAuthorRepo.EXPECT().Update(gomock.Any(), domain.Article{
-					Id:      5,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(nil)
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      5,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					},
-				}).Return(int64(5), nil)
-
-				return articleAuthorRepo, articleReaderRepo
-			},
-
-			article: domain.Article{
-				Id:      5,
-				Title:   "my title",
-				Content: "my content",
-				Author: domain.Author{
-					Id: 123,
-				},
-			},
-
-			wantId: 5,
-		},
-		{
-			name: "modify and publish into production library failed",
-
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
-
-				articleAuthorRepo.EXPECT().Update(gomock.Any(), domain.Article{
-					Id:      6,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(errors.New("mock db error"))
-
-				return articleAuthorRepo, articleReaderRepo
-			},
-
-			article: domain.Article{
-				Id:      6,
-				Title:   "my title",
-				Content: "my content",
-				Author: domain.Author{
-					Id: 123,
-				},
-			},
-
-			wantId:  0,
-			wantErr: errors.New("mock db error"),
-		},
-		{
-			name: "modify and publish into online library failed and retry success",
-
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
-
-				articleAuthorRepo.EXPECT().Update(gomock.Any(), domain.Article{
-					Id:      7,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(nil)
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      7,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					},
-				}).Times(2).Return(int64(0), errors.New("mock db error"))
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      7,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					},
-				}).Return(int64(7), nil)
-
-				return articleAuthorRepo, articleReaderRepo
-			},
-
-			article: domain.Article{
-				Id:      7,
-				Title:   "my title",
-				Content: "my content",
-				Author: domain.Author{
-					Id: 123,
-				},
-			},
-
-			wantId: 7,
-		},
-		{
-			name: "modify and publish into online library failed and retry failed",
-
-			mock: func(ctrl *gomock.Controller) (article.ArticleAuthorRepository, article.ArticleReaderRepository) {
-				articleAuthorRepo := articlerepomocks.NewMockArticleAuthorRepository(ctrl)
-				articleReaderRepo := articlerepomocks.NewMockArticleReaderRepository(ctrl)
-
-				articleAuthorRepo.EXPECT().Update(gomock.Any(), domain.Article{
-					Id:      8,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					}}).Return(nil)
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      8,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					},
-				}).Times(2).Return(int64(0), errors.New("mock db error"))
-
-				articleReaderRepo.EXPECT().Save(gomock.Any(), domain.Article{
-					Id:      8,
-					Title:   "my title",
-					Content: "my content",
-					Author: domain.Author{
-						Id: 123,
-					},
+					Status: domain.ArticleStatusPublished,
 				}).Return(int64(0), errors.New("mock db error"))
 
-				return articleAuthorRepo, articleReaderRepo
+				return atclRepo
 			},
 
 			article: domain.Article{
-				Id:      8,
 				Title:   "my title",
 				Content: "my content",
 				Author: domain.Author{
 					Id: 123,
 				},
+			},
+
+			wantId:  0,
+			wantErr: errors.New("mock db error"),
+		},
+		{
+			name: "update and publish success",
+
+			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
+
+				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{
+					Id:      2,
+					Title:   "my title",
+					Content: "my content",
+					Author: domain.Author{
+						Id: 123,
+					},
+					Status: domain.ArticleStatusPublished,
+				}).Return(int64(2), nil)
+
+				return atclRepo
+			},
+
+			article: domain.Article{
+				Id:      2,
+				Title:   "my title",
+				Content: "my content",
+				Author: domain.Author{
+					Id: 123,
+				},
+				Status: domain.ArticleStatusPublished,
+			},
+
+			wantId: 2,
+		},
+		{
+			name: "update and publish failed",
+
+			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
+
+				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{
+					Id:      2,
+					Title:   "my title",
+					Content: "my content",
+					Author: domain.Author{
+						Id: 123,
+					},
+					Status: domain.ArticleStatusPublished,
+				}).Return(int64(0), errors.New("mock db error"))
+
+				return atclRepo
+			},
+
+			article: domain.Article{
+				Id:      2,
+				Title:   "my title",
+				Content: "my content",
+				Author: domain.Author{
+					Id: 123,
+				},
+				Status: domain.ArticleStatusPublished,
 			},
 
 			wantId:  0,
@@ -337,10 +149,11 @@ func Test_articleService_PublishV1(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			authorRepo, readerRepo := tc.mock(ctrl)
-			svc := NewArticleServiceV1(authorRepo, readerRepo, logger.NewNopLogger())
+			atclRepo := tc.mock(ctrl)
 
-			id, err := svc.PublishV1(context.Background(), tc.article)
+			svc := NewArticleService(atclRepo, logger.NewNopLogger())
+
+			id, err := svc.Publish(context.Background(), tc.article)
 			assert.Equal(t, tc.wantId, id)
 			assert.Equal(t, tc.wantErr, err)
 		})

@@ -12,8 +12,8 @@ type ArticleDAO interface {
 	Insert(ctx context.Context, article Article) (int64, error)
 	UpdateById(ctx context.Context, article Article) error
 	Sync(ctx context.Context, article Article) (int64, error)
-
-	Upsert(ctx context.Context, article PublishArticle) error
+	Upsert(ctx context.Context, article PublishedArticle) error
+	SyncStatus(ctx context.Context, atcl Article) error
 }
 
 // Article Production Library
@@ -22,8 +22,14 @@ type Article struct {
 	Title    string `gorm:"type=varchar(1024)"`
 	Content  string `gorm:"blob"`
 	AuthorId int64  `gorm:"index=aid_ctime"`
-	Ctime    int64  `gorm:"index=aid_ctime"`
+	Status   uint8
+	Ctime    int64 `gorm:"index=aid_ctime"`
 	Utime    int64
+}
+
+// PublishedArticle OnLive Library
+type PublishedArticle struct {
+	Article
 }
 
 type GORMArticleDAO struct {
@@ -36,63 +42,94 @@ func NewGORMArticleDAO(db *gorm.DB) ArticleDAO {
 	}
 }
 
-func (dao *GORMArticleDAO) Insert(ctx context.Context, article Article) (int64, error) {
+func (dao *GORMArticleDAO) Insert(ctx context.Context, atcl Article) (int64, error) {
 	now := time.Now().UnixMilli()
-	article.Ctime = now
-	article.Utime = now
-	err := dao.db.WithContext(ctx).Create(&article).Error
-	return article.Id, err
+	atcl.Ctime = now
+	atcl.Utime = now
+	err := dao.db.WithContext(ctx).Create(&atcl).Error
+	return atcl.Id, err
 }
 
-func (dao *GORMArticleDAO) UpdateById(ctx context.Context, article Article) error {
+func (dao *GORMArticleDAO) UpdateById(ctx context.Context, atcl Article) error {
 	now := time.Now().UnixMilli()
-	article.Utime = now
-	res := dao.db.WithContext(ctx).Model(&article).
-		Where("id=? AND author_id=?", article.Id, article.AuthorId).
+	atcl.Utime = now
+	res := dao.db.WithContext(ctx).Model(&atcl).
+		Where("id=? AND author_id=?", atcl.Id, atcl.AuthorId).
 		Updates(map[string]any{
-			"title":   article.Title,
-			"content": article.Content,
-			"utime":   article.Utime,
+			"title":   atcl.Title,
+			"content": atcl.Content,
+			"status":  atcl.Status,
+			"utime":   atcl.Utime,
 		})
 	if res.Error != nil {
 		return res.Error
 	}
 	if res.RowsAffected == 0 {
-		return fmt.Errorf("update article failed, perhaps invalid id: id %d author_id %d", article.Id, article.AuthorId)
+		return fmt.Errorf("update atcl failed, perhaps invalid id: id %d author_id %d", atcl.Id, atcl.AuthorId)
 	}
 	return nil
 }
 
-func (dao *GORMArticleDAO) Sync(ctx context.Context, article Article) (int64, error) {
-	var id = article.Id
+func (dao *GORMArticleDAO) Sync(ctx context.Context, atcl Article) (int64, error) {
+	var id = atcl.Id
 	err := dao.db.Transaction(func(tx *gorm.DB) (err error) {
 		txDao := NewGORMArticleDAO(tx)
 
-		if article.Id > 0 {
-			err = txDao.UpdateById(ctx, article)
+		if atcl.Id > 0 {
+			err = txDao.UpdateById(ctx, atcl)
 		} else {
-			id, err = txDao.Insert(ctx, article)
+			id, err = txDao.Insert(ctx, atcl)
 		}
 		if err != nil {
 			return err
 		}
 
-		article.Id = id
-		return txDao.Upsert(ctx, PublishArticle{article})
+		atcl.Id = id
+		return txDao.Upsert(ctx, PublishedArticle{atcl})
 	})
 	return id, err
 }
 
-func (dao *GORMArticleDAO) Upsert(ctx context.Context, article PublishArticle) error {
+func (dao *GORMArticleDAO) Upsert(ctx context.Context, atcl PublishedArticle) error {
 	now := time.Now().UnixMilli()
-	article.Utime, article.Ctime = now, now
+	atcl.Utime, atcl.Ctime = now, now
 	err := dao.db.Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "id"}},
 		DoUpdates: clause.Assignments(map[string]interface{}{
-			"title":   article.Title,
-			"content": article.Content,
-			"utime":   article.Utime,
+			"title":   atcl.Title,
+			"content": atcl.Content,
+			"status":  atcl.Status,
+			"utime":   atcl.Utime,
 		}),
-	}).Create(&article).Error
+	}).Create(&atcl).Error
 	return err
+}
+
+func (dao *GORMArticleDAO) SyncStatus(ctx context.Context, atcl Article) error {
+	now := time.Now().UnixMilli()
+	return dao.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		res := tx.Model(&Article{}).Where("id = ? AND author_id = ?", atcl.Id, atcl.AuthorId).Updates(map[string]any{
+			"status": atcl.Status,
+			"utime":  now,
+		})
+		if res.Error != nil {
+			return res.Error
+		}
+		if res.RowsAffected != 1 {
+			return fmt.Errorf("sync status failed, perhaps article[id: %d] doesn't belongs to this user[id: %d]", atcl.Id, atcl.AuthorId)
+		}
+
+		res = tx.Model(&PublishedArticle{}).Where("id = ?", atcl.Id).Updates(map[string]any{
+			"status": atcl.Status,
+			"utime":  now,
+		})
+		if res.Error != nil {
+			return res.Error
+		}
+		if res.RowsAffected != 1 {
+			return fmt.Errorf("sync status failed, perhaps article[id: %d] doesn't belongs to this user[id: %d]", atcl.Id, atcl.AuthorId)
+		}
+
+		return nil
+	})
 }
