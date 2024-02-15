@@ -15,6 +15,7 @@ var (
 
 var _ CaptchaService = (*captchaService)(nil)
 
+//go:generate mockgen -source=./captcha.go -package=svcmocks -destination=mocks/captcha.mock.go CaptchaService
 type CaptchaService interface {
 	Send(ctx context.Context, biz string, phone string) error
 	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)

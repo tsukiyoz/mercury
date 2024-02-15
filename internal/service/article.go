@@ -3,11 +3,14 @@ package service
 import (
 	"context"
 	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/repository/article"
+	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"time"
 )
 
+var _ ArticleService = (*articleService)(nil)
+
+//go:generate mockgen -source=./article.go -package=svcmocks -destination=mocks/article.mock.go ArticleService
 type ArticleService interface {
 	// author
 
@@ -24,10 +27,8 @@ type ArticleService interface {
 	ListPub(ctx context.Context, startTime time.Time, offset, limit int) ([]domain.Article, error)
 }
 
-var _ ArticleService = (*articleService)(nil)
-
 type articleService struct {
-	articleRepo repository.ArticleRepository
+	articleRepo repository.repository
 	logger      logger.Logger
 }
 

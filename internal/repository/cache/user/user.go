@@ -13,6 +13,7 @@ var ErrKeyNotExist = redis.Nil
 
 var _ UserCache = (*UserRedisCache)(nil)
 
+//go:generate mockgen -source=./user.go -package=cachemocks -destination=mocks/user.mock.go UserCache
 type UserCache interface {
 	Get(ctx context.Context, id int64) (domain.User, error)
 	Set(ctx context.Context, u domain.User) error

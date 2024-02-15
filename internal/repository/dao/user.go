@@ -22,6 +22,7 @@ var (
 
 var _ UserDAO = (*GORMUserDAO)(nil)
 
+//go:generate mockgen -source=./user.go -package=daomocks -destination=mocks/user.mock.go UserDAO
 type UserDAO interface {
 	Insert(ctx context.Context, u User) error
 	FindByEmail(ctx context.Context, email string) (User, error)

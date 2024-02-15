@@ -12,11 +12,6 @@ import (
 
 var redirectURI = url.PathEscape("https://tsukiyo.top/oauth2/wechat/callback")
 
-type Service interface {
-	AuthURL(ctx context.Context, state string) (string, error)
-	VerifyCode(ctx context.Context, code string) (domain.WechatInfo, error)
-}
-
 type service struct {
 	appId     string
 	appSecret string

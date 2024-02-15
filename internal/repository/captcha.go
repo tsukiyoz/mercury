@@ -12,6 +12,7 @@ var (
 
 var _ CaptchaRepository = (*CachedCaptchaRepository)(nil)
 
+//go:generate mockgen -source=./captcha.go -package=repomocks -destination=mocks/captcha.mock.go CaptchaRepository
 type CaptchaRepository interface {
 	Store(ctx context.Context, biz string, phone string, code string) error
 	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)

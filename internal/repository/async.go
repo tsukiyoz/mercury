@@ -9,6 +9,7 @@ import (
 
 var ErrWaitingSMSNotFound = dao.ErrWaitingSMSNotFound
 
+//go:generate mockgen -source=./async.go -package=repomocks -destination=mocks/async_sms_repository.mock.go AsyncSmsRepository
 type AsyncSmsRepository interface {
 	Insert(ctx context.Context, s domain.AsyncSms) error
 	PreemptWaitingSMS(ctx context.Context) (domain.AsyncSms, error)
