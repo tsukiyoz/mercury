@@ -58,8 +58,6 @@ mock:
 	@mockgen -source=internal/repository/user.go -package=repomocks -destination=internal/repository/mocks/user.mock.go
 	@mockgen -source=internal/repository/captcha.go -package=repomocks -destination=internal/repository/mocks/captcha.mock.go
 	@mockgen -source=internal/repository/article/article.go -package=articlerepomocks -destination=internal/repository/mocks/article/article.mock.go
-	@mockgen -source=internal/repository/article/article_author.go -package=articlerepomocks -destination=internal/repository/mocks/article/article_author.mock.go
-	@mockgen -source=internal/repository/article/article_reader.go -package=articlerepomocks -destination=internal/repository/mocks/article/article_reader.mock.go
 
 	@mockgen -source=internal/repository/dao/user.go -package=daomocks -destination=internal/repository/mocks/dao/user.mock.go
 	@mockgen -source=internal/repository/cache/user/user.go -package=cachemocks -destination=internal/repository/mocks/cache/user/user.mock.go

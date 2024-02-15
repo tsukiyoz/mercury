@@ -42,7 +42,7 @@ func (h *ArticleHandler) Edit(ctx *gin.Context) {
 		return
 	}
 
-	c := ctx.MustGet("claims")
+	c := ctx.MustGet("users")
 	claims, ok := c.(*ijwt.UserClaims)
 	if !ok {
 		ctx.JSON(http.StatusOK, Result{
@@ -76,7 +76,7 @@ func (h *ArticleHandler) Publish(ctx *gin.Context) {
 		return
 	}
 
-	c := ctx.MustGet("claims")
+	c := ctx.MustGet("users")
 	claims, ok := c.(*ijwt.UserClaims)
 	if !ok {
 		ctx.JSON(http.StatusOK, Result{
@@ -114,7 +114,7 @@ func (h *ArticleHandler) Withdraw(ctx *gin.Context) {
 		return
 	}
 
-	c := ctx.MustGet("claims")
+	c := ctx.MustGet("users")
 	claims, ok := c.(*ijwt.UserClaims)
 	if !ok {
 		ctx.JSON(http.StatusOK, Result{
@@ -124,12 +124,7 @@ func (h *ArticleHandler) Withdraw(ctx *gin.Context) {
 		h.logger.Error("no user session found")
 	}
 
-	err := h.articleSvc.Withdraw(ctx, domain.Article{
-		Id: req.Id,
-		Author: domain.Author{
-			Id: claims.Uid,
-		},
-	})
+	err := h.articleSvc.Withdraw(ctx, req.Id, claims.Uid)
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{

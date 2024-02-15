@@ -53,7 +53,7 @@ func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Han
 			"/users/login",
 			"/users/refresh_token",
 			"/users/login_sms/captcha/send",
-			"/users/login_sms/captcha/validate",
+			"/users/login_sms",
 			"/oauth2/wechat/authurl",
 			"/oauth2/wechat/callback",
 		).Build(),

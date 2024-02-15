@@ -8,7 +8,7 @@ import (
 	"github.com/tsukaychan/webook/internal/api"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/repository"
-	"github.com/tsukaychan/webook/internal/repository/article"
+	articleRepo "github.com/tsukaychan/webook/internal/repository/article"
 	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
 	usercache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
@@ -32,7 +32,7 @@ func InitWebServer() *gin.Engine {
 		captchacache.NewCaptchaRedisCache,
 		articleDao.NewGORMArticleDAO,
 		repository.NewCachedCaptchaRepository,
-		article.NewCachedArticleRepository,
+		articleRepo.NewCachedArticleRepository,
 
 		// service
 		ioc.InitSMSService,
@@ -57,13 +57,13 @@ func InitWebServer() *gin.Engine {
 	return gin.Default()
 }
 
-func InitArticleHandler() *api.ArticleHandler {
+func InitArticleHandler(dao articleDao.ArticleDAO) *api.ArticleHandler {
 	wire.Build(
 		thirdProvider,
 		api.NewArticleHandler,
 		service.NewArticleService,
-		article.NewCachedArticleRepository,
-		articleDao.NewGORMArticleDAO,
+		articleRepo.NewCachedArticleRepository,
+		//articleDao.NewGORMArticleDAO,
 	)
 	return &api.ArticleHandler{}
 }

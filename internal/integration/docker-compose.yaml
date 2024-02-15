@@ -1,0 +1,20 @@
+version: '3.0'
+services:
+  mysql:
+    image: mysql:8.0.20
+    restart: no
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: for.nothing
+    volumes:
+      - ../../script/mysql/:/docker-entrypoint-initdb.d/
+    ports:
+      - "13316:3306"
+  mongo:
+    image: mongo:6.0
+    restart: no
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: for.nothing
+    ports:
+      - "27017:27017"

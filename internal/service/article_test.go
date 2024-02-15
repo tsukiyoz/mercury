@@ -16,7 +16,7 @@ func Test_articleService_Publish(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		mock func(controller *gomock.Controller) article.ArticleRepository
+		mock func(controller *gomock.Controller) repository.ArticleRepository
 
 		article domain.Article
 
@@ -26,7 +26,7 @@ func Test_articleService_Publish(t *testing.T) {
 		{
 			name: "create and publish success",
 
-			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+			mock: func(ctrl *gomock.Controller) repository.ArticleRepository {
 				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
 
 				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{
@@ -54,7 +54,7 @@ func Test_articleService_Publish(t *testing.T) {
 		{
 			name: "create and publish failed",
 
-			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+			mock: func(ctrl *gomock.Controller) repository.ArticleRepository {
 				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
 
 				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{
@@ -83,7 +83,7 @@ func Test_articleService_Publish(t *testing.T) {
 		{
 			name: "update and publish success",
 
-			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+			mock: func(ctrl *gomock.Controller) repository.ArticleRepository {
 				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
 
 				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{
@@ -114,7 +114,7 @@ func Test_articleService_Publish(t *testing.T) {
 		{
 			name: "update and publish failed",
 
-			mock: func(ctrl *gomock.Controller) article.ArticleRepository {
+			mock: func(ctrl *gomock.Controller) repository.ArticleRepository {
 				atclRepo := articlerepomocks.NewMockArticleRepository(ctrl)
 
 				atclRepo.EXPECT().Sync(gomock.Any(), domain.Article{

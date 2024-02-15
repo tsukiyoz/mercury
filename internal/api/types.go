@@ -1,6 +1,16 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/tsukaychan/webook/pkg/ginx"
+)
+
+type Result = ginx.Result
+
+type Page struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
 
 type handler interface {
 	RegisterRoutes(server *gin.Engine)

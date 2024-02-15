@@ -119,7 +119,7 @@ func (h *RedisJWTHandler) ClearToken(ctx *gin.Context) error {
 	ctx.Header("x-jwt-token", "")
 	ctx.Header("x-refresh-token", "")
 
-	c, _ := ctx.Get("user")
+	c, _ := ctx.Get("users")
 	claims, ok := c.(*UserClaims)
 	if !ok {
 		return errors.New("not claims in context")

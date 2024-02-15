@@ -1,4 +1,4 @@
-package api
+package ginx
 
 type Result struct {
 	Code int    `json:"code"`

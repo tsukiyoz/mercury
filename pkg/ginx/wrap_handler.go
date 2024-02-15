@@ -2,19 +2,90 @@ package ginx
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tsukaychan/webook/internal/api"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/tsukaychan/webook/pkg/logger"
 	"net/http"
 )
 
-func WrapReq[T any](fn func(ctx *gin.Context, req T) (api.Result, error)) gin.HandlerFunc {
+var log logger.Logger = logger.NewNopLogger()
+
+func SetLogger(l logger.Logger) {
+	log = l
+}
+
+func WrapReq[Req any](fn func(ctx *gin.Context, req Req) (Result, error)) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var req T
+		var req Req
 		if err := ctx.Bind(&req); err != nil {
 			return
 		}
 		res, err := fn(ctx, req)
 		if err != nil {
+			log.Error("processing business logic error",
+				logger.String("path", ctx.Request.URL.Path),
+				logger.String("route", ctx.FullPath()),
+				logger.Error(err),
+			)
+			return
+		}
+		ctx.JSON(http.StatusOK, res)
+	}
+}
 
+func WrapClaims[Claims jwt.Claims](fn func(ctx *gin.Context, uc jwt.Claims) (Result, error)) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		val, ok := ctx.Get("users")
+		if !ok {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		claims, ok := val.(Claims)
+		if !ok {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		res, err := fn(ctx, claims)
+		if err != nil {
+			log.Error("processing business logic error",
+				logger.String("path", ctx.Request.URL.Path),
+				logger.String("route", ctx.FullPath()),
+				logger.Error(err),
+			)
+			return
+		}
+		ctx.JSON(http.StatusOK, res)
+	}
+}
+
+func WrapClaimsAndReq[Req any, Claims jwt.Claims](fn func(ctx *gin.Context, req Req, uc jwt.Claims) (Result, error)) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req Req
+		if err := ctx.Bind(&req); err != nil {
+			return
+		}
+
+		val, ok := ctx.Get("users")
+		if !ok {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		claims, ok := val.(Claims)
+		if !ok {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+
+		res, err := fn(ctx, req, claims)
+		if err != nil {
+			log.Error("processing business logic error",
+				logger.String("path", ctx.Request.URL.Path),
+				logger.String("route", ctx.FullPath()),
+				logger.Error(err),
+			)
+			return
 		}
 		ctx.JSON(http.StatusOK, res)
 	}

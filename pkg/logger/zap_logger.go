@@ -12,23 +12,29 @@ func NewZapLogger(logger *zap.Logger) Logger {
 	return &ZapLogger{logger: logger}
 }
 
-func (z *ZapLogger) Info(msg string, args ...Field) {
-	z.logger.Info(msg, z.toZapFields(args...)...)
+func (l *ZapLogger) Info(msg string, args ...Field) {
+	l.logger.Info(msg, l.toZapFields(args...)...)
 }
 
-func (z *ZapLogger) Debug(msg string, args ...Field) {
-	z.logger.Debug(msg, z.toZapFields(args...)...)
+func (l *ZapLogger) Debug(msg string, args ...Field) {
+	l.logger.Debug(msg, l.toZapFields(args...)...)
 }
 
-func (z *ZapLogger) Warn(msg string, args ...Field) {
-	z.logger.Debug(msg, z.toZapFields(args...)...)
+func (l *ZapLogger) Warn(msg string, args ...Field) {
+	l.logger.Debug(msg, l.toZapFields(args...)...)
 }
 
-func (z *ZapLogger) Error(msg string, args ...Field) {
-	z.logger.Error(msg, z.toZapFields(args...)...)
+func (l *ZapLogger) Error(msg string, args ...Field) {
+	l.logger.Error(msg, l.toZapFields(args...)...)
 }
 
-func (z *ZapLogger) toZapFields(args ...Field) []zap.Field {
+func (l *ZapLogger) With(args ...Field) Logger {
+	return &ZapLogger{
+		logger: l.logger.With(l.toZapFields(args...)...),
+	}
+}
+
+func (l *ZapLogger) toZapFields(args ...Field) []zap.Field {
 	res := make([]zap.Field, 0, len(args))
 	for _, arg := range args {
 		res = append(res, zap.Any(arg.Key, arg.Value))
