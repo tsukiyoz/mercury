@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
+	"github.com/ecodeclub/ekit/sqlx"
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository/dao"
-	"github.com/tsukaychan/webook/pkg/sqlx"
 )
 
 var ErrWaitingSMSNotFound = dao.ErrWaitingSMSNotFound

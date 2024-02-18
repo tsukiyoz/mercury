@@ -5,7 +5,6 @@ import (
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/pkg/logger"
-	"time"
 )
 
 var _ ArticleService = (*articleService)(nil)
@@ -23,12 +22,11 @@ type ArticleService interface {
 
 	// reader
 
-	GetPublishedById(ctx context.Context, id, authorId int64) (domain.Article, error)
-	ListPub(ctx context.Context, startTime time.Time, offset, limit int) ([]domain.Article, error)
+	GetPublishedById(ctx context.Context, id int64) (domain.Article, error)
 }
 
 type articleService struct {
-	articleRepo repository.repository
+	articleRepo repository.ArticleRepository
 	logger      logger.Logger
 }
 
@@ -66,11 +64,6 @@ func (svc *articleService) GetById(ctx context.Context, id int64) (domain.Articl
 	return svc.articleRepo.GetById(ctx, id)
 }
 
-func (svc *articleService) GetPublishedById(ctx context.Context, id, authorId int64) (domain.Article, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (svc *articleService) ListPub(ctx context.Context, startTime time.Time, offset, limit int) ([]domain.Article, error) {
-	return svc.articleRepo.ListPub(ctx, startTime, offset, limit)
+func (svc *articleService) GetPublishedById(ctx context.Context, id int64) (domain.Article, error) {
+	return svc.articleRepo.GetPublishedById(ctx, id)
 }

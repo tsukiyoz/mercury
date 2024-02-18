@@ -27,7 +27,7 @@ type ArticleGORMTestSuite struct {
 func (s *ArticleGORMTestSuite) SetupSuite() {
 	s.server = gin.Default()
 	s.server.Use(func(ctx *gin.Context) {
-		ctx.Set("users", &ijwt.UserClaims{
+		ctx.Set("user", &ijwt.UserClaims{
 			Uid: 123,
 		})
 	})

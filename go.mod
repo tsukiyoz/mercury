@@ -52,6 +52,7 @@ require (
 	github.com/aws/smithy-go v1.20.0 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
+	github.com/ecodeclub/ekit v0.0.8 // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect

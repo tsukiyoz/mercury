@@ -308,7 +308,7 @@ func (h *UserHandler) Edit(ctx *gin.Context) {
 		return
 	}
 
-	claims := ctx.MustGet("users").(*ijwt.UserClaims)
+	claims := ctx.MustGet("user").(*ijwt.UserClaims)
 	err = h.userService.UpdateNonSensitiveInfo(ctx, domain.User{
 		Id:       claims.Uid,
 		NickName: req.Nickname,
@@ -368,7 +368,7 @@ func (h *UserHandler) ProfileJWT(ctx *gin.Context) {
 		AboutMe  string
 	}
 
-	claims := ctx.MustGet("users").(*ijwt.UserClaims)
+	claims := ctx.MustGet("user").(*ijwt.UserClaims)
 
 	user, err := h.userService.Profile(ctx, claims.Uid)
 	if err != nil {

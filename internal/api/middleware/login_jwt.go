@@ -60,6 +60,6 @@ func (l *LoginJWTMiddlewareBuilder) Build() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("users", claims)
+		ctx.Set("user", claims)
 	}
 }

@@ -2,8 +2,8 @@ package dao
 
 import (
 	"context"
+	"github.com/ecodeclub/ekit/sqlx"
 	"github.com/tsukaychan/webook/internal/service/sms"
-	"github.com/tsukaychan/webook/pkg/sqlx"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"time"

@@ -44,5 +44,5 @@ func InitDB(l logger.Logger) *gorm.DB {
 type gormLoggerFunc func(msg string, fields ...logger.Field)
 
 func (g gormLoggerFunc) Printf(msg string, args ...interface{}) {
-	g("[WEBOOK]", logger.Field{Key: "args", Value: fmt.Sprintf(msg, args...)})
+	g("[SQL]", logger.Field{Key: "args", Value: fmt.Sprintf(msg, args...)})
 }

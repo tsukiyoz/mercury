@@ -3,18 +3,18 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 	"github.com/tsukaychan/webook/internal/api"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
 	usercache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/internal/service"
 	"github.com/tsukaychan/webook/ioc"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/wire"
 )
 
 func InitWebServer() *gin.Engine {
@@ -28,6 +28,7 @@ func InitWebServer() *gin.Engine {
 
 		usercache.NewUserRedisCache,
 		captchacache.NewCaptchaRedisCache,
+		cache.NewRedisArticleCache,
 
 		repository.NewCachedUserRepository,
 		repository.NewCachedCaptchaRepository,

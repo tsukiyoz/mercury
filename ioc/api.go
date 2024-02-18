@@ -7,6 +7,7 @@ import (
 	"github.com/tsukaychan/webook/internal/api"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/api/middleware"
+	"github.com/tsukaychan/webook/pkg/ginx"
 	ginxlogger "github.com/tsukaychan/webook/pkg/ginx/middleware/logger"
 	ginRatelimit "github.com/tsukaychan/webook/pkg/ginx/middleware/ratelimit"
 	"github.com/tsukaychan/webook/pkg/logger"
@@ -19,7 +20,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func InitWebServer(mdls []gin.HandlerFunc, userHdl *api.UserHandler, oAuth2Hdl *api.OAuth2WechatHandler, articleHdl *api.ArticleHandler) *gin.Engine {
+func InitWebServer(mdls []gin.HandlerFunc, userHdl *api.UserHandler, oAuth2Hdl *api.OAuth2WechatHandler, articleHdl *api.ArticleHandler, logger logger.Logger) *gin.Engine {
+	ginx.SetLogger(logger)
 	server := gin.Default()
 	server.Use(mdls...)
 	userHdl.RegisterRoutes(server)
@@ -35,7 +37,7 @@ func InitLimiter(cmd redis.Cmdable) ratelimit.Limiter {
 
 func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Handler) []gin.HandlerFunc {
 	bd := ginxlogger.NewMiddlewareBuilder(func(ctx context.Context, aL *ginxlogger.AccessLog) {
-		l.Debug("HTTP request", logger.Field{
+		l.Debug("[HTTP request]", logger.Field{
 			Key:   "accessLog",
 			Value: aL,
 		})

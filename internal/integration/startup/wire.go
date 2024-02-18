@@ -8,8 +8,9 @@ import (
 	"github.com/tsukaychan/webook/internal/api"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/repository"
-	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
-	usercache "github.com/tsukaychan/webook/internal/repository/cache/user"
+	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
+	captchaCache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
+	userCache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/internal/service"
@@ -19,25 +20,29 @@ import (
 var thirdProvider = wire.NewSet(InitRedis, InitTestDB, InitLog)
 var userSvcProvider = wire.NewSet(
 	dao.NewGORMUserDAO,
-	usercache.NewUserRedisCache,
+	userCache.NewUserRedisCache,
 	repository.NewCachedUserRepository,
 	service.NewUserService)
+var articleSvcProvider = wire.NewSet(
+	service.NewArticleService,
+	repository.NewCachedArticleRepository,
+	articleDao.NewGORMArticleDAO,
+	articleCache.NewRedisArticleCache,
+)
 
 func InitWebServer() *gin.Engine {
 	wire.Build(
 		thirdProvider,
 		userSvcProvider,
-		//articlSvcProvider,
-		captchacache.NewCaptchaRedisCache,
-		articleDao.NewGORMArticleDAO,
+		articleSvcProvider,
+
+		captchaCache.NewCaptchaRedisCache,
 		repository.NewCachedCaptchaRepository,
-		repository.NewCachedArticleRepository,
 
 		// service
 		ioc.InitSMSService,
 		InitPhantomWechatService,
 		service.NewCaptchaService,
-		service.NewArticleService,
 
 		// handler
 		api.NewUserHandler,
@@ -59,16 +64,19 @@ func InitWebServer() *gin.Engine {
 func InitArticleHandler(dao articleDao.ArticleDAO) *api.ArticleHandler {
 	wire.Build(
 		thirdProvider,
-		api.NewArticleHandler,
 		service.NewArticleService,
 		repository.NewCachedArticleRepository,
-		//articleDao.NewGORMArticleDAO,
+		articleCache.NewRedisArticleCache,
+		api.NewArticleHandler,
 	)
 	return &api.ArticleHandler{}
 }
 
 func InitUserSvc() service.UserService {
-	wire.Build(thirdProvider, userSvcProvider)
+	wire.Build(
+		thirdProvider,
+		userSvcProvider,
+	)
 	return service.NewUserService(nil, nil)
 }
 

@@ -26,66 +26,63 @@ func WrapReq[Req any](fn func(ctx *gin.Context, req Req) (Result, error)) gin.Ha
 				logger.String("route", ctx.FullPath()),
 				logger.Error(err),
 			)
-			return
 		}
 		ctx.JSON(http.StatusOK, res)
 	}
 }
 
-func WrapClaims[Claims jwt.Claims](fn func(ctx *gin.Context, uc jwt.Claims) (Result, error)) gin.HandlerFunc {
+func WrapClaims[Claims jwt.Claims](fn func(ctx *gin.Context, uc Claims) (Result, error)) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		val, ok := ctx.Get("users")
+		val, ok := ctx.Get("user")
 		if !ok {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		claims, ok := val.(Claims)
+		claims, ok := val.(*Claims)
 		if !ok {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		res, err := fn(ctx, claims)
+		res, err := fn(ctx, *claims)
 		if err != nil {
 			log.Error("processing business logic error",
 				logger.String("path", ctx.Request.URL.Path),
 				logger.String("route", ctx.FullPath()),
 				logger.Error(err),
 			)
-			return
 		}
 		ctx.JSON(http.StatusOK, res)
 	}
 }
 
-func WrapClaimsAndReq[Req any, Claims jwt.Claims](fn func(ctx *gin.Context, req Req, uc jwt.Claims) (Result, error)) gin.HandlerFunc {
+func WrapClaimsAndReq[Req any, Claims jwt.Claims](fn func(ctx *gin.Context, req Req, uc Claims) (Result, error)) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req Req
 		if err := ctx.Bind(&req); err != nil {
 			return
 		}
 
-		val, ok := ctx.Get("users")
+		val, ok := ctx.Get("user")
 		if !ok {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		claims, ok := val.(Claims)
+		claims, ok := val.(*Claims)
 		if !ok {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
-		res, err := fn(ctx, req, claims)
+		res, err := fn(ctx, req, *claims)
 		if err != nil {
 			log.Error("processing business logic error",
 				logger.String("path", ctx.Request.URL.Path),
 				logger.String("route", ctx.FullPath()),
 				logger.Error(err),
 			)
-			return
 		}
 		ctx.JSON(http.StatusOK, res)
 	}

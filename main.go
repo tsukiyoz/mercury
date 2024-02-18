@@ -26,9 +26,7 @@ import (
 func main() {
 	initViper()
 	initLogger()
-	//initViperRemote()
-	keys := viper.AllKeys()
-	println(keys)
+
 	server := InitWebServer()
 	server.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "welcome to tsukiyo's website!")

@@ -9,7 +9,9 @@ type ZapLogger struct {
 }
 
 func NewZapLogger(logger *zap.Logger) Logger {
-	return &ZapLogger{logger: logger}
+	return &ZapLogger{
+		logger: logger,
+	}
 }
 
 func (l *ZapLogger) Info(msg string, args ...Field) {
