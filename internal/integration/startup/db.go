@@ -4,14 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 var db *gorm.DB
@@ -52,7 +53,8 @@ func InitMongoDB() *mongo.Database {
 		defer cancel()
 		monitor := &event.CommandMonitor{
 			Started: func(ctx context.Context,
-				startedEvent *event.CommandStartedEvent) {
+				startedEvent *event.CommandStartedEvent,
+			) {
 				fmt.Println(startedEvent.Command)
 			},
 		}

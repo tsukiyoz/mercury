@@ -2,6 +2,9 @@ package ioc
 
 import (
 	"context"
+	"strings"
+	"time"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"github.com/tsukaychan/webook/internal/api"
@@ -12,8 +15,6 @@ import (
 	ginRatelimit "github.com/tsukaychan/webook/pkg/ginx/middleware/ratelimit"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"github.com/tsukaychan/webook/pkg/ratelimit"
-	"strings"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

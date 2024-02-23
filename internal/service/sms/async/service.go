@@ -2,11 +2,12 @@ package async
 
 import (
 	"context"
+	"time"
+
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/internal/service/sms"
 	"github.com/tsukaychan/webook/pkg/logger"
-	"time"
 )
 
 var _ sms.Service = (*SMSService)(nil)

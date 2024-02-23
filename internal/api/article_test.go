@@ -4,6 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -13,9 +17,6 @@ import (
 	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"go.uber.org/mock/gomock"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 )
 
 type Article struct {
@@ -27,7 +28,7 @@ func TestArticleHandler_Publish(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		mock func(ctrl *gomock.Controller) service.ArticleService
+		mock func(ctrl *gomock.Controller) (service.ArticleService, service.InteractiveService)
 
 		req Article
 
@@ -37,7 +38,7 @@ func TestArticleHandler_Publish(t *testing.T) {
 		{
 			name: "create and publish success",
 
-			mock: func(ctrl *gomock.Controller) service.ArticleService {
+			mock: func(ctrl *gomock.Controller) (service.ArticleService, service.InteractiveService) {
 				articleSvc := svcmock.NewMockArticleService(ctrl)
 				articleSvc.EXPECT().Publish(gomock.Any(), domain.Article{
 					Title:   "my title",
@@ -46,7 +47,7 @@ func TestArticleHandler_Publish(t *testing.T) {
 						Id: 123,
 					},
 				}).Return(int64(1), nil)
-				return articleSvc
+				return articleSvc, nil
 			},
 
 			req: Article{
@@ -56,15 +57,13 @@ func TestArticleHandler_Publish(t *testing.T) {
 
 			wantCode: http.StatusOK,
 			wantResult: Result{
-				Code: 2,
-				Msg:  "success",
 				Data: float64(1),
 			},
 		},
 		{
 			name: "create and publish failed",
 
-			mock: func(ctrl *gomock.Controller) service.ArticleService {
+			mock: func(ctrl *gomock.Controller) (service.ArticleService, service.InteractiveService) {
 				articleSvc := svcmock.NewMockArticleService(ctrl)
 				articleSvc.EXPECT().Publish(gomock.Any(), domain.Article{
 					Title:   "my title",
@@ -73,7 +72,7 @@ func TestArticleHandler_Publish(t *testing.T) {
 						Id: 123,
 					},
 				}).Return(int64(0), errors.New("publish failed"))
-				return articleSvc
+				return articleSvc, nil
 			},
 
 			req: Article{
@@ -98,12 +97,12 @@ func TestArticleHandler_Publish(t *testing.T) {
 
 			server := gin.Default()
 			server.Use(func(ctx *gin.Context) {
-				ctx.Set("claims", &ijwt.UserClaims{
+				ctx.Set("user", &ijwt.UserClaims{
 					Uid: 123,
 				})
 			})
-
-			h := NewArticleHandler(tc.mock(ctrl), logger.NewNopLogger())
+			atclSvc, intrSvc := tc.mock(ctrl)
+			h := NewArticleHandler(atclSvc, intrSvc, logger.NewNopLogger())
 			h.RegisterRoutes(server)
 
 			reqBody, err := json.Marshal(tc.req)

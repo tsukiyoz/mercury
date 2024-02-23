@@ -3,11 +3,12 @@ package cache
 import (
 	"context"
 	"errors"
+	"testing"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	redismock "github.com/tsukaychan/webook/internal/repository/mocks/cache/redis"
 	"go.uber.org/mock/gomock"
-	"testing"
 )
 
 func TestCaptchaRedisCache_Set(t *testing.T) {

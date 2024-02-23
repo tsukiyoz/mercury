@@ -2,11 +2,12 @@ package dao
 
 import (
 	"context"
+	"time"
+
 	"github.com/ecodeclub/ekit/sqlx"
 	"github.com/tsukaychan/webook/internal/service/sms"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"time"
 )
 
 var ErrWaitingSMSNotFound = gorm.ErrRecordNotFound
@@ -68,7 +69,7 @@ func (dao *GORMAsyncSmsDao) GetWaitingSMS(ctx context.Context) (AsyncSms, error)
 		}
 
 		err = tx.Model(&AsyncSms{}).Where("id = ?", as.Id).Updates(map[string]any{
-			"retry_cnt": gorm.Expr("retry_cnt + 1"),
+			"retry_cnt": gorm.Expr("`retry_cnt` + 1"),
 			"utime":     now,
 		}).Error
 		return err

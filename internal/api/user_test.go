@@ -3,14 +3,17 @@ package api
 import (
 	"bytes"
 	"errors"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/tsukaychan/webook/pkg/logger"
+
 	"github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/domain"
 	redismock "github.com/tsukaychan/webook/internal/repository/mocks/cache/redis"
 	"github.com/tsukaychan/webook/internal/service"
 	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -51,7 +54,8 @@ func TestUserHandler_SignUp(t *testing.T) {
 				"emails"="test@163.com",
 				"passwords": "for.nothing",
 				"confirm_passwords": "for.nothing"
-			}`)},
+			}`),
+			},
 			expect: struct {
 				code int
 				body string
@@ -75,7 +79,8 @@ func TestUserHandler_SignUp(t *testing.T) {
 				"email": "test",
 				"password": "for.nothing",
 				"confirm_password": "for.nothing"
-			}`)},
+			}`),
+			},
 			expect: struct {
 				code int
 				body string
@@ -101,7 +106,8 @@ func TestUserHandler_SignUp(t *testing.T) {
 				"email": "test@163.com",
 				"password": "for.nothing1",
 				"confirm_password": "for.nothing2"
-			}`)},
+			}`),
+			},
 			expect: struct {
 				code int
 				body string
@@ -127,7 +133,8 @@ func TestUserHandler_SignUp(t *testing.T) {
 				"email": "test@163.com",
 				"password": "for",
 				"confirm_password": "for"
-			}`)},
+			}`),
+			},
 			expect: struct {
 				code int
 				body string
@@ -154,7 +161,8 @@ func TestUserHandler_SignUp(t *testing.T) {
 				"email": "test@163.com",
 				"password": "for.nothing",
 				"confirm_password": "for.nothing"
-			}`)},
+			}`),
+			},
 			expect: struct {
 				code int
 				body string
@@ -181,7 +189,8 @@ func TestUserHandler_SignUp(t *testing.T) {
 				"email": "test@163.com",
 				"password": "for.nothing",
 				"confirm_password": "for.nothing"
-			}`)},
+			}`),
+			},
 			expect: struct {
 				code int
 				body string
@@ -204,7 +213,8 @@ func TestUserHandler_SignUp(t *testing.T) {
 			}{
 				method: http.MethodPost,
 				url:    "/users/signup",
-				body:   []byte(`{"email":"test@163.com","password":"for.nothing","confirm_password":"for.nothing"}`)},
+				body:   []byte(`{"email":"test@163.com","password":"for.nothing","confirm_password":"for.nothing"}`),
+			},
 			expect: struct {
 				code int
 				body string
@@ -222,7 +232,7 @@ func TestUserHandler_SignUp(t *testing.T) {
 
 			server := gin.Default()
 
-			h := NewUserHandler(tc.mock(ctrl), nil, nil)
+			h := NewUserHandler(tc.mock(ctrl), nil, nil, logger.NewNopLogger())
 			h.RegisterRoutes(server)
 
 			req, err := http.NewRequest(tc.in.method, tc.in.url, bytes.NewBuffer(tc.in.body))
@@ -354,7 +364,7 @@ func TestUserHandler_LoginJWT(t *testing.T) {
 
 			server := gin.Default()
 
-			h := NewUserHandler(tc.mock(ctrl), nil, jwt.NewRedisJWTHandler(redismock.NewMockCmdable(ctrl)))
+			h := NewUserHandler(tc.mock(ctrl), nil, jwt.NewRedisJWTHandler(redismock.NewMockCmdable(ctrl)), logger.NewNopLogger())
 			h.RegisterRoutes(server)
 
 			req, err := http.NewRequest(tc.in.method, tc.in.url, bytes.NewBuffer(tc.in.body))

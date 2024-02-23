@@ -8,15 +8,18 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"log"
+	"time"
+
 	"github.com/tsukaychan/webook/internal/domain"
 	cache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
-	"log"
-	"time"
 )
 
-var ErrUserDuplicate = dao.ErrUserDuplicate
-var ErrUserNoFound = dao.ErrUserNotFound
+var (
+	ErrUserDuplicate = dao.ErrUserDuplicate
+	ErrUserNoFound   = dao.ErrUserNotFound
+)
 
 //go:generate mockgen -source=./user.go -package=repomocks -destination=mocks/user.mock.go UserRepository
 type UserRepository interface {

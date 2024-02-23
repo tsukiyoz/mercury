@@ -1,10 +1,11 @@
 package ginx
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsukaychan/webook/pkg/logger"
-	"net/http"
 )
 
 var log logger.Logger = logger.NewNopLogger()

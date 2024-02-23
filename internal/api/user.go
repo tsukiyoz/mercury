@@ -7,14 +7,15 @@ package api
 
 import (
 	"fmt"
+	"net/http"
+	"time"
+
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/internal/service"
 	"github.com/tsukaychan/webook/pkg/ginx"
 	"github.com/tsukaychan/webook/pkg/logger"
-	"net/http"
-	"time"
 
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-contrib/sessions"
@@ -50,6 +51,7 @@ func NewUserHandler(userService service.UserService, captchaService service.Capt
 		logger:         l,
 	}
 }
+
 func (h *UserHandler) RegisterRoutes(server *gin.Engine) {
 	ug := server.Group("/users")
 	ug.POST("/signup", h.SignUp)
@@ -177,10 +179,7 @@ func (h *UserHandler) SignUp(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
-	})
+	ctx.JSON(http.StatusOK, Result{Msg: "success"})
 }
 
 func (h *UserHandler) Login(ctx *gin.Context) {
@@ -324,8 +323,7 @@ func (h *UserHandler) Edit(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
+		Msg: "success",
 	})
 }
 
@@ -347,8 +345,6 @@ func (h *UserHandler) Profile(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
 		Data: Profile{
 			Email:    user.Email,
 			Phone:    user.Phone,
@@ -380,8 +376,6 @@ func (h *UserHandler) ProfileJWT(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
 		Data: Profile{
 			Email:    user.Email,
 			Phone:    user.Phone,

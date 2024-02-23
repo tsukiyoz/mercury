@@ -2,12 +2,13 @@ package repository
 
 import (
 	"context"
+	"time"
+
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository/cache/article"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/pkg/logger"
-	"time"
 )
 
 //go:generate mockgen -source=./article.go -package=repomocks -destination=mocks/article.mock.go ArticleRepository

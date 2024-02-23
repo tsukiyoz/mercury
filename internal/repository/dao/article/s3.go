@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/tsukaychan/webook/internal/domain"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"time"
 )
 
 var _ ArticleDAO = (*S3DAO)(nil)
@@ -22,9 +23,7 @@ type S3DAO struct {
 }
 
 func (dao *S3DAO) Sync(ctx context.Context, atcl Article) (int64, error) {
-	var (
-		id = atcl.Id
-	)
+	id := atcl.Id
 	err := dao.db.Transaction(func(tx *gorm.DB) error {
 		var err error
 		now := time.Now().UnixMilli()

@@ -2,9 +2,10 @@ package tencent
 
 import (
 	"context"
-	isms "github.com/tsukaychan/webook/internal/service/sms"
 	"os"
 	"testing"
+
+	isms "github.com/tsukaychan/webook/internal/service/sms"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"

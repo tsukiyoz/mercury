@@ -2,8 +2,10 @@ package logger
 
 import "sync"
 
-var logger Logger
-var mu sync.RWMutex
+var (
+	logger Logger
+	mu     sync.RWMutex
+)
 
 func SetGlobalLogger(l Logger) {
 	mu.Lock()

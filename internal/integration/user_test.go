@@ -4,15 +4,16 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tsukaychan/webook/internal/api"
 	"github.com/tsukaychan/webook/internal/integration/startup"
 	"github.com/tsukaychan/webook/ioc"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"time"
 )
 
 func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
@@ -35,7 +36,6 @@ func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
 		{
 			name: "send success",
 			before: func(t *testing.T) {
-
 			},
 			after: func(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)

@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/tsukaychan/webook/internal/domain"
-	"time"
 )
 
 //go:generate mockgen -source=./article.go -package=cachemocks -destination=mocks/article.mock.go ArticleCache

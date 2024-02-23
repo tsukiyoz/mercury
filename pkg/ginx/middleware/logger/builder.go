@@ -3,10 +3,11 @@ package logger
 import (
 	"bytes"
 	"context"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/atomic"
 	"io"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/atomic"
 )
 
 type MiddlewareBuilder struct {

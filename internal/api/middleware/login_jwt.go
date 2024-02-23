@@ -6,8 +6,9 @@
 package middleware
 
 import (
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"net/http"
+
+	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

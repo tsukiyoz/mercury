@@ -2,11 +2,12 @@ package aliyun
 
 import (
 	"fmt"
+	"os"
+	"testing"
+
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
-	"os"
-	"testing"
 )
 
 func TestSender(t *testing.T) {

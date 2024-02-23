@@ -3,14 +3,15 @@ package service
 import (
 	"context"
 	"errors"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	repomock "github.com/tsukaychan/webook/internal/repository/mocks"
 	"go.uber.org/mock/gomock"
 	"golang.org/x/crypto/bcrypt"
-	"testing"
-	"time"
 )
 
 func TestUserServiceV1_Login(t *testing.T) {

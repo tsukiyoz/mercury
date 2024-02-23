@@ -3,13 +3,14 @@ package aliyun
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"github.com/bytedance/sonic"
 	"github.com/tsukaychan/webook/internal/service/sms"
-	"strings"
-	"time"
 )
 
 type Service struct {
@@ -27,7 +28,8 @@ func NewAliyunService(
 	accessKeySecret,
 	regionId,
 	signName,
-	templateCode string) *Service {
+	templateCode string,
+) *Service {
 	config := sdk.NewConfig()
 	config.WithTimeout(time.Second * 5)
 	credential := credentials.NewAccessKeyCredential(accessID, accessKeySecret)
@@ -49,12 +51,12 @@ func (s *Service) Send(ctx context.Context, tpl string, args []sms.ArgVal, phone
 	request.SignName = s.signName
 	request.TemplateCode = s.templateCode
 	request.PhoneNumbers = strings.Join(phoneNumbers, ",")
-	//参数信息
+	// 参数信息
 	tmpMap := make(map[string]string, len(args))
 	for _, arg := range args {
 		tmpMap[arg.Name] = arg.Val
 	}
-	//map  转json 字符串
+	// map  转json 字符串
 	byteCode, err := sonic.Marshal(tmpMap)
 	if err != nil {
 		return err

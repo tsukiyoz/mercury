@@ -10,6 +10,7 @@ import (
 	"github.com/tsukaychan/webook/internal/repository"
 	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchaCache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
+	cache "github.com/tsukaychan/webook/internal/repository/cache/interactive"
 	userCache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
@@ -17,12 +18,16 @@ import (
 	"github.com/tsukaychan/webook/ioc"
 )
 
-var thirdProvider = wire.NewSet(InitRedis, InitTestDB, InitLog)
-var userSvcProvider = wire.NewSet(
-	dao.NewGORMUserDAO,
-	userCache.NewUserRedisCache,
-	repository.NewCachedUserRepository,
-	service.NewUserService)
+var (
+	thirdProvider   = wire.NewSet(InitRedis, InitTestDB, InitLog)
+	userSvcProvider = wire.NewSet(
+		service.NewUserService,
+		repository.NewCachedUserRepository,
+		dao.NewGORMUserDAO,
+		userCache.NewUserRedisCache,
+	)
+)
+
 var articleSvcProvider = wire.NewSet(
 	service.NewArticleService,
 	repository.NewCachedArticleRepository,
@@ -30,46 +35,58 @@ var articleSvcProvider = wire.NewSet(
 	articleCache.NewRedisArticleCache,
 )
 
+var interactiveSvcProvider = wire.NewSet(
+	service.NewInteractiveService,
+	repository.NewCachedInteractiveRepository,
+	dao.NewGORMInteractiveDAO,
+	cache.NewRedisInteractiveCache,
+)
+
 func InitWebServer() *gin.Engine {
 	wire.Build(
 		thirdProvider,
+
 		userSvcProvider,
 		articleSvcProvider,
+		interactiveSvcProvider,
 
-		captchaCache.NewCaptchaRedisCache,
+		api.NewUserHandler,
+		api.NewArticleHandler,
+		api.NewOAuth2Handler,
+
+		service.NewCaptchaService,
 		repository.NewCachedCaptchaRepository,
+		captchaCache.NewCaptchaRedisCache,
 
-		// service
 		ioc.InitSMSService,
 		InitPhantomWechatService,
-		service.NewCaptchaService,
-
-		// handler
-		api.NewUserHandler,
-		api.NewOAuth2Handler,
-		api.NewArticleHandler,
 		InitWechatHandlerConfig,
 		ijwt.NewRedisJWTHandler,
 
-		// gin middleware
 		ioc.InitMiddlewares,
 		ioc.InitLimiter,
 
-		// Web server
 		ioc.InitWebServer,
 	)
 	return gin.Default()
 }
 
-func InitArticleHandler(dao articleDao.ArticleDAO) *api.ArticleHandler {
+func InitArticleHandler(atclDao articleDao.ArticleDAO) *api.ArticleHandler {
 	wire.Build(
 		thirdProvider,
+		interactiveSvcProvider,
+		userSvcProvider,
 		service.NewArticleService,
 		repository.NewCachedArticleRepository,
 		articleCache.NewRedisArticleCache,
 		api.NewArticleHandler,
 	)
 	return &api.ArticleHandler{}
+}
+
+func InitInteractiveService() service.InteractiveService {
+	wire.Build(thirdProvider, interactiveSvcProvider)
+	return service.NewInteractiveService(nil, nil)
 }
 
 func InitUserSvc() service.UserService {
@@ -81,6 +98,6 @@ func InitUserSvc() service.UserService {
 }
 
 func InitJwtHdl() ijwt.Handler {
-	//wire.Build(thirdProvider, ijwt.NewRedisJWTHandler)
+	// wire.Build(thirdProvider, ijwt.NewRedisJWTHandler)
 	return ijwt.NewRedisJWTHandler(nil)
 }

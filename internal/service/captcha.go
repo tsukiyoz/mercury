@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
+	"math/rand"
+
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/internal/service/sms"
-	"math/rand"
 )
 
 var (

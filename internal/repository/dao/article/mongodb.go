@@ -3,11 +3,12 @@ package dao
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/bwmarrin/snowflake"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 var _ ArticleDAO = (*MongoDBDAO)(nil)
@@ -15,7 +16,7 @@ var _ ArticleDAO = (*MongoDBDAO)(nil)
 type MongoDBDAO struct {
 	client *mongo.Client
 	// mdb for webook
-	//mdb *mongo.Database
+	// mdb *mongo.Database
 	// Production Library
 	col *mongo.Collection
 	// OnLive Library
@@ -25,7 +26,7 @@ type MongoDBDAO struct {
 
 func NewMongoDBDAO(mdb *mongo.Database, node *snowflake.Node) ArticleDAO {
 	return &MongoDBDAO{
-		//mdb:     mdb,
+		// mdb:     mdb,
 		col:     mdb.Collection("articles"),
 		liveCol: mdb.Collection("published_articles"),
 		node:    node,
@@ -41,7 +42,8 @@ func InitCollections(db *mongo.Database) error {
 			Options: options.Index().SetUnique(true),
 		},
 		{
-			Keys: bson.D{bson.E{Key: "author_id", Value: 1},
+			Keys: bson.D{
+				bson.E{Key: "author_id", Value: 1},
 				bson.E{Key: "ctime", Value: 1},
 			},
 			Options: options.Index(),
@@ -71,12 +73,13 @@ func (dao *MongoDBDAO) Insert(ctx context.Context, atcl Article) (int64, error) 
 
 func (dao *MongoDBDAO) UpdateById(ctx context.Context, atcl Article) error {
 	filter := bson.M{"id": atcl.Id, "author_id": atcl.AuthorId}
-	update := bson.M{"$set": bson.M{
-		"title":   atcl.Title,
-		"content": atcl.Content,
-		"status":  atcl.Status,
-		"utime":   time.Now().UnixMilli(),
-	},
+	update := bson.M{
+		"$set": bson.M{
+			"title":   atcl.Title,
+			"content": atcl.Content,
+			"status":  atcl.Status,
+			"utime":   time.Now().UnixMilli(),
+		},
 	}
 	res, err := dao.col.UpdateOne(ctx, filter, update)
 	if err != nil {
@@ -90,17 +93,17 @@ func (dao *MongoDBDAO) UpdateById(ctx context.Context, atcl Article) error {
 }
 
 func (dao *MongoDBDAO) GetByAuthor(ctx context.Context, author int64, offset, limit int) ([]Article, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (dao *MongoDBDAO) GetById(ctx context.Context, id int64) (Article, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (dao *MongoDBDAO) GetPubById(ctx context.Context, id int64) (PublishedArticle, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
@@ -140,11 +143,11 @@ func (dao *MongoDBDAO) Sync(ctx context.Context, atcl Article) (int64, error) {
 }
 
 func (dao *MongoDBDAO) SyncStatus(ctx context.Context, id, author int64, status uint8) error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (dao *MongoDBDAO) ListPubByUtime(ctx context.Context, utime time.Time, offset int, limit int) ([]PublishedArticle, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }

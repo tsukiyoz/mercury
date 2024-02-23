@@ -2,6 +2,10 @@ package api
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
@@ -10,22 +14,24 @@ import (
 	"github.com/tsukaychan/webook/pkg/ginx"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"golang.org/x/sync/errgroup"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 var _ handler = (*ArticleHandler)(nil)
 
 type ArticleHandler struct {
 	articleSvc service.ArticleService
+	intrSvc    service.InteractiveService
 	logger     logger.Logger
+
+	biz string
 }
 
-func NewArticleHandler(articleSvc service.ArticleService, logger logger.Logger) *ArticleHandler {
+func NewArticleHandler(articleSvc service.ArticleService, intrSvc service.InteractiveService, logger logger.Logger) *ArticleHandler {
 	return &ArticleHandler{
 		articleSvc: articleSvc,
+		intrSvc:    intrSvc,
 		logger:     logger,
+		biz:        "article",
 	}
 }
 
@@ -41,6 +47,8 @@ func (h *ArticleHandler) RegisterRoutes(server *gin.Engine) {
 
 	pub := server.Group("/pub")
 	pub.GET("/:id", ginx.WrapClaims[ijwt.UserClaims](h.PubDetail))
+	pub.POST("/like", ginx.WrapClaimsAndReq[LikeReq, ijwt.UserClaims](h.Like))
+	pub.POST("/collect", ginx.WrapClaimsAndReq[CollectReq, ijwt.UserClaims](h.Collect))
 }
 
 func (h *ArticleHandler) Edit(ctx *gin.Context) {
@@ -60,7 +68,6 @@ func (h *ArticleHandler) Edit(ctx *gin.Context) {
 	}
 
 	id, err := h.articleSvc.Save(ctx, req.toDomain(claims.Uid))
-
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
@@ -70,11 +77,7 @@ func (h *ArticleHandler) Edit(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
-		Data: id,
-	})
+	ctx.JSON(http.StatusOK, Result{Data: id})
 }
 
 func (h *ArticleHandler) Publish(ctx *gin.Context) {
@@ -94,7 +97,6 @@ func (h *ArticleHandler) Publish(ctx *gin.Context) {
 	}
 
 	id, err := h.articleSvc.Publish(ctx, req.toDomain(claims.Uid))
-
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
@@ -104,11 +106,7 @@ func (h *ArticleHandler) Publish(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
-		Data: id,
-	})
+	ctx.JSON(http.StatusOK, Result{Data: id})
 }
 
 func (h *ArticleHandler) Withdraw(ctx *gin.Context) {
@@ -132,7 +130,6 @@ func (h *ArticleHandler) Withdraw(ctx *gin.Context) {
 	}
 
 	err := h.articleSvc.Withdraw(ctx, req.Id, claims.Uid)
-
 	if err != nil {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 5,
@@ -142,10 +139,7 @@ func (h *ArticleHandler) Withdraw(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
-	})
+	ctx.JSON(http.StatusOK, Result{Msg: "success"})
 }
 
 func (h *ArticleHandler) List(ctx *gin.Context, req ListReq, uc ijwt.UserClaims) (Result, error) {
@@ -157,15 +151,13 @@ func (h *ArticleHandler) List(ctx *gin.Context, req ListReq, uc ijwt.UserClaims)
 		}, err
 	}
 	return Result{
-		Code: 2,
-		Msg:  "success",
 		Data: slice.Map[domain.Article, ArticleVO](atcls, func(idx int, src domain.Article) ArticleVO {
 			return ArticleVO{
 				Id:       src.Id,
 				Title:    src.Title,
 				Abstract: src.Abstract(),
-				//Content: src.Content,
-				//Author: src.Author.Name,
+				// Content: src.Content,
+				// Author: src.Author.Name,
 				Status: src.Status.ToUint8(),
 				Ctime:  src.Ctime.Format(time.DateTime),
 				Utime:  src.Utime.Format(time.DateTime),
@@ -200,8 +192,6 @@ func (h *ArticleHandler) Detail(ctx *gin.Context, uc ijwt.UserClaims) (Result, e
 	}
 
 	return Result{
-		Code: 2,
-		Msg:  "success",
 		Data: ArticleVO{
 			Id:      atcl.Id,
 			Title:   atcl.Title,
@@ -227,17 +217,22 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 	var (
 		eg   errgroup.Group
 		atcl domain.Article
-		//intr domain.Interactive
+		intr domain.Interactive
 	)
 
 	eg.Go(func() error {
 		var er error
-		atcl, err = h.articleSvc.GetPublishedById(ctx, id)
+		atcl, er = h.articleSvc.GetPublishedById(ctx, id)
+		return er
+	})
+
+	eg.Go(func() error {
+		var er error
+		intr, er = h.intrSvc.Get(ctx, h.biz, id, uc.Uid)
 		return er
 	})
 
 	err = eg.Wait()
-
 	if err != nil {
 		return Result{
 			Code: 5,
@@ -252,17 +247,58 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 		}, fmt.Errorf("illegal access resources, user_id: %d", uc.Uid)
 	}
 
+	go func() {
+		if gerr := h.intrSvc.IncrReadCnt(ctx, h.biz, atcl.Id); gerr != nil {
+			h.logger.Error("increase read cnt failed",
+				logger.Int64("article_id", atcl.Id),
+				logger.Error(err),
+			)
+		}
+	}()
+
 	return Result{
-		Code: 2,
-		Msg:  "success",
 		Data: ArticleVO{
-			Id:      atcl.Id,
-			Title:   atcl.Title,
-			Content: atcl.Content,
-			Status:  atcl.Status.ToUint8(),
-			Author:  atcl.Author.Name,
-			Ctime:   atcl.Ctime.Format(time.DateTime),
-			Utime:   atcl.Utime.Format(time.DateTime),
+			Id:         atcl.Id,
+			Title:      atcl.Title,
+			Content:    atcl.Content,
+			Status:     atcl.Status.ToUint8(),
+			Author:     atcl.Author.Name,
+			LikeCnt:    intr.LikeCnt,
+			CollectCnt: intr.CollectCnt,
+			ReadCnt:    intr.ReadCnt,
+			Liked:      intr.Liked,
+			Collected:  intr.Collected,
+			Ctime:      atcl.Ctime.Format(time.DateTime),
+			Utime:      atcl.Utime.Format(time.DateTime),
 		},
 	}, nil
+}
+
+func (h *ArticleHandler) Like(ctx *gin.Context, req LikeReq, uc ijwt.UserClaims) (Result, error) {
+	var err error
+	if req.Like {
+		err = h.intrSvc.Like(ctx, h.biz, req.Id, uc.Uid)
+	} else {
+		err = h.intrSvc.CancelLike(ctx, h.biz, req.Id, uc.Uid)
+	}
+
+	if err != nil {
+		return Result{
+			Code: 5,
+			Msg:  "internal error",
+		}, err
+	}
+
+	return Result{Msg: "success"}, err
+}
+
+func (h *ArticleHandler) Collect(ctx *gin.Context, req CollectReq, uc ijwt.UserClaims) (Result, error) {
+	err := h.intrSvc.Collect(ctx, h.biz, req.Id, req.Cid, uc.Uid)
+	if err != nil {
+		return Result{
+			Code: 5,
+			Msg:  "internal error",
+		}, err
+	}
+	return Result{Msg: "success"}, nil
 }

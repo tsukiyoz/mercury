@@ -3,8 +3,9 @@ package ratelimit
 import (
 	"context"
 	_ "embed"
-	"github.com/redis/go-redis/v9"
 	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 //go:embed lua/slide_window.lua

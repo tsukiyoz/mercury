@@ -8,16 +8,19 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
-var ErrUserDuplicate = repository.ErrUserDuplicate
-var ErrInvalidUserOrPassword = errors.New("incorrect account or password")
-var ErrCaptchaSendFrequently = repository.ErrCaptchaSendTooManyTimes
+var (
+	ErrUserDuplicate         = repository.ErrUserDuplicate
+	ErrInvalidUserOrPassword = errors.New("incorrect account or password")
+	ErrCaptchaSendFrequently = repository.ErrCaptchaSendTooManyTimes
+)
 
 var _ UserService = (*userService)(nil)
 

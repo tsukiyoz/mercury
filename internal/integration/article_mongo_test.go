@@ -4,6 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+
 	"github.com/bwmarrin/snowflake"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -14,10 +19,6 @@ import (
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"time"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -107,8 +108,6 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 			},
 			wantCode: http.StatusOK,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 1,
 			},
 		},
@@ -157,8 +156,6 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 			},
 			wantCode: http.StatusOK,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 2,
 			},
 		},
@@ -297,8 +294,6 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 			},
 			wantCode: 200,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 1,
 			},
 		},
@@ -361,8 +356,6 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 			},
 			wantCode: 200,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 2,
 			},
 		},
@@ -431,8 +424,6 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 			},
 			wantCode: 200,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 3,
 			},
 		},

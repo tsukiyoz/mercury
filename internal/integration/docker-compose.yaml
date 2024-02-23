@@ -18,3 +18,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: for.nothing
     ports:
       - "27017:27017"
+  redis:
+    image: 'bitnami/redis:7.2'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '16379:6379'

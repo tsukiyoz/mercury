@@ -3,6 +3,10 @@ package integration
 import (
 	"bytes"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -11,9 +15,6 @@ import (
 	"github.com/tsukaychan/webook/internal/integration/startup"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"gorm.io/gorm"
-	"net/http"
-	"net/http/httptest"
-	"testing"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -86,8 +87,6 @@ func (s *ArticleGORMTestSuite) TestEdit() {
 			},
 			wantCode: http.StatusOK,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 1,
 			},
 		},
@@ -130,8 +129,6 @@ func (s *ArticleGORMTestSuite) TestEdit() {
 			},
 			wantCode: http.StatusOK,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 2,
 			},
 		},
@@ -258,8 +255,6 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 			},
 			wantCode: 200,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 1,
 			},
 		},
@@ -294,11 +289,12 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 				}, atcl)
 
 				var pubAtcl articleDao.PublishedArticle
-				err = s.db.Where("author_id = ?", 123).First(&pubAtcl).Error
+				err = s.db.Where("id = ?", 2).First(&pubAtcl).Error
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				pubAtcl.Ctime, pubAtcl.Utime = 0, 0
+
 				assert.Equal(t, articleDao.PublishedArticle(
 					articleDao.Article{
 						Id:       2,
@@ -316,8 +312,6 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 			},
 			wantCode: 200,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 2,
 			},
 		},
@@ -358,7 +352,7 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 				}, atcl)
 
 				var pubAtcl articleDao.PublishedArticle
-				err = s.db.Where("author_id = ?", 123).First(&pubAtcl).Error
+				err = s.db.Where("id = ?", 3).First(&pubAtcl).Error
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
@@ -380,8 +374,6 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 			},
 			wantCode: 200,
 			wantResult: Result[int64]{
-				Code: 2,
-				Msg:  "success",
 				Data: 3,
 			},
 		},

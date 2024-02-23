@@ -9,8 +9,16 @@ type ArticleVO struct {
 	Content  string `json:"content"`
 	Status   uint8  `json:"status"`
 	Author   string `json:"author"`
-	Ctime    string `json:"ctime"`
-	Utime    string `json:"utime"`
+
+	LikeCnt    int64 `json:"like_cnt"`
+	CollectCnt int64 `json:"collect_cnt"`
+	ReadCnt    int64 `json:"read_cnt"`
+
+	Liked     bool `json:"liked"`
+	Collected bool `json:"collected"`
+
+	Ctime string `json:"ctime"`
+	Utime string `json:"utime"`
 }
 
 type ListReq struct {
@@ -33,4 +41,14 @@ func (req ArticleReq) toDomain(uid int64) domain.Article {
 			Id: uid,
 		},
 	}
+}
+
+type LikeReq struct {
+	Id   int64 `json:"id"`
+	Like bool  `json:"like"`
+}
+
+type CollectReq struct {
+	Id  int64 `json:"id"`
+	Cid int64 `json:"cid"`
 }

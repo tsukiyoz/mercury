@@ -8,14 +8,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/fsnotify/fsnotify"
-	"go.uber.org/zap"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/fsnotify/fsnotify"
+	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/pflag"

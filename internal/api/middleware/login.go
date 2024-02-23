@@ -8,10 +8,11 @@ package middleware
 import (
 	"encoding/gob"
 	"fmt"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 type LoginMiddlewareBuilder struct {

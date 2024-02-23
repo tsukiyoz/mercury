@@ -8,8 +8,9 @@ import (
 	"github.com/tsukaychan/webook/internal/api"
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/repository"
-	"github.com/tsukaychan/webook/internal/repository/cache/article"
+	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
+	cache "github.com/tsukaychan/webook/internal/repository/cache/interactive"
 	usercache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
@@ -25,19 +26,23 @@ func InitWebServer() *gin.Engine {
 
 		dao.NewGORMUserDAO,
 		articleDao.NewGORMArticleDAO,
+		dao.NewGORMInteractiveDAO,
 
 		usercache.NewUserRedisCache,
 		captchacache.NewCaptchaRedisCache,
-		cache.NewRedisArticleCache,
+		articleCache.NewRedisArticleCache,
+		cache.NewRedisInteractiveCache,
 
 		repository.NewCachedUserRepository,
 		repository.NewCachedCaptchaRepository,
 		repository.NewCachedArticleRepository,
+		repository.NewCachedInteractiveRepository,
 
 		service.NewUserService,
-		//ioc.InitUserService,
+		// ioc.InitUserService,
 		service.NewCaptchaService,
 		service.NewArticleService,
+		service.NewInteractiveService,
 		ioc.InitSMSService,
 		ioc.InitWechatService,
 		ioc.NewWechatHandlerConfig,
@@ -49,7 +54,7 @@ func InitWebServer() *gin.Engine {
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,
-		//ioc.InitLocalCache,
+		// ioc.InitLocalCache,
 	)
 	return new(gin.Engine)
 }

@@ -3,11 +3,12 @@ package api
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"time"
+
 	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/service"
 	"github.com/tsukaychan/webook/internal/service/oauth2/wechat"
-	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -120,10 +121,7 @@ func (h *OAuth2WechatHandler) Callback(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, Result{
-		Code: 2,
-		Msg:  "success",
-	})
+	ctx.JSON(http.StatusOK, Result{Msg: "success"})
 }
 
 func (h *OAuth2WechatHandler) verifyState(ctx *gin.Context) error {

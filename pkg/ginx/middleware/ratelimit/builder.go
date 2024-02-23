@@ -3,10 +3,11 @@ package ratelimit
 import (
 	_ "embed"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/tsukaychan/webook/pkg/ratelimit"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/tsukaychan/webook/pkg/ratelimit"
 )
 
 type Builder struct {

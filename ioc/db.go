@@ -2,9 +2,10 @@ package ioc
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	"github.com/tsukaychan/webook/pkg/logger"
-	"time"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -18,7 +19,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 	}
 
 	var cfg Config
-	//err := viper.UnmarshalKey("db.mysql", &cfg)
+	// err := viper.UnmarshalKey("db.mysql", &cfg)
 	err := viper.UnmarshalKey("db", &cfg)
 	if err != nil {
 		panic(err)

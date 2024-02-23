@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/tsukaychan/webook/internal/domain"
 	user "github.com/tsukaychan/webook/internal/repository/cache/user"
@@ -11,8 +14,6 @@ import (
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	daomock "github.com/tsukaychan/webook/internal/repository/mocks/dao"
 	"go.uber.org/mock/gomock"
-	"testing"
-	"time"
 )
 
 func TestUserCachedRepository_FindById(t *testing.T) {
