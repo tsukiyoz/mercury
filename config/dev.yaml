@@ -10,3 +10,7 @@ web:
   log:
     req: true
     resp: true
+
+kafka:
+  addrs:
+    - "localhost:9094"

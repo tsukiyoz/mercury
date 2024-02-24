@@ -1,4 +1,4 @@
-package api
+package web
 
 import (
 	"errors"
@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/service"
 	"github.com/tsukaychan/webook/internal/service/oauth2/wechat"
+	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

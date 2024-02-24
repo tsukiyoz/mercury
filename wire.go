@@ -3,10 +3,8 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	"github.com/tsukaychan/webook/internal/api"
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
+	events2 "github.com/tsukaychan/webook/internal/events"
 	"github.com/tsukaychan/webook/internal/repository"
 	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchacache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
@@ -15,14 +13,22 @@ import (
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/internal/service"
+	"github.com/tsukaychan/webook/internal/web"
+	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
 	"github.com/tsukaychan/webook/ioc"
 )
 
-func InitWebServer() *gin.Engine {
+func InitWebServer() *App {
 	wire.Build(
 		ioc.InitDB, ioc.InitRedis,
 		ioc.InitLimiter,
 		ioc.InitLogger,
+		ioc.InitKafka,
+		ioc.NewSyncProducer,
+		ioc.NewConsumers,
+
+		events2.NewInteractiveReadEventConsumer,
+		events2.NewSaramaSyncProducer,
 
 		dao.NewGORMUserDAO,
 		articleDao.NewGORMArticleDAO,
@@ -47,14 +53,16 @@ func InitWebServer() *gin.Engine {
 		ioc.InitWechatService,
 		ioc.NewWechatHandlerConfig,
 
-		api.NewUserHandler,
-		api.NewOAuth2Handler,
-		api.NewArticleHandler,
+		web.NewUserHandler,
+		web.NewOAuth2Handler,
+		web.NewArticleHandler,
 		ijwt.NewRedisJWTHandler,
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,
 		// ioc.InitLocalCache,
+
+		wire.Struct(new(App), "*"),
 	)
-	return new(gin.Engine)
+	return new(App)
 }

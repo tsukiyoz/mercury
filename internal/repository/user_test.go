@@ -12,7 +12,7 @@ import (
 	user "github.com/tsukaychan/webook/internal/repository/cache/user"
 	cachemock "github.com/tsukaychan/webook/internal/repository/cache/user/mocks"
 	"github.com/tsukaychan/webook/internal/repository/dao"
-	daomock "github.com/tsukaychan/webook/internal/repository/mocks/dao"
+	daomock "github.com/tsukaychan/webook/internal/repository/dao/mocks"
 	"go.uber.org/mock/gomock"
 )
 

@@ -6,19 +6,11 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"go.uber.org/zap"
 
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	_ "github.com/spf13/viper/remote"
@@ -28,38 +20,8 @@ func main() {
 	initViper()
 	initLogger()
 
-	server := InitWebServer()
-	server.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "welcome to tsukiyo's website!")
-	})
-	startServer(server, ":8081")
-}
-
-func startServer(r *gin.Engine, addr string) {
-	fmt.Println("server started at ", addr)
-	srv := &http.Server{
-		Addr:    addr,
-		Handler: r,
-	}
-
-	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	log.Println("Shutting down server...")
-
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server forced to shutdown: ", err)
-	}
-
-	log.Println("Server exiting")
+	app := InitWebServer()
+	app.Start()
 }
 
 func initViper() {

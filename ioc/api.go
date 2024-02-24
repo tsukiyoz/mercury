@@ -7,9 +7,9 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/webook/internal/api"
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
-	"github.com/tsukaychan/webook/internal/api/middleware"
+	"github.com/tsukaychan/webook/internal/web"
+	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
+	"github.com/tsukaychan/webook/internal/web/middleware"
 	"github.com/tsukaychan/webook/pkg/ginx"
 	ginxlogger "github.com/tsukaychan/webook/pkg/ginx/middleware/logger"
 	ginRatelimit "github.com/tsukaychan/webook/pkg/ginx/middleware/ratelimit"
@@ -21,7 +21,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func InitWebServer(mdls []gin.HandlerFunc, userHdl *api.UserHandler, oAuth2Hdl *api.OAuth2WechatHandler, articleHdl *api.ArticleHandler, logger logger.Logger) *gin.Engine {
+func InitWebServer(mdls []gin.HandlerFunc, userHdl *web.UserHandler, oAuth2Hdl *web.OAuth2WechatHandler, articleHdl *web.ArticleHandler, logger logger.Logger) *gin.Engine {
 	ginx.SetLogger(logger)
 	server := gin.Default()
 	server.Use(mdls...)

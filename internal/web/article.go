@@ -1,4 +1,4 @@
-package api
+package web
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/service"
+	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
 	"github.com/tsukaychan/webook/pkg/ginx"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"golang.org/x/sync/errgroup"
@@ -222,7 +222,7 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 
 	eg.Go(func() error {
 		var er error
-		atcl, er = h.articleSvc.GetPublishedById(ctx, id)
+		atcl, er = h.articleSvc.GetPublishedById(ctx, id, uc.Uid)
 		return er
 	})
 
@@ -246,15 +246,6 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 			Msg:  "invalid params",
 		}, fmt.Errorf("illegal access resources, user_id: %d", uc.Uid)
 	}
-
-	go func() {
-		if gerr := h.intrSvc.IncrReadCnt(ctx, h.biz, atcl.Id); gerr != nil {
-			h.logger.Error("increase read cnt failed",
-				logger.Int64("article_id", atcl.Id),
-				logger.Error(err),
-			)
-		}
-	}()
 
 	return Result{
 		Data: ArticleVO{

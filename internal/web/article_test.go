@@ -1,4 +1,4 @@
-package api
+package web
 
 import (
 	"bytes"
@@ -11,10 +11,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/service"
 	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
+	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"go.uber.org/mock/gomock"
 )

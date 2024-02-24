@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 
+	"github.com/tsukaychan/webook/internal/events"
+
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/pkg/logger"
@@ -23,17 +25,19 @@ type ArticleService interface {
 
 	// reader
 
-	GetPublishedById(ctx context.Context, id int64) (domain.Article, error)
+	GetPublishedById(ctx context.Context, id, uid int64) (domain.Article, error)
 }
 
 type articleService struct {
 	articleRepo repository.ArticleRepository
+	producer    events.Producer
 	logger      logger.Logger
 }
 
-func NewArticleService(articleRepo repository.ArticleRepository, logger logger.Logger) ArticleService {
+func NewArticleService(articleRepo repository.ArticleRepository, producer events.Producer, logger logger.Logger) ArticleService {
 	return &articleService{
 		articleRepo: articleRepo,
+		producer:    producer,
 		logger:      logger,
 	}
 }
@@ -65,6 +69,21 @@ func (svc *articleService) GetById(ctx context.Context, id int64) (domain.Articl
 	return svc.articleRepo.GetById(ctx, id)
 }
 
-func (svc *articleService) GetPublishedById(ctx context.Context, id int64) (domain.Article, error) {
-	return svc.articleRepo.GetPublishedById(ctx, id)
+func (svc *articleService) GetPublishedById(ctx context.Context, id, uid int64) (domain.Article, error) {
+	atcl, err := svc.articleRepo.GetPublishedById(ctx, id)
+	if err == nil {
+		go func() {
+			er := svc.producer.ProduceReadEvent(events.ReadEvent{
+				Aid: id,
+				Uid: uid,
+			})
+			if er != nil {
+				svc.logger.Error("send reader read event failed",
+					logger.Int64("uid", uid),
+					logger.Int64("aid", id),
+					logger.Error(err))
+			}
+		}()
+	}
+	return atcl, err
 }

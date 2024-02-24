@@ -3,17 +3,17 @@
  * @date 2023-08-06 12:45
  */
 
-package api
+package web
 
 import (
 	"fmt"
 	"net/http"
 	"time"
 
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/internal/service"
+	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
 	"github.com/tsukaychan/webook/pkg/ginx"
 	"github.com/tsukaychan/webook/pkg/logger"
 

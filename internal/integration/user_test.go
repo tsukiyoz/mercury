@@ -11,8 +11,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tsukaychan/webook/internal/api"
 	"github.com/tsukaychan/webook/internal/integration/startup"
+	"github.com/tsukaychan/webook/internal/web"
 	"github.com/tsukaychan/webook/ioc"
 )
 
@@ -24,7 +24,7 @@ func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
 	}
 	type want struct {
 		code int
-		body api.Result
+		body web.Result
 	}
 	testCases := []struct {
 		name   string
@@ -53,7 +53,7 @@ func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
 			},
 			want: want{
 				code: http.StatusOK,
-				body: api.Result{
+				body: web.Result{
 					Code: 2,
 					Msg:  "send success",
 					Data: nil,
@@ -84,7 +84,7 @@ func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
 			},
 			want: want{
 				code: http.StatusOK,
-				body: api.Result{
+				body: web.Result{
 					Code: 2,
 					Msg:  "send too often, please try again later",
 					Data: nil,
@@ -115,7 +115,7 @@ func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
 			},
 			want: want{
 				code: http.StatusOK,
-				body: api.Result{
+				body: web.Result{
 					Code: 5,
 					Msg:  "internal error",
 					Data: nil,
@@ -137,7 +137,7 @@ func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
 			},
 			want: want{
 				code: http.StatusOK,
-				body: api.Result{
+				body: web.Result{
 					Code: 4,
 					Msg:  "please input your phone number",
 					Data: nil,
@@ -177,7 +177,7 @@ func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {
 			if resp.Code != http.StatusOK {
 				return
 			}
-			var apiResp api.Result
+			var apiResp web.Result
 			err = json.NewDecoder(resp.Body).Decode(&apiResp)
 			require.NoError(t, err)
 

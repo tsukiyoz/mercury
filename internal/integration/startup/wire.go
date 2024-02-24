@@ -5,8 +5,6 @@ package startup
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	"github.com/tsukaychan/webook/internal/api"
-	ijwt "github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/repository"
 	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchaCache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
@@ -15,6 +13,8 @@ import (
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/internal/service"
+	"github.com/tsukaychan/webook/internal/web"
+	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
 	"github.com/tsukaychan/webook/ioc"
 )
 
@@ -50,9 +50,9 @@ func InitWebServer() *gin.Engine {
 		articleSvcProvider,
 		interactiveSvcProvider,
 
-		api.NewUserHandler,
-		api.NewArticleHandler,
-		api.NewOAuth2Handler,
+		web.NewUserHandler,
+		web.NewArticleHandler,
+		web.NewOAuth2Handler,
 
 		service.NewCaptchaService,
 		repository.NewCachedCaptchaRepository,
@@ -71,7 +71,7 @@ func InitWebServer() *gin.Engine {
 	return gin.Default()
 }
 
-func InitArticleHandler(atclDao articleDao.ArticleDAO) *api.ArticleHandler {
+func InitArticleHandler(atclDao articleDao.ArticleDAO) *web.ArticleHandler {
 	wire.Build(
 		thirdProvider,
 		interactiveSvcProvider,
@@ -79,9 +79,9 @@ func InitArticleHandler(atclDao articleDao.ArticleDAO) *api.ArticleHandler {
 		service.NewArticleService,
 		repository.NewCachedArticleRepository,
 		articleCache.NewRedisArticleCache,
-		api.NewArticleHandler,
+		web.NewArticleHandler,
 	)
-	return &api.ArticleHandler{}
+	return &web.ArticleHandler{}
 }
 
 func InitInteractiveService() service.InteractiveService {

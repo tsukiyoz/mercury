@@ -1,7 +1,7 @@
 package startup
 
-import "github.com/tsukaychan/webook/internal/api"
+import "github.com/tsukaychan/webook/internal/web"
 
-func InitWechatHandlerConfig() api.WechatHandlerConfig {
-	return api.WechatHandlerConfig{}
+func InitWechatHandlerConfig() web.WechatHandlerConfig {
+	return web.WechatHandlerConfig{}
 }

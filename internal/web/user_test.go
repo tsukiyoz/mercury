@@ -1,4 +1,4 @@
-package api
+package web
 
 import (
 	"bytes"
@@ -9,11 +9,11 @@ import (
 
 	"github.com/tsukaychan/webook/pkg/logger"
 
-	"github.com/tsukaychan/webook/internal/api/jwt"
 	"github.com/tsukaychan/webook/internal/domain"
 	redismock "github.com/tsukaychan/webook/internal/repository/mocks/cache/redis"
 	"github.com/tsukaychan/webook/internal/service"
 	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
+	"github.com/tsukaychan/webook/internal/web/jwt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"

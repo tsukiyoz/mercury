@@ -3,8 +3,8 @@ package ioc
 import (
 	"os"
 
-	"github.com/tsukaychan/webook/internal/api"
 	"github.com/tsukaychan/webook/internal/service/oauth2/wechat"
+	"github.com/tsukaychan/webook/internal/web"
 	"github.com/tsukaychan/webook/pkg/logger"
 )
 
@@ -20,8 +20,8 @@ func InitWechatService(logger logger.Logger) wechat.Service {
 	return wechat.NewService(appId, appSecret, logger)
 }
 
-func NewWechatHandlerConfig() api.WechatHandlerConfig {
-	return api.WechatHandlerConfig{
+func NewWechatHandlerConfig() web.WechatHandlerConfig {
+	return web.WechatHandlerConfig{
 		Secure: false,
 	}
 }
