@@ -19,6 +19,13 @@ func Int64(key string, value int64) Field {
 	}
 }
 
+func Int64Slice(key string, value []int64) Field {
+	return Field{
+		Key:   key,
+		Value: value,
+	}
+}
+
 func Int32(key string, value int32) Field {
 	return Field{
 		Key:   key,

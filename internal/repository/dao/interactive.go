@@ -70,7 +70,7 @@ type InteractiveDAO interface {
 	Get(ctx context.Context, biz string, bizId int64) (Interactive, error)
 	InsertCollectionItem(ctx context.Context, ci Collection) error
 	GetCollectionInfo(ctx context.Context, biz string, bizId, uid int64) (Collection, error)
-	BatchIncrReadCnt(ctx context.Context, bizs []string, ids []int64) error
+	BatchIncrReadCnt(ctx context.Context, biz string, ids []int64) error
 	GetByIds(ctx context.Context, biz string, ids []int64) ([]Interactive, error)
 }
 
@@ -218,11 +218,10 @@ func (dao *GORMInteractiveDAO) GetCollectionInfo(ctx context.Context, biz string
 	return collection, err
 }
 
-func (dao *GORMInteractiveDAO) BatchIncrReadCnt(ctx context.Context, bizs []string, ids []int64) error {
-	n := min(len(bizs), len(ids))
+func (dao *GORMInteractiveDAO) BatchIncrReadCnt(ctx context.Context, biz string, ids []int64) error {
 	return dao.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		for i := 0; i < n; i++ {
-			err := dao.incrReadCnt(tx, bizs[i], ids[i])
+		for i := 0; i < len(ids); i++ {
+			err := dao.incrReadCnt(tx, biz, ids[i])
 			if err != nil {
 				return err
 			}

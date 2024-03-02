@@ -40,7 +40,8 @@ func (consumer *InteractiveReadEventConsumer) Start() error {
 	go func() {
 		err := cg.Consume(context.Background(),
 			[]string{topicReadEvent},
-			saramax.NewHandler[ReadEvent](consumer.l, consumer.Consume),
+			// saramax.NewHandler[ReadEvent](consumer.l, consumer.Consume),
+			saramax.NewBatchHandler[ReadEvent](consumer.l, consumer.BatchConsume),
 		)
 		if err != nil {
 			consumer.l.Error("exited consumption cycle exception", logger.Error(err))
@@ -56,16 +57,40 @@ func (consumer *InteractiveReadEventConsumer) Consume(msg *sarama.ConsumerMessag
 	return consumer.repo.IncrReadCnt(ctx, "article", evt.Aid)
 }
 
+func (consumer *InteractiveReadEventConsumer) StartBatch() error {
+	cg, err := sarama.NewConsumerGroupFromClient("interactive", consumer.client)
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		err := cg.Consume(context.Background(),
+			[]string{topicReadEvent},
+			saramax.NewBatchHandler[ReadEvent](consumer.l, consumer.BatchConsume),
+		)
+		if err != nil {
+			consumer.l.Error("exited consumption cycle exception", logger.Error(err))
+		}
+	}()
+
+	return err
+}
+
 func (consumer *InteractiveReadEventConsumer) BatchConsume(msgs []*sarama.ConsumerMessage,
 	evts []ReadEvent,
 ) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	bizs := make([]string, 0, len(msgs))
 	ids := make([]int64, 0, len(msgs))
 	for _, evt := range evts {
-		bizs = append(bizs, "article")
-		ids = append(ids, evt.Uid)
+		ids = append(ids, evt.Aid)
 	}
-	return consumer.repo.BatchIncrReadCnt(ctx, bizs, ids)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	err := consumer.repo.BatchIncrReadCnt(ctx, "article", ids)
+	if err != nil {
+		consumer.l.Error("batch increase read count failed",
+			logger.Int64Slice("ids", ids),
+			logger.Error(err),
+		)
+	}
+	return nil
 }

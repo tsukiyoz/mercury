@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -65,25 +64,43 @@ func (cache *RedisInteractiveCache) IncrCollectCntIfPresent(ctx context.Context,
 	return cache.client.Eval(ctx, luaIncrCnt, []string{cache.key(biz, bizId)}, fieldCollectCnt, 1).Err()
 }
 
+//func (cache *RedisInteractiveCache) Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error) {
+//	data, err := cache.client.HGetAll(ctx, cache.key(biz, bizId)).Result()
+//	if err != nil {
+//		return domain.Interactive{}, err
+//	}
+//
+//	if len(data) == 0 {
+//		return domain.Interactive{}, ErrKeyNotExist
+//	}
+//
+//	collectCnt, _ := strconv.ParseInt(data[fieldCollectCnt], 10, 64)
+//	likeCnt, _ := strconv.ParseInt(data[fieldLikeCnt], 10, 64)
+//	readCnt, _ := strconv.ParseInt(data[fieldReadCnt], 10, 64)
+//
+//	return domain.Interactive{
+//		CollectCnt: collectCnt,
+//		LikeCnt:    likeCnt,
+//		ReadCnt:    readCnt,
+//	}, nil
+//}
+
 func (cache *RedisInteractiveCache) Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error) {
-	data, err := cache.client.HGetAll(ctx, cache.key(biz, bizId)).Result()
+	cnts, err := cache.client.HMGet(ctx, cache.key(biz, bizId), fieldReadCnt, fieldLikeCnt, fieldCollectCnt).Result()
 	if err != nil {
-		return domain.Interactive{}, nil
+		return domain.Interactive{}, err
 	}
 
-	if len(data) == 0 {
+	var intr domain.Interactive
+	if cnts[0] == nil || cnts[1] == nil || cnts[2] == nil {
 		return domain.Interactive{}, ErrKeyNotExist
 	}
 
-	collectCnt, _ := strconv.ParseInt(data[fieldCollectCnt], 10, 64)
-	likeCnt, _ := strconv.ParseInt(data[fieldLikeCnt], 10, 64)
-	readCnt, _ := strconv.ParseInt(data[fieldReadCnt], 10, 64)
+	intr.ReadCnt, _ = cnts[0].(int64)
+	intr.LikeCnt, _ = cnts[1].(int64)
+	intr.LikeCnt, _ = cnts[2].(int64)
 
-	return domain.Interactive{
-		CollectCnt: collectCnt,
-		LikeCnt:    likeCnt,
-		ReadCnt:    readCnt,
-	}, nil
+	return intr, nil
 }
 
 func (cache *RedisInteractiveCache) Set(ctx context.Context, biz string, bizId int64, intr domain.Interactive) error {

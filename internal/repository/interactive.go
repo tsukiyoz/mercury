@@ -15,7 +15,7 @@ import (
 type InteractiveRepository interface {
 	IncrReadCnt(ctx context.Context,
 		biz string, bizId int64) error
-	BatchIncrReadCnt(ctx context.Context, bizs []string, bizIds []int64) error
+	BatchIncrReadCnt(ctx context.Context, biz string, bizIds []int64) error
 	IncrLike(ctx context.Context, biz string, bizId, uid int64) error
 	DecrLike(ctx context.Context, biz string, bizId, uid int64) error
 	AddCollectionItem(ctx context.Context, biz string, bizId, cid int64, uid int64) error
@@ -57,8 +57,8 @@ func (repo *CachedInteractiveRepository) IncrReadCnt(ctx context.Context, biz st
 	return repo.cache.IncrReadCntIfPresent(ctx, biz, bizId)
 }
 
-func (repo *CachedInteractiveRepository) BatchIncrReadCnt(ctx context.Context, bizs []string, bizIds []int64) error {
-	return repo.dao.BatchIncrReadCnt(ctx, bizs, bizIds)
+func (repo *CachedInteractiveRepository) BatchIncrReadCnt(ctx context.Context, biz string, bizIds []int64) error {
+	return repo.dao.BatchIncrReadCnt(ctx, biz, bizIds)
 }
 
 func (repo *CachedInteractiveRepository) IncrLike(ctx context.Context, biz string, bizId, uid int64) error {
