@@ -6,7 +6,14 @@ redis:
   password: "for.nothing"
   db: 1
 
+wechat:
+  app_id: "001"
+  app_secret: "secret"
+
 web:
+  limit:
+    interval: 1
+    rate: 120
   log:
     req: true
     resp: true

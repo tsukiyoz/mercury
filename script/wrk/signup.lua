@@ -18,7 +18,7 @@ function init(args)
 end
 
 function request()
-    body=string.format('{"email":"%s%d@qq.com", "password":"hello#world123", "confirmPassword": "hello#world123"}', prefix, cnt)
+    body=string.format('{"email":"%s%d@qq.com", "password":"hello#world123", "confirm_password": "hello#world123"}', prefix, cnt)
     cnt = cnt + 1
     return wrk.format('POST', wrk.path, wrk.headers, body)
 end

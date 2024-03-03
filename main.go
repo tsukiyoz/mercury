@@ -19,6 +19,7 @@ import (
 func main() {
 	initViper()
 	initLogger()
+	initPrometheus()
 
 	app := InitWebServer()
 	app.Start()

@@ -6,6 +6,7 @@ import (
 
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	"github.com/tsukaychan/webook/pkg/logger"
+	"gorm.io/plugin/prometheus"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -35,10 +36,25 @@ func InitDB(l logger.Logger) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+
+	err = db.Use(prometheus.New(prometheus.Config{
+		DBName:          "webook",
+		RefreshInterval: 15,
+		MetricsCollector: []prometheus.MetricsCollector{
+			&prometheus.MySQL{
+				VariableNames: []string{"threads_running"},
+			},
+		},
+	}))
+	if err != nil {
+		panic(err)
+	}
+
 	err = dao.InitTable(db)
 	if err != nil {
 		panic(err)
 	}
+
 	return db
 }
 

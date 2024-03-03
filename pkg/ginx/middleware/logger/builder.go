@@ -52,13 +52,12 @@ func (b *MiddlewareBuilder) Build() gin.HandlerFunc {
 				accessLog:      accessLog,
 				ResponseWriter: ctx.Writer,
 			}
-			defer func() {
-				accessLog.Duration = time.Since(start).String()
-
-				accessLog.RespBody = limitString(accessLog.RespBody)
-				b.loggerFunc(ctx, accessLog)
-			}()
 		}
+
+		defer func() {
+			accessLog.Duration = time.Since(start).String()
+			b.loggerFunc(ctx, accessLog)
+		}()
 
 		// execute business logic
 		ctx.Next()

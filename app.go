@@ -32,7 +32,7 @@ func (app *App) Start() {
 		c.String(http.StatusOK, "welcome to tsukiyo's website!")
 	})
 
-	app.startServer(":8081")
+	app.startServer(":8080")
 }
 
 func (app *App) startServer(addr string) {

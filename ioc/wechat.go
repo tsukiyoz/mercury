@@ -1,23 +1,24 @@
 package ioc
 
 import (
-	"os"
-
+	"github.com/spf13/viper"
 	"github.com/tsukaychan/webook/internal/service/oauth2/wechat"
 	"github.com/tsukaychan/webook/internal/web"
 	"github.com/tsukaychan/webook/pkg/logger"
 )
 
 func InitWechatService(logger logger.Logger) wechat.Service {
-	appId, ok := os.LookupEnv("WECHAT_APP_ID")
-	if !ok {
-		panic("no environment variables found WECHAT_APP_ID")
+	type Config struct {
+		AppID     string
+		AppSecret string
 	}
-	appSecret, ok := os.LookupEnv("WECHAT_APP_SECRET")
-	if !ok {
-		panic("no environment variables found WECHAT_APP_SECRET")
+
+	var cfg Config
+	err := viper.UnmarshalKey("wechat", &cfg)
+	if err != nil {
+		panic(err)
 	}
-	return wechat.NewService(appId, appSecret, logger)
+	return wechat.NewService(cfg.AppID, cfg.AppSecret, logger)
 }
 
 func NewWechatHandlerConfig() web.WechatHandlerConfig {

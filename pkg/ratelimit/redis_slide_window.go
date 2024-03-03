@@ -13,28 +13,28 @@ var luaSlideWindow string
 
 type RedisSlidingWindowLimiter struct {
 	cmd redis.Cmdable
-	// internal window size
-	internal time.Duration
-	// rate max requests number in the internal scope
+	// interval window size
+	interval time.Duration
+	// rate max requests number in the interval scope
 	rate int
 }
 
 func (r *RedisSlidingWindowLimiter) Limit(ctx context.Context, key string) (bool, error) {
-	return r.cmd.Eval(ctx, luaSlideWindow, []string{key}, r.internal.Milliseconds(), r.rate, time.Now().UnixMilli()).Bool()
+	return r.cmd.Eval(ctx, luaSlideWindow, []string{key}, r.interval.Milliseconds(), r.rate, time.Now().UnixMilli()).Bool()
 }
 
 func (r *RedisSlidingWindowLimiter) Internal(internal time.Duration) {
-	r.internal = internal
+	r.interval = internal
 }
 
 func (r *RedisSlidingWindowLimiter) Rate(rate int) {
 	r.rate = rate
 }
 
-func NewRedisSlidingWindowLimiter(cmd redis.Cmdable, internal time.Duration, rate int) Limiter {
+func NewRedisSlidingWindowLimiter(cmd redis.Cmdable, interval time.Duration, rate int) Limiter {
 	return &RedisSlidingWindowLimiter{
 		cmd:      cmd,
-		internal: internal,
+		interval: interval,
 		rate:     rate,
 	}
 }
