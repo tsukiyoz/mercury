@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tsukaychan/webook/pkg/gormx/callbacks/prometheus"
+	"github.com/tsukaychan/webook/pkg/gormx/callbacks/metrics"
 
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	"github.com/tsukaychan/webook/pkg/logger"
@@ -51,7 +51,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 		panic(err)
 	}
 
-	prom := prometheus.NewCallbacks(
+	prom := metrics.NewCallbacks(
 		"tsukiyo",
 		"webook",
 		"prometheus_query",
