@@ -2,6 +2,9 @@ package ginx
 
 import (
 	"net/http"
+	"strconv"
+
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -9,6 +12,13 @@ import (
 )
 
 var log logger.Logger = logger.NewNopLogger()
+
+var counterVec *prometheus.CounterVec
+
+func InitCounterVec(opt prometheus.CounterOpts) {
+	counterVec = prometheus.NewCounterVec(opt, []string{"code"})
+	prometheus.MustRegister(counterVec)
+}
 
 func SetLogger(l logger.Logger) {
 	log = l
@@ -28,6 +38,7 @@ func WrapReq[Req any](fn func(ctx *gin.Context, req Req) (Result, error)) gin.Ha
 				logger.Error(err),
 			)
 		}
+		counterVec.WithLabelValues(strconv.Itoa(res.Code)).Inc()
 		ctx.JSON(http.StatusOK, res)
 	}
 }

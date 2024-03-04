@@ -21,7 +21,7 @@ func (bdr *PrometheusBuilder) Build() gin.HandlerFunc {
 	summary := prometheus.NewSummaryVec(prometheus.SummaryOpts{
 		Namespace: bdr.Namespace,
 		Subsystem: bdr.Subsystem,
-		Name:      bdr.Name + "_resp_time",
+		Name:      bdr.Name + "_response_time",
 		Help:      bdr.Help,
 		ConstLabels: prometheus.Labels{
 			"instance_id": bdr.InstanceID,
@@ -38,7 +38,7 @@ func (bdr *PrometheusBuilder) Build() gin.HandlerFunc {
 	gauge := prometheus.NewGauge(prometheus.GaugeOpts{
 		Namespace: bdr.Namespace,
 		Subsystem: bdr.Subsystem,
-		Name:      bdr.Name + "_active_req",
+		Name:      bdr.Name + "_active_request",
 		Help:      bdr.Help,
 		ConstLabels: prometheus.Labels{
 			"instance_id": bdr.InstanceID,

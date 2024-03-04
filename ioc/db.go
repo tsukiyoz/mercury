@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/tsukaychan/webook/pkg/gormx/callbacks/prometheus"
+
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	"github.com/tsukaychan/webook/pkg/logger"
-	"gorm.io/plugin/prometheus"
+	gormPrometheus "gorm.io/plugin/prometheus"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -20,7 +22,6 @@ func InitDB(l logger.Logger) *gorm.DB {
 	}
 
 	var cfg Config
-	// err := viper.UnmarshalKey("db.mysql", &cfg)
 	err := viper.UnmarshalKey("db", &cfg)
 	if err != nil {
 		panic(err)
@@ -37,15 +38,27 @@ func InitDB(l logger.Logger) *gorm.DB {
 		panic(err)
 	}
 
-	err = db.Use(prometheus.New(prometheus.Config{
+	err = db.Use(gormPrometheus.New(gormPrometheus.Config{
 		DBName:          "webook",
 		RefreshInterval: 15,
-		MetricsCollector: []prometheus.MetricsCollector{
-			&prometheus.MySQL{
+		MetricsCollector: []gormPrometheus.MetricsCollector{
+			&gormPrometheus.MySQL{
 				VariableNames: []string{"threads_running"},
 			},
 		},
 	}))
+	if err != nil {
+		panic(err)
+	}
+
+	prom := prometheus.NewCallbacks(
+		"tsukiyo",
+		"webook",
+		"prometheus_query",
+		"instance-0",
+		"metrics gorm db query",
+	)
+	err = prom.Register(db)
 	if err != nil {
 		panic(err)
 	}

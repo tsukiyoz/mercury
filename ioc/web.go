@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	ginxlogger "github.com/tsukaychan/webook/pkg/ginx/middleware/logger"
@@ -62,6 +64,12 @@ func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Han
 		Help:       "metrics gin http interface",
 		InstanceID: "instance_id",
 	}
+	ginx.InitCounterVec(prometheus.CounterOpts{
+		Namespace: "tsukiyo",
+		Subsystem: "webook",
+		Name:      "biz_code",
+		Help:      "metrics http biz code",
+	})
 	return []gin.HandlerFunc{
 		corsHdl(),
 		accessLogBdr.Build(),

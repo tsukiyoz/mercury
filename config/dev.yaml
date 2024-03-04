@@ -15,8 +15,8 @@ web:
     interval: 1
     rate: 120
   log:
-    req: true
-    resp: true
+    req: false
+    resp: false
 
 kafka:
   addrs:

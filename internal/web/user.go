@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/tsukaychan/webook/internal/errs"
+
 	"github.com/tsukaychan/webook/internal/domain"
 	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/internal/service"
@@ -195,7 +197,7 @@ func (h *UserHandler) Login(ctx *gin.Context) {
 	user, err := h.userService.Login(ctx.Request.Context(), req.Email, req.Password)
 	if err == service.ErrInvalidUserOrPassword {
 		ctx.JSON(http.StatusOK, Result{
-			Code: 4,
+			Code: errs.UserInvalidOrPassword,
 			Msg:  "incorrect account or password",
 		})
 		return
