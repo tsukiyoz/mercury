@@ -34,13 +34,13 @@ func NewPrometheusHook(
 	}
 }
 
-func (p PrometheusHook) DialHook(next redis.DialHook) redis.DialHook {
+func (p *PrometheusHook) DialHook(next redis.DialHook) redis.DialHook {
 	return func(ctx context.Context, network, addr string) (net.Conn, error) {
 		return next(ctx, network, addr)
 	}
 }
 
-func (p PrometheusHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
+func (p *PrometheusHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
 	return func(ctx context.Context, cmd redis.Cmder) error {
 		start := time.Now()
 		var err error
@@ -55,7 +55,7 @@ func (p PrometheusHook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
 	}
 }
 
-func (p PrometheusHook) ProcessPipelineHook(next redis.ProcessPipelineHook) redis.ProcessPipelineHook {
+func (p *PrometheusHook) ProcessPipelineHook(next redis.ProcessPipelineHook) redis.ProcessPipelineHook {
 	return func(ctx context.Context, cmds []redis.Cmder) error {
 		return next(ctx, cmds)
 	}
