@@ -6,25 +6,22 @@ import (
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
-
 	"github.com/fsnotify/fsnotify"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
-	ginxlogger "github.com/tsukaychan/webook/pkg/ginx/middleware/logger"
-
-	"github.com/tsukaychan/webook/pkg/ginx/middleware/metrics"
-
 	"github.com/tsukaychan/webook/internal/web"
 	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
 	"github.com/tsukaychan/webook/internal/web/middleware"
 	"github.com/tsukaychan/webook/pkg/ginx"
+	ginxlogger "github.com/tsukaychan/webook/pkg/ginx/middleware/logger"
+	"github.com/tsukaychan/webook/pkg/ginx/middleware/metrics"
 	ginRatelimit "github.com/tsukaychan/webook/pkg/ginx/middleware/ratelimit"
 	"github.com/tsukaychan/webook/pkg/logger"
 	"github.com/tsukaychan/webook/pkg/ratelimit"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 func InitWebServer(mdls []gin.HandlerFunc, userHdl *web.UserHandler, oAuth2Hdl *web.OAuth2WechatHandler, articleHdl *web.ArticleHandler, logger logger.Logger) *gin.Engine {
@@ -74,6 +71,7 @@ func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Han
 		corsHdl(),
 		accessLogBdr.Build(),
 		metricsBdr.Build(),
+		otelgin.Middleware("webook"),
 		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
 			"/",
 			"/users/signup",

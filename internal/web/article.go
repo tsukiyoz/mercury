@@ -143,6 +143,11 @@ func (h *ArticleHandler) Withdraw(ctx *gin.Context) {
 }
 
 func (h *ArticleHandler) List(ctx *gin.Context, req ListReq, uc ijwt.UserClaims) (Result, error) {
+	if req.Limit > 100 {
+		req.Limit = 100
+	} else if req.Limit < 0 {
+		req.Limit = 0
+	}
 	atcls, err := h.articleSvc.List(ctx, uc.Uid, req.Offset, req.Limit)
 	if err != nil {
 		return Result{

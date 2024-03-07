@@ -6,7 +6,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
+
+	"github.com/tsukaychan/webook/ioc"
 
 	"github.com/fsnotify/fsnotify"
 	"go.uber.org/zap"
@@ -19,10 +22,14 @@ import (
 func main() {
 	initViper()
 	initLogger()
+
+	cancel := ioc.InitOTel()
+	defer cancel(context.Background())
+
 	initPrometheus()
 
 	app := InitWebServer()
-	app.Start()
+	app.Start(":8080")
 }
 
 func initViper() {

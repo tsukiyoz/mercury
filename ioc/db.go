@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"gorm.io/plugin/opentelemetry/tracing"
+
 	"github.com/tsukaychan/webook/pkg/gormx/callbacks/metrics"
 
 	"github.com/tsukaychan/webook/internal/repository/dao"
@@ -38,6 +40,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 		panic(err)
 	}
 
+	// metrics
 	err = db.Use(gormPrometheus.New(gormPrometheus.Config{
 		DBName:          "webook",
 		RefreshInterval: 15,
@@ -62,6 +65,19 @@ func InitDB(l logger.Logger) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+
+	// tracing
+	db.Use(
+		tracing.NewPlugin(
+			tracing.WithDBName("webook"),
+			tracing.WithQueryFormatter(func(query string) string {
+				l.Debug("query", logger.String("query", query))
+				return query
+			}),
+			tracing.WithoutMetrics(),
+			tracing.WithoutQueryVariables(),
+		),
+	)
 
 	err = dao.InitTable(db)
 	if err != nil {

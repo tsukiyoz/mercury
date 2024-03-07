@@ -27,7 +27,7 @@ func NewPrometheusHook(
 		ConstLabels: prometheus.Labels{
 			"instance_id": instanceId,
 		},
-	}, []string{"cmd", "key_exist"})
+	}, []string{"cmd", "hit_cache"})
 	prometheus.MustRegister(summaryVec)
 	return &PrometheusHook{
 		summaryVec: summaryVec,

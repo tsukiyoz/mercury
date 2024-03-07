@@ -19,7 +19,7 @@ type App struct {
 	consumers []events.Consumer
 }
 
-func (app *App) Start() {
+func (app *App) Start(addr string) {
 	for _, consumer := range app.consumers {
 		err := consumer.Start()
 		if err != nil {
@@ -32,7 +32,7 @@ func (app *App) Start() {
 		c.String(http.StatusOK, "welcome to tsukiyo's website!")
 	})
 
-	app.startServer(":8080")
+	app.startServer(addr)
 }
 
 func (app *App) startServer(addr string) {
