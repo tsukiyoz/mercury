@@ -16,12 +16,14 @@ type ArticleRepository interface {
 	Create(ctx context.Context, atcl domain.Article) (int64, error)
 	Update(ctx context.Context, atcl domain.Article) error
 	List(ctx context.Context, authorId int64, offset int, limit int) ([]domain.Article, error)
-
+	ListPub(ctx context.Context, utime time.Time, offset int, limit int) ([]domain.Article, error)
 	Sync(ctx context.Context, atcl domain.Article) (int64, error)
 	SyncStatus(ctx context.Context, id, authorId int64, status domain.ArticleStatus) error
 	GetById(ctx context.Context, id int64) (domain.Article, error)
 	GetPublishedById(ctx context.Context, id int64) (domain.Article, error)
 }
+
+var _ ArticleRepository = (*CachedArticleRepository)(nil)
 
 type CachedArticleRepository struct {
 	userRepo     UserRepository
@@ -72,7 +74,7 @@ func (repo *CachedArticleRepository) Create(ctx context.Context, atcl domain.Art
 	}
 	err = repo.articleCache.DelFirstPage(ctx, atcl.Author.Id)
 	if err != nil {
-		repo.logger.Error("delete first page cache failed", logger.Int64("author_id", atcl.Author.Id), logger.Error(err))
+		repo.logger.Error("delete first page redis failed", logger.Int64("author_id", atcl.Author.Id), logger.Error(err))
 	}
 	return id, nil
 }
@@ -85,7 +87,7 @@ func (repo *CachedArticleRepository) Update(ctx context.Context, atcl domain.Art
 
 	err = repo.articleCache.DelFirstPage(ctx, atcl.Author.Id)
 	if err != nil {
-		repo.logger.Error("delete first page cache failed", logger.Int64("author_id", atcl.Author.Id), logger.Error(err))
+		repo.logger.Error("delete first page redis failed", logger.Int64("author_id", atcl.Author.Id), logger.Error(err))
 	}
 	return err
 }
@@ -97,7 +99,7 @@ func (repo *CachedArticleRepository) List(ctx context.Context, authorId int64, o
 			go func() {
 				err := repo.preCache(ctx, data)
 				if err != nil {
-					repo.logger.Error("pre cache articles failed", logger.Int64("author_id", authorId), logger.Error(err))
+					repo.logger.Error("pre redis articles failed", logger.Int64("author_id", authorId), logger.Error(err))
 				}
 			}()
 			return data[:min(len(data), limit)], err
@@ -117,9 +119,20 @@ func (repo *CachedArticleRepository) List(ctx context.Context, authorId int64, o
 
 	err = repo.articleCache.SetFirstPage(ctx, authorId, data)
 	if err != nil {
-		repo.logger.Error("write back cache failure", logger.Int64("author_id", authorId), logger.Error(err))
+		repo.logger.Error("write back redis failure", logger.Int64("author_id", authorId), logger.Error(err))
 	}
 	return data, nil
+}
+
+func (repo *CachedArticleRepository) ListPub(ctx context.Context, utime time.Time, offset int, limit int) ([]domain.Article, error) {
+	pubAtcls, err := repo.articleDAO.ListPubByUtime(ctx, utime, offset, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	return slice.Map[articleDao.PublishedArticle, domain.Article](pubAtcls, func(idx int, src articleDao.PublishedArticle) domain.Article {
+		return repo.entityToDomain(articleDao.Article(src))
+	}), nil
 }
 
 func (repo *CachedArticleRepository) Sync(ctx context.Context, atcl domain.Article) (int64, error) {
@@ -129,7 +142,7 @@ func (repo *CachedArticleRepository) Sync(ctx context.Context, atcl domain.Artic
 	}
 	go func() {
 		if err := repo.articleCache.DelFirstPage(ctx, atcl.Author.Id); err != nil {
-			repo.logger.Error("write page back to cache failure", logger.Int64("author_id", atcl.Author.Id), logger.Error(err))
+			repo.logger.Error("write page back to redis failure", logger.Int64("author_id", atcl.Author.Id), logger.Error(err))
 		}
 		if user, err := repo.userRepo.FindById(ctx, atcl.Author.Id); err != nil {
 			repo.logger.Error("pre set user detail failed")
@@ -140,7 +153,7 @@ func (repo *CachedArticleRepository) Sync(ctx context.Context, atcl domain.Artic
 			}
 		}
 		if err := repo.articleCache.SetPub(ctx, atcl); err != nil {
-			repo.logger.Error("write article back to cache failure", logger.Int64("id", atcl.Id), logger.Error(err))
+			repo.logger.Error("write article back to redis failure", logger.Int64("id", atcl.Id), logger.Error(err))
 		}
 	}()
 	return id, err
@@ -188,18 +201,18 @@ func (repo *CachedArticleRepository) GetPublishedById(ctx context.Context, id in
 	}
 	go func() {
 		if err = repo.articleCache.SetPub(ctx, res); err != nil {
-			repo.logger.Error("cache published article failed", logger.Int64("article_id", res.Id), logger.Error(err))
+			repo.logger.Error("redis published article failed", logger.Int64("article_id", res.Id), logger.Error(err))
 		}
 	}()
 	return res, nil
 }
 
-// preCache will cache first article in page and returns error.
+// preCache will redis first article in page and returns error.
 func (repo *CachedArticleRepository) preCache(ctx context.Context, atcls []domain.Article) error {
 	const contentSizeThreshold = 1024 * 1024
 	if len(atcls) > 0 && len(atcls[0].Content) <= contentSizeThreshold {
 		if err := repo.articleCache.Set(ctx, atcls[0]); err != nil {
-			repo.logger.Error("pre cache article failed", logger.Error(err))
+			repo.logger.Error("pre redis article failed", logger.Error(err))
 		}
 	}
 	return nil

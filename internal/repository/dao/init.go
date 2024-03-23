@@ -17,8 +17,12 @@ func InitTable(db *gorm.DB) error {
 		&articleDao.PublishedArticle{},
 		&AsyncSms{},
 		&Interactive{},
+		// user likes
 		&Like{},
+		// user favorites
 		&Favorites{},
-		&Collection{},
+		// favorite item relationship with favorites
+		&FavoriteItem{},
+		&Task{},
 	)
 }

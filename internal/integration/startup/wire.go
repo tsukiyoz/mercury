@@ -9,7 +9,6 @@ import (
 	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchaCache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
 	cache "github.com/tsukaychan/webook/internal/repository/cache/interactive"
-	userCache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/internal/service"
@@ -18,14 +17,13 @@ import (
 	"github.com/tsukaychan/webook/ioc"
 )
 
-var (
-	thirdProvider   = wire.NewSet(InitRedis, InitTestDB, InitLog)
-	userSvcProvider = wire.NewSet(
-		service.NewUserService,
-		repository.NewCachedUserRepository,
-		dao.NewGORMUserDAO,
-		userCache.NewUserRedisCache,
-	)
+var thirdProvider = wire.NewSet(InitRedis, InitTestDB, InitLog)
+
+var userSvcProvider = wire.NewSet(
+	service.NewUserService,
+	repository.NewCachedUserRepository,
+	dao.NewGORMUserDAO,
+	userCache.NewUserRedisCache,
 )
 
 var articleSvcProvider = wire.NewSet(

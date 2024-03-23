@@ -15,8 +15,7 @@ type InteractiveService interface {
 	IncrReadCnt(ctx context.Context, biz string, bizId int64) error
 	Like(ctx context.Context, biz string, bizId int64, uid int64) error
 	CancelLike(ctx context.Context, biz string, bizId int64, uid int64) error
-	// Collect 收藏
-	Collect(ctx context.Context, biz string, bizId, cid, uid int64) error
+	Favorite(ctx context.Context, biz string, bizId, fid, uid int64) error
 	Get(ctx context.Context, biz string, bizId, uid int64) (domain.Interactive, error)
 	GetByIds(ctx context.Context, biz string, bizIds []int64) (map[int64]domain.Interactive, error)
 }
@@ -45,14 +44,14 @@ func (svc *interactiveService) CancelLike(ctx context.Context, biz string, bizId
 	return svc.repo.DecrLike(ctx, biz, bizId, uid)
 }
 
-func (svc *interactiveService) Collect(ctx context.Context, biz string, bizId, cid, uid int64) error {
-	return svc.repo.AddCollectionItem(ctx, biz, bizId, cid, uid)
+func (svc *interactiveService) Favorite(ctx context.Context, biz string, bizId, fid, uid int64) error {
+	return svc.repo.AddFavoriteItem(ctx, biz, bizId, fid, uid)
 }
 
 func (svc *interactiveService) Get(ctx context.Context, biz string, bizId, uid int64) (domain.Interactive, error) {
 	var (
 		intr             domain.Interactive
-		liked, collected bool
+		liked, favorited bool
 		eg               errgroup.Group
 	)
 
@@ -70,7 +69,7 @@ func (svc *interactiveService) Get(ctx context.Context, biz string, bizId, uid i
 		})
 		eg.Go(func() error {
 			var er error
-			collected, er = svc.repo.Collected(ctx, biz, bizId, uid)
+			favorited, er = svc.repo.Favorited(ctx, biz, bizId, uid)
 			return er
 		})
 	}
@@ -84,7 +83,7 @@ func (svc *interactiveService) Get(ctx context.Context, biz string, bizId, uid i
 			logger.Error(err),
 		)
 	}
-	intr.Liked, intr.Collected = liked, collected
+	intr.Liked, intr.Favorited = liked, favorited
 	return intr, err
 }
 

@@ -32,9 +32,9 @@ func (s *InteractiveSvcTestSuite) SetupSuite() {
 func (s *InteractiveSvcTestSuite) TearDownTest() {
 	err := s.db.Exec("TRUNCATE TABLE `interactives`").Error
 	assert.NoError(s.T(), err)
-	err = s.db.Exec("TRUNCATE TABLE `user_like_bizs`").Error
+	err = s.db.Exec("TRUNCATE TABLE `likes`").Error
 	assert.NoError(s.T(), err)
-	err = s.db.Exec("TRUNCATE TABLE `user_collection_bizs`").Error
+	err = s.db.Exec("TRUNCATE TABLE `favorites`").Error
 	assert.NoError(s.T(), err)
 }
 
@@ -57,14 +57,14 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 				defer cancel()
 
 				err := s.db.Create(dao.Interactive{
-					Id:         1,
-					Biz:        "test",
-					BizId:      2,
-					ReadCnt:    3,
-					CollectCnt: 4,
-					LikeCnt:    5,
-					Ctime:      6,
-					Utime:      7,
+					Id:          1,
+					Biz:         "test",
+					BizId:       2,
+					ReadCnt:     3,
+					FavoriteCnt: 4,
+					LikeCnt:     5,
+					Ctime:       6,
+					Utime:       7,
 				}).Error
 				assert.NoError(t, err)
 
@@ -81,13 +81,13 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 				assert.True(t, intr.Utime > 7)
 				intr.Utime = 0
 				assert.Equal(t, dao.Interactive{
-					Id:         1,
-					Biz:        "test",
-					BizId:      2,
-					ReadCnt:    4,
-					CollectCnt: 4,
-					LikeCnt:    5,
-					Ctime:      6,
+					Id:          1,
+					Biz:         "test",
+					BizId:       2,
+					ReadCnt:     4,
+					FavoriteCnt: 4,
+					LikeCnt:     5,
+					Ctime:       6,
 				}, intr)
 
 				cnt, err := s.rdb.HGet(ctx, "interactive:test:2", "read_cnt").Int()
@@ -107,21 +107,21 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 
 				err := s.db.WithContext(ctx).Clauses(clause.OnConflict{
 					DoUpdates: clause.Assignments(map[string]any{
-						"read_cnt":    3,
-						"collect_cnt": 4,
-						"like_cnt":    5,
-						"ctime":       6,
-						"utime":       7,
+						"read_cnt":     3,
+						"favorite_cnt": 4,
+						"like_cnt":     5,
+						"ctime":        6,
+						"utime":        7,
 					}),
 				}).Create(dao.Interactive{
-					Id:         2,
-					Biz:        "test",
-					BizId:      3,
-					ReadCnt:    3,
-					CollectCnt: 4,
-					LikeCnt:    5,
-					Ctime:      6,
-					Utime:      7,
+					Id:          2,
+					Biz:         "test",
+					BizId:       3,
+					ReadCnt:     3,
+					FavoriteCnt: 4,
+					LikeCnt:     5,
+					Ctime:       6,
+					Utime:       7,
 				}).Error
 				assert.NoError(t, err)
 			},
@@ -135,13 +135,13 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 				assert.True(t, intr.Utime > 7)
 				intr.Utime = 0
 				assert.Equal(t, intr, dao.Interactive{
-					Id:         2,
-					Biz:        "test",
-					BizId:      3,
-					ReadCnt:    4,
-					CollectCnt: 4,
-					LikeCnt:    5,
-					Ctime:      6,
+					Id:          2,
+					Biz:         "test",
+					BizId:       3,
+					ReadCnt:     4,
+					FavoriteCnt: 4,
+					LikeCnt:     5,
+					Ctime:       6,
 				})
 
 				cnt, err := s.rdb.Exists(ctx, "interactive:test:3").Result()

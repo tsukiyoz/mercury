@@ -152,7 +152,7 @@ func Test_articleService_Publish(t *testing.T) {
 
 			atclRepo := tc.mock(ctrl)
 
-			svc := NewArticleService(atclRepo, logger.NewNopLogger())
+			svc := NewArticleService(atclRepo, nil, logger.NewNopLogger())
 
 			id, err := svc.Publish(context.Background(), tc.article)
 			assert.Equal(t, tc.wantId, id)

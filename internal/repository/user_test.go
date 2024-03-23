@@ -34,7 +34,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 		}
 	}{
 		{
-			name: "cache hit",
+			name: "redis hit",
 			mock: func(ctrl *gomock.Controller) (dao.UserDAO, user.UserCache) {
 				userCache, userDao := cachemock.NewMockUserCache(ctrl), daomock.NewMockUserDao(ctrl)
 				userCache.EXPECT().Get(gomock.Any(), int64(123)).
@@ -74,7 +74,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 			},
 		},
 		{
-			name: "cache miss and get data from dao failed",
+			name: "redis miss and get data from dao failed",
 			mock: func(ctrl *gomock.Controller) (dao.UserDAO, user.UserCache) {
 				userCache, userDao := cachemock.NewMockUserCache(ctrl), daomock.NewMockUserDao(ctrl)
 				userCache.EXPECT().Get(gomock.Any(), int64(123)).
@@ -103,7 +103,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 			},
 		},
 		{
-			name: "cache miss and get data from dao",
+			name: "redis miss and get data from dao",
 			mock: func(ctrl *gomock.Controller) (dao.UserDAO, user.UserCache) {
 				userCache, userDao := cachemock.NewMockUserCache(ctrl), daomock.NewMockUserDao(ctrl)
 				userCache.EXPECT().Get(gomock.Any(), int64(123)).

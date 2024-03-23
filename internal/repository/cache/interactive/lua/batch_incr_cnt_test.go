@@ -47,7 +47,7 @@ func TestBatchIncrLua(t *testing.T) {
 		err = client.HMSet(ctx, key,
 			"read_cnt", 1,
 			"like_cnt", 1,
-			"collect_cnt", 1,
+			"favorite_cnt", 1,
 		).Err()
 		assert.NoError(t, err)
 
@@ -62,7 +62,7 @@ func TestBatchIncrLua(t *testing.T) {
 
 	// results := client.HGetAll()
 	for _, key := range keys {
-		data, err := client.HMGet(ctx, key, "read_cnt", "like_cnt", "collect_cnt").Result()
+		data, err := client.HMGet(ctx, key, "read_cnt", "like_cnt", "favorite_cnt").Result()
 		assert.NoError(t, err)
 		t.Logf("%v\n", data)
 	}
@@ -73,7 +73,7 @@ func TestHMGetNonExists(t *testing.T) {
 
 	ctx := context.Background()
 	key := "non_exists"
-	results, err := client.HMGet(ctx, key, "read_cnt", "like_cnt", "collect_cnt").Result()
+	results, err := client.HMGet(ctx, key, "read_cnt", "like_cnt", "favorite_cnt").Result()
 	assert.NoError(t, err)
 	for _, result := range results {
 		if result != nil {

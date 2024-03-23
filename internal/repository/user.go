@@ -77,7 +77,7 @@ func (r *CachedUserRepository) FindById(ctx context.Context, id int64) (domain.U
 		// 有数据
 		return u, nil
 	}
-	//if err == cache.ErrKeyNotExist {
+	//if err == redis.ErrKeyNotExist {
 	//	// 无数据
 	//}
 	// 缓存出错
@@ -92,7 +92,7 @@ func (r *CachedUserRepository) FindById(ctx context.Context, id int64) (domain.U
 	go func() {
 		err = r.cache.Set(ctx, u)
 		if err != nil {
-			log.Printf("cache set failed! reason:%v \n", err)
+			log.Printf("redis set failed! reason:%v \n", err)
 		}
 	}()
 	return u, err

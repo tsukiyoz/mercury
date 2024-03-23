@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -17,9 +18,9 @@ var (
 )
 
 const (
-	fieldReadCnt    = "read_cnt"
-	fieldLikeCnt    = "like_cnt"
-	fieldCollectCnt = "collect_cnt"
+	fieldReadCnt     = "read_cnt"
+	fieldLikeCnt     = "like_cnt"
+	fieldFavoriteCnt = "favorite_cnt"
 )
 
 //go:generate mockgen -source=./interactive.go -package=cachemocks -destination=mocks/interactive.mock.go InteractiveCache
@@ -27,7 +28,7 @@ type InteractiveCache interface {
 	IncrReadCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	IncrLikeCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	DecrLikeCntIfPresent(ctx context.Context, biz string, bizId int64) error
-	IncrCollectCntIfPresent(ctx context.Context, biz string, bizId int64) error
+	IncrFavoriteCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error)
 	Set(ctx context.Context, biz string, bizId int64, intr domain.Interactive) error
 }
@@ -60,33 +61,12 @@ func (cache *RedisInteractiveCache) DecrLikeCntIfPresent(ctx context.Context, bi
 	return cache.client.Eval(ctx, luaIncrCnt, []string{cache.key(biz, bizId)}, fieldLikeCnt, -1).Err()
 }
 
-func (cache *RedisInteractiveCache) IncrCollectCntIfPresent(ctx context.Context, biz string, bizId int64) error {
-	return cache.client.Eval(ctx, luaIncrCnt, []string{cache.key(biz, bizId)}, fieldCollectCnt, 1).Err()
+func (cache *RedisInteractiveCache) IncrFavoriteCntIfPresent(ctx context.Context, biz string, bizId int64) error {
+	return cache.client.Eval(ctx, luaIncrCnt, []string{cache.key(biz, bizId)}, fieldFavoriteCnt, 1).Err()
 }
 
-//func (cache *RedisInteractiveCache) Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error) {
-//	data, err := cache.client.HGetAll(ctx, cache.key(biz, bizId)).Result()
-//	if err != nil {
-//		return domain.Interactive{}, err
-//	}
-//
-//	if len(data) == 0 {
-//		return domain.Interactive{}, ErrKeyNotExist
-//	}
-//
-//	collectCnt, _ := strconv.ParseInt(data[fieldCollectCnt], 10, 64)
-//	likeCnt, _ := strconv.ParseInt(data[fieldLikeCnt], 10, 64)
-//	readCnt, _ := strconv.ParseInt(data[fieldReadCnt], 10, 64)
-//
-//	return domain.Interactive{
-//		CollectCnt: collectCnt,
-//		LikeCnt:    likeCnt,
-//		ReadCnt:    readCnt,
-//	}, nil
-//}
-
 func (cache *RedisInteractiveCache) Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error) {
-	cnts, err := cache.client.HMGet(ctx, cache.key(biz, bizId), fieldReadCnt, fieldLikeCnt, fieldCollectCnt).Result()
+	cnts, err := cache.client.HMGet(ctx, cache.key(biz, bizId), fieldReadCnt, fieldLikeCnt, fieldFavoriteCnt).Result()
 	if err != nil {
 		return domain.Interactive{}, err
 	}
@@ -96,9 +76,9 @@ func (cache *RedisInteractiveCache) Get(ctx context.Context, biz string, bizId i
 		return domain.Interactive{}, ErrKeyNotExist
 	}
 
-	intr.ReadCnt, _ = cnts[0].(int64)
-	intr.LikeCnt, _ = cnts[1].(int64)
-	intr.LikeCnt, _ = cnts[2].(int64)
+	intr.ReadCnt, _ = strconv.ParseInt(cnts[0].(string), 10, 64)
+	intr.LikeCnt, _ = strconv.ParseInt(cnts[1].(string), 10, 64)
+	intr.FavoriteCnt, _ = strconv.ParseInt(cnts[2].(string), 10, 64)
 
 	return intr, nil
 }
@@ -108,7 +88,7 @@ func (cache *RedisInteractiveCache) Set(ctx context.Context, biz string, bizId i
 	err := cache.client.HMSet(ctx, key,
 		fieldReadCnt, intr.ReadCnt,
 		fieldLikeCnt, intr.LikeCnt,
-		fieldCollectCnt, intr.CollectCnt,
+		fieldFavoriteCnt, intr.FavoriteCnt,
 	).Err()
 	if err != nil {
 		return err

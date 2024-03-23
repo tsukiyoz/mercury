@@ -10,12 +10,12 @@ type ArticleVO struct {
 	Status   uint8  `json:"status"`
 	Author   string `json:"author"`
 
-	LikeCnt    int64 `json:"like_cnt"`
-	CollectCnt int64 `json:"collect_cnt"`
-	ReadCnt    int64 `json:"read_cnt"`
+	LikeCnt     int64 `json:"like_cnt"`
+	FavoriteCnt int64 `json:"favorite_cnt"`
+	ReadCnt     int64 `json:"read_cnt"`
 
 	Liked     bool `json:"liked"`
-	Collected bool `json:"collected"`
+	Favorited bool `json:"favorited"`
 
 	Ctime string `json:"ctime"`
 	Utime string `json:"utime"`
@@ -48,7 +48,7 @@ type LikeReq struct {
 	Like bool  `json:"like"`
 }
 
-type CollectReq struct {
+type FavoriteReq struct {
 	Id  int64 `json:"id"`
-	Cid int64 `json:"cid"`
+	Fid int64 `json:"fid"`
 }

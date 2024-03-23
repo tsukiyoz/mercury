@@ -18,10 +18,10 @@ type InteractiveRepository interface {
 	BatchIncrReadCnt(ctx context.Context, biz string, bizIds []int64) error
 	IncrLike(ctx context.Context, biz string, bizId, uid int64) error
 	DecrLike(ctx context.Context, biz string, bizId, uid int64) error
-	AddCollectionItem(ctx context.Context, biz string, bizId, cid int64, uid int64) error
+	AddFavoriteItem(ctx context.Context, biz string, bizId, fid int64, uid int64) error
 	Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error)
 	Liked(ctx context.Context, biz string, id int64, uid int64) (bool, error)
-	Collected(ctx context.Context, biz string, id int64, uid int64) (bool, error)
+	Favorited(ctx context.Context, biz string, id int64, uid int64) (bool, error)
 	GetByIds(ctx context.Context, biz string, ids []int64) ([]domain.Interactive, error)
 }
 
@@ -43,9 +43,9 @@ func NewCachedInteractiveRepository(dao dao.InteractiveDAO, cache cache.Interact
 
 func (repo *CachedInteractiveRepository) entityToDomain(intr dao.Interactive) domain.Interactive {
 	return domain.Interactive{
-		LikeCnt:    intr.LikeCnt,
-		CollectCnt: intr.CollectCnt,
-		ReadCnt:    intr.ReadCnt,
+		LikeCnt:     intr.LikeCnt,
+		FavoriteCnt: intr.FavoriteCnt,
+		ReadCnt:     intr.ReadCnt,
 	}
 }
 
@@ -77,9 +77,9 @@ func (repo *CachedInteractiveRepository) DecrLike(ctx context.Context, biz strin
 	return repo.cache.DecrLikeCntIfPresent(ctx, biz, bizId)
 }
 
-func (repo *CachedInteractiveRepository) AddCollectionItem(ctx context.Context, biz string, bizId, cid int64, uid int64) error {
-	err := repo.dao.InsertCollectionItem(ctx, dao.Collection{
-		Cid:   cid,
+func (repo *CachedInteractiveRepository) AddFavoriteItem(ctx context.Context, biz string, bizId, fid int64, uid int64) error {
+	err := repo.dao.InsertFavoriteItem(ctx, dao.FavoriteItem{
+		Fid:   fid,
 		Biz:   biz,
 		BizId: bizId,
 		Uid:   uid,
@@ -87,7 +87,7 @@ func (repo *CachedInteractiveRepository) AddCollectionItem(ctx context.Context, 
 	if err != nil {
 		return err
 	}
-	return repo.cache.IncrCollectCntIfPresent(ctx, biz, bizId)
+	return repo.cache.IncrFavoriteCntIfPresent(ctx, biz, bizId)
 }
 
 func (repo *CachedInteractiveRepository) Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error) {
@@ -103,7 +103,7 @@ func (repo *CachedInteractiveRepository) Get(ctx context.Context, biz string, bi
 	go func() {
 		er := repo.cache.Set(ctx, biz, bizId, intr)
 		if er != nil {
-			repo.l.Error("write back cache failed",
+			repo.l.Error("write back redis failed",
 				logger.String("biz", biz),
 				logger.Int64("biz_id", bizId),
 			)
@@ -124,8 +124,8 @@ func (repo *CachedInteractiveRepository) Liked(ctx context.Context, biz string, 
 	}
 }
 
-func (repo *CachedInteractiveRepository) Collected(ctx context.Context, biz string, id int64, uid int64) (bool, error) {
-	_, err := repo.dao.GetCollectionInfo(ctx, biz, id, uid)
+func (repo *CachedInteractiveRepository) Favorited(ctx context.Context, biz string, id int64, uid int64) (bool, error) {
+	_, err := repo.dao.GetFavoriteInfo(ctx, biz, id, uid)
 	switch err {
 	case nil:
 		return true, nil

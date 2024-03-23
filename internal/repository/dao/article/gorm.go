@@ -138,6 +138,7 @@ func (dao *GORMArticleDAO) SyncStatus(ctx context.Context, id, authorId int64, s
 	})
 }
 
+// ListPubByUtime returns published_articles each article satisfy utime < utime(input)
 func (dao *GORMArticleDAO) ListPubByUtime(ctx context.Context, utime time.Time, offset int, limit int) ([]PublishedArticle, error) {
 	var pubAtcls []PublishedArticle
 	err := dao.db.WithContext(ctx).Model(&PublishedArticle{}).

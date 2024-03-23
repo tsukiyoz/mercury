@@ -15,9 +15,9 @@ type Interactive struct {
 	BizId int64  `gorm:"uniqueIndex:biz_type_id"`
 	Biz   string `gorm:"type:varchar(128);uniqueIndex:biz_type_id"`
 
-	ReadCnt    int64
-	CollectCnt int64
-	LikeCnt    int64
+	ReadCnt     int64
+	FavoriteCnt int64
+	LikeCnt     int64
 
 	Ctime int64
 	Utime int64
@@ -32,7 +32,7 @@ type Like struct {
 	BizId int64  `gorm:"uniqueIndex:biz_type_id_uid"`
 	Biz   string `gorm:"type:varchar(128);uniqueIndex:biz_type_id_uid"`
 	Uid   int64  `gorm:"uniqueIndex:biz_type_id_uid"`
-	// 0-invalid, 1-valid
+	// 0-unlike, 1-like
 	Status uint8
 	Ctime  int64
 	Utime  int64
@@ -47,16 +47,13 @@ type Favorites struct {
 	Utime int64
 }
 
-type Collection struct {
+type FavoriteItem struct {
 	Id int64 `gorm:"primaryKey,autoIncrement"`
-	// 收藏夹 ID
-	// 作为关联关系中的外键，我们这里需要索引
-	Cid   int64  `gorm:"index"`
+	// Favorites ID
+	Fid   int64  `gorm:"index"`
 	BizId int64  `gorm:"uniqueIndex:biz_type_id_uid"`
 	Biz   string `gorm:"type:varchar(128);uniqueIndex:biz_type_id_uid"`
-	// 这算是一个冗余，因为正常来说，
-	// 只需要在 Favorites 中维持住 Uid 就可以
-	Uid   int64 `gorm:"uniqueIndex:biz_type_id_uid"`
+	Uid   int64  `gorm:"uniqueIndex:biz_type_id_uid"`
 	Ctime int64
 	Utime int64
 }
@@ -68,8 +65,8 @@ type InteractiveDAO interface {
 	GetLikeInfo(ctx context.Context, biz string, bizId, uid int64) (Like, error)
 	DeleteLikeInfo(ctx context.Context, biz string, bizId, uid int64) error
 	Get(ctx context.Context, biz string, bizId int64) (Interactive, error)
-	InsertCollectionItem(ctx context.Context, ci Collection) error
-	GetCollectionInfo(ctx context.Context, biz string, bizId, uid int64) (Collection, error)
+	InsertFavoriteItem(ctx context.Context, ci FavoriteItem) error
+	GetFavoriteInfo(ctx context.Context, biz string, bizId, uid int64) (FavoriteItem, error)
 	BatchIncrReadCnt(ctx context.Context, biz string, ids []int64) error
 	GetByIds(ctx context.Context, biz string, ids []int64) ([]Interactive, error)
 }
@@ -187,7 +184,7 @@ func (dao *GORMInteractiveDAO) Get(ctx context.Context, biz string, bizId int64)
 	return intr, err
 }
 
-func (dao *GORMInteractiveDAO) InsertCollectionItem(ctx context.Context, ci Collection) error {
+func (dao *GORMInteractiveDAO) InsertFavoriteItem(ctx context.Context, ci FavoriteItem) error {
 	now := time.Now().UnixMilli()
 	ci.Ctime, ci.Utime = now, now
 	return dao.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -197,25 +194,25 @@ func (dao *GORMInteractiveDAO) InsertCollectionItem(ctx context.Context, ci Coll
 		}
 		return tx.Clauses(clause.OnConflict{
 			DoUpdates: clause.Assignments(map[string]any{
-				"collect_cnt": gorm.Expr("`collect_cnt` + 1"),
-				"utime":       now,
+				"favorite_cnt": gorm.Expr("`favorite_cnt` + 1"),
+				"utime":        now,
 			}),
 		}).Create(&Interactive{
-			Biz:        ci.Biz,
-			BizId:      ci.BizId,
-			CollectCnt: 1,
-			Ctime:      now,
-			Utime:      now,
+			Biz:         ci.Biz,
+			BizId:       ci.BizId,
+			FavoriteCnt: 1,
+			Ctime:       now,
+			Utime:       now,
 		}).Error
 	})
 }
 
-func (dao *GORMInteractiveDAO) GetCollectionInfo(ctx context.Context, biz string, bizId, uid int64) (Collection, error) {
-	var collection Collection
+func (dao *GORMInteractiveDAO) GetFavoriteInfo(ctx context.Context, biz string, bizId, uid int64) (FavoriteItem, error) {
+	var favoriteItem FavoriteItem
 	err := dao.db.WithContext(ctx).
 		Where("biz = ? AND biz_id = ? AND uid = ?", biz, bizId, uid).
-		First(&collection).Error
-	return collection, err
+		First(&favoriteItem).Error
+	return favoriteItem, err
 }
 
 func (dao *GORMInteractiveDAO) BatchIncrReadCnt(ctx context.Context, biz string, ids []int64) error {

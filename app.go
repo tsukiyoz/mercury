@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/robfig/cron/v3"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tsukaychan/webook/internal/events"
 )
@@ -17,6 +19,7 @@ import (
 type App struct {
 	web       *gin.Engine
 	consumers []events.Consumer
+	cron      *cron.Cron
 }
 
 func (app *App) Start(addr string) {
@@ -26,6 +29,8 @@ func (app *App) Start(addr string) {
 			panic(err)
 		}
 	}
+
+	app.cron.Start()
 
 	server := app.web
 	server.GET("/", func(c *gin.Context) {
@@ -51,12 +56,22 @@ func (app *App) startServer(addr string) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Println("Shutting down server...")
 
+	// cron
+	log.Println("shutting down cron jobs...")
+	tm := time.NewTimer(time.Minute * 10)
+	select {
+	case <-tm.C:
+		log.Println("cron jobs forced to shutdown: time expired")
+	case <-app.cron.Stop().Done():
+	}
+
+	// web
+	log.Println("shutting down web server...")
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server forced to shutdown: ", err)
+		log.Fatal("web server forced to shutdown: ", err)
 	}
 
 	log.Println("Server exiting")

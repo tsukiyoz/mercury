@@ -48,7 +48,7 @@ func (h *ArticleHandler) RegisterRoutes(server *gin.Engine) {
 	pub := server.Group("/pub")
 	pub.GET("/:id", ginx.WrapClaims[ijwt.UserClaims](h.PubDetail))
 	pub.POST("/like", ginx.WrapClaimsAndReq[LikeReq, ijwt.UserClaims](h.Like))
-	pub.POST("/collect", ginx.WrapClaimsAndReq[CollectReq, ijwt.UserClaims](h.Collect))
+	pub.POST("/favorite", ginx.WrapClaimsAndReq[FavoriteReq, ijwt.UserClaims](h.Favorite))
 }
 
 func (h *ArticleHandler) Edit(ctx *gin.Context) {
@@ -242,7 +242,7 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 		return Result{
 			Code: 5,
 			Msg:  "internal error",
-		}, fmt.Errorf("get articl details failed, error: %w", err)
+		}, fmt.Errorf("get article details failed, error: %w", err)
 	}
 
 	if atcl.Author.Id != uc.Uid && atcl.Status == domain.ArticleStatusPrivate {
@@ -254,18 +254,18 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 
 	return Result{
 		Data: ArticleVO{
-			Id:         atcl.Id,
-			Title:      atcl.Title,
-			Content:    atcl.Content,
-			Status:     atcl.Status.ToUint8(),
-			Author:     atcl.Author.Name,
-			LikeCnt:    intr.LikeCnt,
-			CollectCnt: intr.CollectCnt,
-			ReadCnt:    intr.ReadCnt,
-			Liked:      intr.Liked,
-			Collected:  intr.Collected,
-			Ctime:      atcl.Ctime.Format(time.DateTime),
-			Utime:      atcl.Utime.Format(time.DateTime),
+			Id:          atcl.Id,
+			Title:       atcl.Title,
+			Content:     atcl.Content,
+			Status:      atcl.Status.ToUint8(),
+			Author:      atcl.Author.Name,
+			LikeCnt:     intr.LikeCnt,
+			FavoriteCnt: intr.FavoriteCnt,
+			ReadCnt:     intr.ReadCnt,
+			Liked:       intr.Liked,
+			Favorited:   intr.Favorited,
+			Ctime:       atcl.Ctime.Format(time.DateTime),
+			Utime:       atcl.Utime.Format(time.DateTime),
 		},
 	}, nil
 }
@@ -288,8 +288,8 @@ func (h *ArticleHandler) Like(ctx *gin.Context, req LikeReq, uc ijwt.UserClaims)
 	return Result{Msg: "success"}, err
 }
 
-func (h *ArticleHandler) Collect(ctx *gin.Context, req CollectReq, uc ijwt.UserClaims) (Result, error) {
-	err := h.intrSvc.Collect(ctx, h.biz, req.Id, req.Cid, uc.Uid)
+func (h *ArticleHandler) Favorite(ctx *gin.Context, req FavoriteReq, uc ijwt.UserClaims) (Result, error) {
+	err := h.intrSvc.Favorite(ctx, h.biz, req.Id, req.Fid, uc.Uid)
 	if err != nil {
 		return Result{
 			Code: 5,

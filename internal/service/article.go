@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/tsukaychan/webook/internal/events"
 
@@ -26,6 +27,7 @@ type ArticleService interface {
 	// reader
 
 	GetPublishedById(ctx context.Context, id, uid int64) (domain.Article, error)
+	ListPub(ctx context.Context, start time.Time, offset, limit int) ([]domain.Article, error)
 }
 
 type articleService struct {
@@ -86,4 +88,8 @@ func (svc *articleService) GetPublishedById(ctx context.Context, id, uid int64) 
 		}()
 	}
 	return atcl, err
+}
+
+func (svc *articleService) ListPub(ctx context.Context, start time.Time, offset, limit int) ([]domain.Article, error) {
+	return svc.articleRepo.ListPub(ctx, start, offset, limit)
 }
