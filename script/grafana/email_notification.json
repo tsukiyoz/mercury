@@ -1,0 +1,1 @@
+{"apiVersion":1,"contactPoints":[{"orgId":1,"name":"email notification","receivers":[{"uid":"ce67cefe-a344-4994-9790-d7b8a137bea3","type":"email","settings":{"addresses":"tsukiyo6@163.com","singleEmail":false},"disableResolveMessage":false}]}]}

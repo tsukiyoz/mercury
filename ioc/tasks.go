@@ -32,6 +32,9 @@ func InitTasks(l logger.Logger, ranking *task.RankingJob) *cron.Cron {
 	}, l)
 	// @every 3m
 	_, err := croj.AddJob("0 */3 * * * ?", bdr.Build(ranking))
+	if err != nil {
+		panic(err)
+	}
 	_, err = croj.AddJob("0 */1 * * * ?", &DummyJob{})
 	if err != nil {
 		panic(err)

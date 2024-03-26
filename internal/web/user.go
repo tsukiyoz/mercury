@@ -260,8 +260,7 @@ func (h *UserHandler) LoginJWT(ctx *gin.Context, req LoginReq) (Result, error) {
 	}
 
 	return Result{
-		Code: 2,
-		Msg:  "login success",
+		Msg: "login success",
 	}, nil
 }
 
