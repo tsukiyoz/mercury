@@ -5,11 +5,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tsukaychan/webook/interactive/repository/dao"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/tsukaychan/webook/internal/integration/startup"
-	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/webook/interactive/integration/startup"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

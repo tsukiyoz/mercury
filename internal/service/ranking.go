@@ -6,6 +6,8 @@ import (
 	"math"
 	"time"
 
+	"github.com/tsukaychan/webook/interactive/service"
+
 	"github.com/ecodeclub/ekit/slice"
 
 	"github.com/tsukaychan/webook/internal/repository"
@@ -25,7 +27,7 @@ var _ RankingService = (*BatchRankingService)(nil)
 
 type BatchRankingService struct {
 	atclSvc ArticleService
-	intrSvc InteractiveService
+	intrSvc service.InteractiveService
 
 	repo      repository.RankingRepository
 	BatchSize int
@@ -36,7 +38,7 @@ type BatchRankingService struct {
 
 func NewBatchRankingService(
 	atclSvc ArticleService,
-	intrSvc InteractiveService,
+	intrSvc service.InteractiveService,
 	repo repository.RankingRepository,
 ) RankingService {
 	svc := &BatchRankingService{

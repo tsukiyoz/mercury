@@ -72,16 +72,6 @@ func (job *RankingJob) Run() error {
 		}()
 	}
 
-	//defer func() {
-	//	// unlock distributed lock
-	//	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	//	defer cancel()
-	//	err := job.lock.Unlock(ctx)
-	//	if err != nil {
-	//		job.l.Error("release distributed lock failed", logger.Error(err))
-	//	}
-	//}()
-
 	ctx, cancel := context.WithTimeout(context.Background(), job.timeout)
 	defer cancel()
 	return job.svc.RankTopN(ctx)

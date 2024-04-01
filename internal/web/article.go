@@ -6,6 +6,10 @@ import (
 	"strconv"
 	"time"
 
+	domain2 "github.com/tsukaychan/webook/interactive/domain"
+
+	service2 "github.com/tsukaychan/webook/interactive/service"
+
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
 	"github.com/tsukaychan/webook/internal/domain"
@@ -20,13 +24,13 @@ var _ handler = (*ArticleHandler)(nil)
 
 type ArticleHandler struct {
 	articleSvc service.ArticleService
-	intrSvc    service.InteractiveService
+	intrSvc    service2.InteractiveService
 	logger     logger.Logger
 
 	biz string
 }
 
-func NewArticleHandler(articleSvc service.ArticleService, intrSvc service.InteractiveService, logger logger.Logger) *ArticleHandler {
+func NewArticleHandler(articleSvc service.ArticleService, intrSvc service2.InteractiveService, logger logger.Logger) *ArticleHandler {
 	return &ArticleHandler{
 		articleSvc: articleSvc,
 		intrSvc:    intrSvc,
@@ -222,7 +226,7 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 	var (
 		eg   errgroup.Group
 		atcl domain.Article
-		intr domain.Interactive
+		intr domain2.Interactive
 	)
 
 	eg.Go(func() error {

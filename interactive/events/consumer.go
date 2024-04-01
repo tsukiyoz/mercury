@@ -4,12 +4,19 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/webook/pkg/saramax"
-
 	"github.com/IBM/sarama"
-	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/webook/interactive/repository"
+
 	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/webook/pkg/saramax"
 )
+
+const topicReadEvent = "article_read_event"
+
+type ReadEvent struct {
+	Aid int64
+	Uid int64
+}
 
 var _ Consumer = (*InteractiveReadEventConsumer)(nil)
 

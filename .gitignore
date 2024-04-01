@@ -5,3 +5,5 @@ webook
 **/*.mock.go
 **/wire_gen.go
 .env
+script/grafana/grafana.ini
+/api/proto/gen/

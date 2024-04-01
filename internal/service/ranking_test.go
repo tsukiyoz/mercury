@@ -5,6 +5,10 @@ import (
 	"testing"
 	"time"
 
+	domain2 "github.com/tsukaychan/webook/interactive/domain"
+
+	"github.com/tsukaychan/webook/interactive/service"
+
 	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
 
 	"github.com/tsukaychan/webook/internal/domain"
@@ -23,14 +27,14 @@ func TestRankingTopN(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		mock func(ctrl *gomock.Controller) (ArticleService, InteractiveService)
+		mock func(ctrl *gomock.Controller) (ArticleService, service.InteractiveService)
 
 		wantErr   error
 		wantAtcls []domain.Article
 	}{
 		{
 			name: "calculate TopN success",
-			mock: func(ctrl *gomock.Controller) (ArticleService, InteractiveService) {
+			mock: func(ctrl *gomock.Controller) (ArticleService, service.InteractiveService) {
 				atclSvc := svcmock.NewMockArticleService(ctrl)
 				intrSvc := svcmock.NewMockInteractiveService(ctrl)
 
@@ -43,7 +47,7 @@ func TestRankingTopN(t *testing.T) {
 					}
 					var atcls []domain.Article
 					var ids []int64
-					intrMap := make(map[int64]domain.Interactive)
+					intrMap := make(map[int64]domain2.Interactive)
 
 					for i := 0; i < n; i++ {
 						id := int64(i + 1 + offset)
@@ -53,7 +57,7 @@ func TestRankingTopN(t *testing.T) {
 							Ctime: now,
 						})
 						ids = append(ids, id)
-						intrMap[id] = domain.Interactive{
+						intrMap[id] = domain2.Interactive{
 							Biz:     biz,
 							BizId:   id,
 							LikeCnt: int64(limit) - id,

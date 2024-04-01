@@ -5,10 +5,15 @@ package startup
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	repository3 "github.com/tsukaychan/webook/interactive/repository"
+	"github.com/tsukaychan/webook/interactive/repository/cache"
+	dao2 "github.com/tsukaychan/webook/interactive/repository/dao"
+	service2 "github.com/tsukaychan/webook/interactive/service"
+	"github.com/tsukaychan/webook/internal/events"
 	"github.com/tsukaychan/webook/internal/repository"
 	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchaCache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
-	cache "github.com/tsukaychan/webook/internal/repository/cache/interactive"
+	userCache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
 	articleDao "github.com/tsukaychan/webook/internal/repository/dao/article"
 	"github.com/tsukaychan/webook/internal/service"
@@ -17,10 +22,17 @@ import (
 	"github.com/tsukaychan/webook/ioc"
 )
 
-var thirdProvider = wire.NewSet(InitRedis, InitTestDB, InitLog)
+var thirdProvider = wire.NewSet(
+	InitRedis,
+	InitTestDB,
+	InitLog,
+	InitKafka,
+	NewSyncProducer,
+)
 
 var userSvcProvider = wire.NewSet(
 	service.NewUserService,
+	events.NewSaramaSyncProducer,
 	repository.NewCachedUserRepository,
 	dao.NewGORMUserDAO,
 	userCache.NewUserRedisCache,
@@ -34,9 +46,9 @@ var articleSvcProvider = wire.NewSet(
 )
 
 var interactiveSvcProvider = wire.NewSet(
-	service.NewInteractiveService,
-	repository.NewCachedInteractiveRepository,
-	dao.NewGORMInteractiveDAO,
+	service2.NewInteractiveService,
+	repository3.NewCachedInteractiveRepository,
+	dao2.NewGORMInteractiveDAO,
 	cache.NewRedisInteractiveCache,
 )
 
@@ -80,11 +92,6 @@ func InitArticleHandler(atclDao articleDao.ArticleDAO) *web.ArticleHandler {
 		web.NewArticleHandler,
 	)
 	return &web.ArticleHandler{}
-}
-
-func InitInteractiveService() service.InteractiveService {
-	wire.Build(thirdProvider, interactiveSvcProvider)
-	return service.NewInteractiveService(nil, nil)
 }
 
 func InitUserSvc() service.UserService {

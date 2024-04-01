@@ -3,10 +3,12 @@ package service
 import (
 	"context"
 
+	"github.com/tsukaychan/webook/interactive/domain"
+
+	"github.com/tsukaychan/webook/interactive/repository"
+
 	"golang.org/x/sync/errgroup"
 
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/repository"
 	"github.com/tsukaychan/webook/pkg/logger"
 )
 
@@ -15,7 +17,7 @@ type InteractiveService interface {
 	IncrReadCnt(ctx context.Context, biz string, bizId int64) error
 	Like(ctx context.Context, biz string, bizId int64, uid int64) error
 	CancelLike(ctx context.Context, biz string, bizId int64, uid int64) error
-	Favorite(ctx context.Context, biz string, bizId, fid, uid int64) error
+	Favorite(ctx context.Context, biz string, bizId, uid, fid int64) error
 	Get(ctx context.Context, biz string, bizId, uid int64) (domain.Interactive, error)
 	GetByIds(ctx context.Context, biz string, bizIds []int64) (map[int64]domain.Interactive, error)
 }
@@ -44,8 +46,8 @@ func (svc *interactiveService) CancelLike(ctx context.Context, biz string, bizId
 	return svc.repo.DecrLike(ctx, biz, bizId, uid)
 }
 
-func (svc *interactiveService) Favorite(ctx context.Context, biz string, bizId, fid, uid int64) error {
-	return svc.repo.AddFavoriteItem(ctx, biz, bizId, fid, uid)
+func (svc *interactiveService) Favorite(ctx context.Context, biz string, bizId, uid, fid int64) error {
+	return svc.repo.AddFavoriteItem(ctx, biz, bizId, uid, fid)
 }
 
 func (svc *interactiveService) Get(ctx context.Context, biz string, bizId, uid int64) (domain.Interactive, error) {

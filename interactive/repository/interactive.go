@@ -3,11 +3,13 @@ package repository
 import (
 	"context"
 
+	"github.com/tsukaychan/webook/interactive/domain"
+
+	"github.com/tsukaychan/webook/interactive/repository/cache"
+	"github.com/tsukaychan/webook/interactive/repository/dao"
+
 	"github.com/ecodeclub/ekit/slice"
 
-	"github.com/tsukaychan/webook/internal/domain"
-	cache "github.com/tsukaychan/webook/internal/repository/cache/interactive"
-	"github.com/tsukaychan/webook/internal/repository/dao"
 	"github.com/tsukaychan/webook/pkg/logger"
 )
 
@@ -18,7 +20,7 @@ type InteractiveRepository interface {
 	BatchIncrReadCnt(ctx context.Context, biz string, bizIds []int64) error
 	IncrLike(ctx context.Context, biz string, bizId, uid int64) error
 	DecrLike(ctx context.Context, biz string, bizId, uid int64) error
-	AddFavoriteItem(ctx context.Context, biz string, bizId, fid int64, uid int64) error
+	AddFavoriteItem(ctx context.Context, biz string, bizId, uid int64, fid int64) error
 	Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error)
 	Liked(ctx context.Context, biz string, id int64, uid int64) (bool, error)
 	Favorited(ctx context.Context, biz string, id int64, uid int64) (bool, error)
@@ -77,12 +79,12 @@ func (repo *CachedInteractiveRepository) DecrLike(ctx context.Context, biz strin
 	return repo.cache.DecrLikeCntIfPresent(ctx, biz, bizId)
 }
 
-func (repo *CachedInteractiveRepository) AddFavoriteItem(ctx context.Context, biz string, bizId, fid int64, uid int64) error {
+func (repo *CachedInteractiveRepository) AddFavoriteItem(ctx context.Context, biz string, bizId, uid int64, fid int64) error {
 	err := repo.dao.InsertFavoriteItem(ctx, dao.FavoriteItem{
-		Fid:   fid,
 		Biz:   biz,
 		BizId: bizId,
 		Uid:   uid,
+		Fid:   fid,
 	})
 	if err != nil {
 		return err

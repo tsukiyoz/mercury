@@ -4,11 +4,15 @@ package main
 
 import (
 	"github.com/google/wire"
+	"github.com/tsukaychan/webook/interactive/events"
+	repository2 "github.com/tsukaychan/webook/interactive/repository"
+	"github.com/tsukaychan/webook/interactive/repository/cache"
+	dao2 "github.com/tsukaychan/webook/interactive/repository/dao"
+	service2 "github.com/tsukaychan/webook/interactive/service"
 	events2 "github.com/tsukaychan/webook/internal/events"
 	"github.com/tsukaychan/webook/internal/repository"
 	articleCache "github.com/tsukaychan/webook/internal/repository/cache/article"
 	captchaCache "github.com/tsukaychan/webook/internal/repository/cache/captcha"
-	cache "github.com/tsukaychan/webook/internal/repository/cache/interactive"
 	rankingCache "github.com/tsukaychan/webook/internal/repository/cache/ranking"
 	userCache "github.com/tsukaychan/webook/internal/repository/cache/user"
 	"github.com/tsukaychan/webook/internal/repository/dao"
@@ -40,9 +44,9 @@ var articleSvcProvider = wire.NewSet(
 )
 
 var interactiveSvcProvider = wire.NewSet(
-	service.NewInteractiveService,
-	repository.NewCachedInteractiveRepository,
-	dao.NewGORMInteractiveDAO,
+	service2.NewInteractiveService,
+	repository2.NewCachedInteractiveRepository,
+	dao2.NewGORMInteractiveDAO,
 	cache.NewRedisInteractiveCache,
 )
 
@@ -71,7 +75,7 @@ func InitWebServer() *App {
 		interactiveSvcProvider,
 		captchaSvcProvider,
 
-		events2.NewInteractiveReadEventConsumer,
+		events.NewInteractiveReadEventConsumer,
 		events2.NewSaramaSyncProducer,
 
 		ioc.InitSMSService,

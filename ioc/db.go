@@ -6,16 +6,16 @@ import (
 
 	"gorm.io/plugin/opentelemetry/tracing"
 
-	"github.com/tsukaychan/webook/pkg/gormx/callbacks/metrics"
-
-	"github.com/tsukaychan/webook/internal/repository/dao"
-	"github.com/tsukaychan/webook/pkg/logger"
-	gormPrometheus "gorm.io/plugin/prometheus"
-
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
+	gormPrometheus "gorm.io/plugin/prometheus"
+
+	interactiveDao "github.com/tsukaychan/webook/interactive/repository/dao"
+	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/webook/pkg/gormx/callbacks/metrics"
+	"github.com/tsukaychan/webook/pkg/logger"
 )
 
 func InitDB(l logger.Logger) *gorm.DB {
@@ -80,6 +80,11 @@ func InitDB(l logger.Logger) *gorm.DB {
 	)
 
 	err = dao.InitTable(db)
+	if err != nil {
+		panic(err)
+	}
+
+	err = interactiveDao.InitTable(db)
 	if err != nil {
 		panic(err)
 	}

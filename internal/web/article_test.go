@@ -8,6 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	service2 "github.com/tsukaychan/webook/interactive/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -28,7 +30,7 @@ func TestArticleHandler_Publish(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		mock func(ctrl *gomock.Controller) (service.ArticleService, service.InteractiveService)
+		mock func(ctrl *gomock.Controller) (service.ArticleService, service2.InteractiveService)
 
 		req Article
 
@@ -38,7 +40,7 @@ func TestArticleHandler_Publish(t *testing.T) {
 		{
 			name: "create and publish success",
 
-			mock: func(ctrl *gomock.Controller) (service.ArticleService, service.InteractiveService) {
+			mock: func(ctrl *gomock.Controller) (service.ArticleService, service2.InteractiveService) {
 				articleSvc := svcmock.NewMockArticleService(ctrl)
 				articleSvc.EXPECT().Publish(gomock.Any(), domain.Article{
 					Title:   "my title",
@@ -63,7 +65,7 @@ func TestArticleHandler_Publish(t *testing.T) {
 		{
 			name: "create and publish failed",
 
-			mock: func(ctrl *gomock.Controller) (service.ArticleService, service.InteractiveService) {
+			mock: func(ctrl *gomock.Controller) (service.ArticleService, service2.InteractiveService) {
 				articleSvc := svcmock.NewMockArticleService(ctrl)
 				articleSvc.EXPECT().Publish(gomock.Any(), domain.Article{
 					Title:   "my title",

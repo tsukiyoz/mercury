@@ -48,12 +48,12 @@ type Favorites struct {
 }
 
 type FavoriteItem struct {
-	Id int64 `gorm:"primaryKey,autoIncrement"`
-	// Favorites ID
-	Fid   int64  `gorm:"index"`
+	Id    int64  `gorm:"primaryKey,autoIncrement"`
 	BizId int64  `gorm:"uniqueIndex:biz_type_id_uid"`
 	Biz   string `gorm:"type:varchar(128);uniqueIndex:biz_type_id_uid"`
 	Uid   int64  `gorm:"uniqueIndex:biz_type_id_uid"`
+	// Favorites ID
+	Fid   int64 `gorm:"index"`
 	Ctime int64
 	Utime int64
 }

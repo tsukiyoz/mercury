@@ -53,3 +53,7 @@ k8s-reload-web:
 mock:
 	@go generate ./...
 	@go mod tidy
+
+.PHONY: grpc
+grpc:
+	@buf generate api/proto

@@ -3,6 +3,7 @@ package ioc
 import (
 	"github.com/IBM/sarama"
 	"github.com/spf13/viper"
+	events2 "github.com/tsukaychan/webook/interactive/events"
 	"github.com/tsukaychan/webook/internal/events"
 )
 
@@ -33,6 +34,6 @@ func NewSyncProducer(client sarama.Client) sarama.SyncProducer {
 	return syncProducer
 }
 
-func NewConsumers(consumer *events.InteractiveReadEventConsumer) []events.Consumer {
+func NewConsumers(consumer *events2.InteractiveReadEventConsumer) []events.Consumer {
 	return []events.Consumer{consumer}
 }
