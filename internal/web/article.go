@@ -6,9 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	domain2 "github.com/tsukaychan/webook/interactive/domain"
-
-	service2 "github.com/tsukaychan/webook/interactive/service"
+	interactivev1 "github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
@@ -24,13 +22,13 @@ var _ handler = (*ArticleHandler)(nil)
 
 type ArticleHandler struct {
 	articleSvc service.ArticleService
-	intrSvc    service2.InteractiveService
+	intrSvc    interactivev1.InteractiveServiceClient
 	logger     logger.Logger
 
 	biz string
 }
 
-func NewArticleHandler(articleSvc service.ArticleService, intrSvc service2.InteractiveService, logger logger.Logger) *ArticleHandler {
+func NewArticleHandler(articleSvc service.ArticleService, intrSvc interactivev1.InteractiveServiceClient, logger logger.Logger) *ArticleHandler {
 	return &ArticleHandler{
 		articleSvc: articleSvc,
 		intrSvc:    intrSvc,
@@ -224,9 +222,9 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 	}
 
 	var (
-		eg   errgroup.Group
-		atcl domain.Article
-		intr domain2.Interactive
+		eg       errgroup.Group
+		atcl     domain.Article
+		intrResp *interactivev1.GetResponse
 	)
 
 	eg.Go(func() error {
@@ -237,7 +235,11 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 
 	eg.Go(func() error {
 		var er error
-		intr, er = h.intrSvc.Get(ctx, h.biz, id, uc.Uid)
+		intrResp, er = h.intrSvc.Get(ctx, &interactivev1.GetRequest{
+			Biz:   h.biz,
+			BizId: id,
+			Uid:   uc.Uid,
+		})
 		return er
 	})
 
@@ -255,6 +257,8 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 			Msg:  "invalid params",
 		}, fmt.Errorf("illegal access resources, user_id: %d", uc.Uid)
 	}
+
+	intr := intrResp.Interactive
 
 	return Result{
 		Data: ArticleVO{
@@ -277,9 +281,18 @@ func (h *ArticleHandler) PubDetail(ctx *gin.Context, uc ijwt.UserClaims) (Result
 func (h *ArticleHandler) Like(ctx *gin.Context, req LikeReq, uc ijwt.UserClaims) (Result, error) {
 	var err error
 	if req.Like {
-		err = h.intrSvc.Like(ctx, h.biz, req.Id, uc.Uid)
+		// err = h.intrSvc.Like(ctx, h.biz, req.Id, uc.Uid)
+		_, err = h.intrSvc.Like(ctx, &interactivev1.LikeRequest{
+			Biz:   h.biz,
+			BizId: req.Id,
+			Uid:   uc.Uid,
+		})
 	} else {
-		err = h.intrSvc.CancelLike(ctx, h.biz, req.Id, uc.Uid)
+		_, err = h.intrSvc.CancelLike(ctx, &interactivev1.CancelLikeRequest{
+			Biz:   h.biz,
+			BizId: req.Id,
+			Uid:   uc.Uid,
+		})
 	}
 
 	if err != nil {
@@ -293,7 +306,12 @@ func (h *ArticleHandler) Like(ctx *gin.Context, req LikeReq, uc ijwt.UserClaims)
 }
 
 func (h *ArticleHandler) Favorite(ctx *gin.Context, req FavoriteReq, uc ijwt.UserClaims) (Result, error) {
-	err := h.intrSvc.Favorite(ctx, h.biz, req.Id, req.Fid, uc.Uid)
+	_, err := h.intrSvc.Favorite(ctx, &interactivev1.FavoriteRequest{
+		Biz:   h.biz,
+		BizId: req.Id,
+		Uid:   uc.Uid,
+		Fid:   req.Fid,
+	})
 	if err != nil {
 		return Result{
 			Code: 5,

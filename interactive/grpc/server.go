@@ -3,6 +3,8 @@ package grpc
 import (
 	"context"
 
+	"google.golang.org/grpc"
+
 	"github.com/tsukaychan/webook/interactive/domain"
 
 	"google.golang.org/grpc/codes"
@@ -17,16 +19,13 @@ type InteractiveServiceServer struct {
 	svc service.InteractiveService
 }
 
-func (srv *InteractiveServiceServer) toDTO(intr domain.Interactive) *interactivev1.Interactive {
-	return &interactivev1.Interactive{
-		Biz:         intr.Biz,
-		BizId:       intr.BizId,
-		ReadCnt:     intr.BizId,
-		LikeCnt:     intr.LikeCnt,
-		FavoriteCnt: intr.FavoriteCnt,
-		Liked:       intr.Liked,
-		Favorited:   intr.Favorited,
-	}
+func NewInteractiveServiceServer(svc service.InteractiveService) *InteractiveServiceServer {
+	intrSrv := &InteractiveServiceServer{svc: svc}
+	return intrSrv
+}
+
+func (srv *InteractiveServiceServer) Register(server *grpc.Server) {
+	interactivev1.RegisterInteractiveServiceServer(server, srv)
 }
 
 func (srv *InteractiveServiceServer) IncrReadCnt(ctx context.Context, request *interactivev1.IncrReadCntRequest) (*interactivev1.IncrReadCntResponse, error) {
@@ -86,4 +85,16 @@ func (srv *InteractiveServiceServer) GetByIds(ctx context.Context, request *inte
 	}
 
 	return &interactivev1.GetByIdsResponse{Interactives: m}, nil
+}
+
+func (srv *InteractiveServiceServer) toDTO(intr domain.Interactive) *interactivev1.Interactive {
+	return &interactivev1.Interactive{
+		Biz:         intr.Biz,
+		BizId:       intr.BizId,
+		ReadCnt:     intr.ReadCnt,
+		LikeCnt:     intr.LikeCnt,
+		FavoriteCnt: intr.FavoriteCnt,
+		Liked:       intr.Liked,
+		Favorited:   intr.Favorited,
+	}
 }

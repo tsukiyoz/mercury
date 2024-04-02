@@ -1,0 +1,15 @@
+db:
+  dsn: "root:for.nothing@tcp(127.0.0.1:3306)/webook"
+
+redis:
+  addr: "localhost:6379"
+  password: "for.nothing"
+  db: 1
+
+grpc:
+  server:
+    addr: ":8090"
+
+kafka:
+  addrs:
+    - "localhost:9094"

@@ -6,7 +6,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/tsukaychan/webook/interactive/service"
+	interactivev1 "github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 
@@ -27,7 +27,7 @@ var _ RankingService = (*BatchRankingService)(nil)
 
 type BatchRankingService struct {
 	atclSvc ArticleService
-	intrSvc service.InteractiveService
+	intrSvc interactivev1.InteractiveServiceClient
 
 	repo      repository.RankingRepository
 	BatchSize int
@@ -38,7 +38,7 @@ type BatchRankingService struct {
 
 func NewBatchRankingService(
 	atclSvc ArticleService,
-	intrSvc service.InteractiveService,
+	intrSvc interactivev1.InteractiveServiceClient,
 	repo repository.RankingRepository,
 ) RankingService {
 	svc := &BatchRankingService{
@@ -130,13 +130,19 @@ func (svc *BatchRankingService) rankTopN(ctx context.Context) ([]domain.Article,
 		})
 
 		// ues ids get interactive infos from intrSvc
-		intrMap, err := svc.intrSvc.GetByIds(ctx, "article", atclIds)
+		resp, err := svc.intrSvc.GetByIds(ctx, &interactivev1.GetByIdsRequest{
+			Biz:    "article",
+			BizIds: atclIds,
+		})
 		if err != nil {
 			return nil, err
 		}
 
 		for _, atcl := range atcls {
-			intr := intrMap[atcl.Id]
+			intr, ok := resp.Interactives[atcl.Id]
+			if !ok {
+				continue
+			}
 			ele := score{atcl: atcl, score: svc.scoreFunc(intr.LikeCnt, atcl.Utime)}
 
 			if topN.Len() < svc.TopNSize {

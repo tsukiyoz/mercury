@@ -21,3 +21,10 @@ web:
 kafka:
   addrs:
     - "localhost:9094"
+
+grpc:
+  client:
+    interactive:
+      addr: "localhost:8090"
+      secure: false
+      threshold: 100

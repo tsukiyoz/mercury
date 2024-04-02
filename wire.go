@@ -86,6 +86,7 @@ func InitWebServer() *App {
 		web.NewOAuth2Handler,
 		web.NewArticleHandler,
 		ijwt.NewRedisJWTHandler,
+		ioc.InitInteractiveGRPCClient,
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,

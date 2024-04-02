@@ -40,22 +40,22 @@ func TestBatchIncrLua(t *testing.T) {
 
 	var keys []string
 	for i := 0; i < batchSize; i++ {
-		keys = append(keys, fmt.Sprintf("interactive:%s:%d", biz, i))
+		keys = append(keys, fmt.Sprintf("test:%s:%d", biz, i))
 	}
 
 	for _, key := range keys {
 		err = client.HMSet(ctx, key,
-			"read_cnt", 1,
+			"read_cnt", 2,
 			"like_cnt", 1,
 			"favorite_cnt", 1,
 		).Err()
 		assert.NoError(t, err)
 
-		err = client.Expire(ctx, key, time.Minute*3).Err()
+		err = client.Expire(ctx, key, time.Second*3).Err()
 		assert.NoError(t, err)
 	}
 
-	err = client.Eval(ctx, luaBatchIncrCnt, keys, "like_cnt", 1).Err()
+	err = client.Eval(ctx, luaBatchIncrCnt, keys, "read_cnt", 1).Err()
 	if err != nil {
 		t.Logf("%v\n", err)
 	}
@@ -65,6 +65,12 @@ func TestBatchIncrLua(t *testing.T) {
 		data, err := client.HMGet(ctx, key, "read_cnt", "like_cnt", "favorite_cnt").Result()
 		assert.NoError(t, err)
 		t.Logf("%v\n", data)
+	}
+
+	// clean up
+	for _, key := range keys {
+		err = client.Del(ctx, key).Err()
+		assert.NoError(t, err)
 	}
 }
 

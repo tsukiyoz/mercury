@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	interactivev1 "github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
+
 	"github.com/tsukaychan/webook/interactive/repository/dao"
 
 	"github.com/redis/go-redis/v9"
@@ -49,7 +51,8 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 		biz   string
 		bizId int64
 
-		wantErr error
+		wantErr  error
+		wantResp *interactivev1.IncrReadCntResponse
 	}{
 		{
 			name: "increase db and redis success",
@@ -99,6 +102,8 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 			},
 			biz:   "test",
 			bizId: 2,
+
+			wantResp: &interactivev1.IncrReadCntResponse{},
 		},
 		{
 			name: "increase db success, cache failed",
@@ -152,6 +157,8 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 
 			biz:   "test",
 			bizId: 3,
+
+			wantResp: &interactivev1.IncrReadCntResponse{},
 		},
 		{
 			name:   "both db and cache has no data and increase success",
@@ -180,15 +187,22 @@ func (s *InteractiveSvcTestSuite) TestIncrReadCnt() {
 			},
 			biz:   "test",
 			bizId: 4,
+
+			wantResp: &interactivev1.IncrReadCntResponse{},
 		},
 	}
 
-	svc := startup.InitInteractiveService()
+	svc := startup.InitInteractiveGRPCServer()
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.before(t)
-			err := svc.IncrReadCnt(context.Background(), tc.biz, tc.bizId)
+			// err := svc.IncrReadCnt(context.Background(), tc.biz, tc.bizId)
+			resp, err := svc.IncrReadCnt(context.Background(), &interactivev1.IncrReadCntRequest{
+				Biz:   tc.biz,
+				BizId: tc.bizId,
+			})
 			assert.Equal(t, tc.wantErr, err)
+			assert.Equal(t, tc.wantResp, resp)
 			tc.after(t)
 		})
 	}

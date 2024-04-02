@@ -15,6 +15,9 @@ import (
 //go:embed lua/incr_cnt.lua
 var luaIncrCnt string
 
+//go:embed lua/batch_incr_cnt.lua
+var luaBatchIncrCnt string
+
 const (
 	fieldReadCnt     = "read_cnt"
 	fieldLikeCnt     = "like_cnt"
@@ -24,6 +27,7 @@ const (
 //go:generate mockgen -source=./interactive.go -package=cachemocks -destination=mocks/interactive.mock.go InteractiveCache
 type InteractiveCache interface {
 	IncrReadCntIfPresent(ctx context.Context, biz string, bizId int64) error
+	BatchIncrReadCntIfPresent(ctx context.Context, biz string, bizIds []int64) error
 	IncrLikeCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	DecrLikeCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	IncrFavoriteCntIfPresent(ctx context.Context, biz string, bizId int64) error
@@ -49,6 +53,14 @@ func (cache *RedisInteractiveCache) key(biz string, bizId int64) string {
 
 func (cache *RedisInteractiveCache) IncrReadCntIfPresent(ctx context.Context, biz string, bizId int64) error {
 	return cache.client.Eval(ctx, luaIncrCnt, []string{cache.key(biz, bizId)}, fieldReadCnt, 1).Err()
+}
+
+func (cache *RedisInteractiveCache) BatchIncrReadCntIfPresent(ctx context.Context, biz string, bizIds []int64) error {
+	var keys []string
+	for _, id := range bizIds {
+		keys = append(keys, cache.key(biz, id))
+	}
+	return cache.client.Eval(ctx, luaBatchIncrCnt, keys, fieldReadCnt, 1).Err()
 }
 
 func (cache *RedisInteractiveCache) IncrLikeCntIfPresent(ctx context.Context, biz string, bizId int64) error {

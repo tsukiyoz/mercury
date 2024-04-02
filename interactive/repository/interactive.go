@@ -45,9 +45,11 @@ func NewCachedInteractiveRepository(dao dao.InteractiveDAO, cache cache.Interact
 
 func (repo *CachedInteractiveRepository) entityToDomain(intr dao.Interactive) domain.Interactive {
 	return domain.Interactive{
+		Biz:         intr.Biz,
+		BizId:       intr.BizId,
+		ReadCnt:     intr.ReadCnt,
 		LikeCnt:     intr.LikeCnt,
 		FavoriteCnt: intr.FavoriteCnt,
-		ReadCnt:     intr.ReadCnt,
 	}
 }
 
@@ -60,7 +62,11 @@ func (repo *CachedInteractiveRepository) IncrReadCnt(ctx context.Context, biz st
 }
 
 func (repo *CachedInteractiveRepository) BatchIncrReadCnt(ctx context.Context, biz string, bizIds []int64) error {
-	return repo.dao.BatchIncrReadCnt(ctx, biz, bizIds)
+	err := repo.dao.BatchIncrReadCnt(ctx, biz, bizIds)
+	if err != nil {
+		return err
+	}
+	return repo.cache.BatchIncrReadCntIfPresent(ctx, biz, bizIds)
 }
 
 func (repo *CachedInteractiveRepository) IncrLike(ctx context.Context, biz string, bizId, uid int64) error {
@@ -108,6 +114,7 @@ func (repo *CachedInteractiveRepository) Get(ctx context.Context, biz string, bi
 			repo.l.Error("write back redis failed",
 				logger.String("biz", biz),
 				logger.Int64("biz_id", bizId),
+				logger.Error(er),
 			)
 		}
 	}()
