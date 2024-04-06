@@ -42,7 +42,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 
 	// metrics
 	err = db.Use(gormPrometheus.New(gormPrometheus.Config{
-		DBName:          "webook",
+		DBName:          "mercury",
 		RefreshInterval: 15,
 		MetricsCollector: []gormPrometheus.MetricsCollector{
 			&gormPrometheus.MySQL{
@@ -56,7 +56,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 
 	prom := metrics.NewCallbacks(
 		"tsukiyo",
-		"webook",
+		"mercury",
 		"prometheus_query",
 		"instance-0",
 		"metrics gorm db query",
@@ -69,7 +69,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 	// tracing
 	db.Use(
 		tracing.NewPlugin(
-			tracing.WithDBName("webook"),
+			tracing.WithDBName("mercury"),
 			tracing.WithQueryFormatter(func(query string) string {
 				l.Debug("query", logger.String("query", query))
 				return query

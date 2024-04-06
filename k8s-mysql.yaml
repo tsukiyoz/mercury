@@ -39,13 +39,13 @@ spec:
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
-            claimName: webook-mysql-pvc
+            claimName: mercury-mysql-pvc
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: webook-mysql-pvc
+  name: mercury-mysql-pvc
 spec:
   storageClassName: manual
   accessModes:
@@ -58,7 +58,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: webook-mysql-pv
+  name: mercury-mysql-pv
   labels:
     type: local
 spec:

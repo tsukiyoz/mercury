@@ -1,17 +1,17 @@
 .PHONY: docker
 docker:
-	@rm webook || true
-	@docker rmi -f webook:v0.0.1
+	@rm mercury || true
+	@docker rmi -f mercury:v0.0.1
 	@go mod tidy
-	@GOOS=linux GOARCH=arm go build -o webook .
-	@docker build -t webook:v0.0.1 .
+	@GOOS=linux GOARCH=arm go build -o mercury .
+	@docker build -t mercury:v0.0.1 .
 
 docker-k8s:
-	@rm webook || true
-	@docker rmi -f webook:v0.0.1
+	@rm mercury || true
+	@docker rmi -f mercury:v0.0.1
 	@go mod tidy
-	@GOOS=linux GOARCH=arm go build -tags k8s -o webook .
-	@docker build -t webook:v0.0.1 .
+	@GOOS=linux GOARCH=arm go build -tags k8s -o mercury .
+	@docker build -t mercury:v0.0.1 .
 
 .PHONY: k8s-setup-db
 k8s-setup-db:
@@ -24,13 +24,13 @@ k8s-mysql-init:
 
 .PHONY: k8s-setup-web
 k8s-setup-web:
-	@kubectl apply -f k8s-webook.yaml
+	@kubectl apply -f k8s-mercury.yaml
 	@kubectl apply -f k8s-ingress-nginx.yaml
 
 .PHONY: k8s-teardown-web
 k8s-teardown-web:
-	@kubectl delete ing webook-ingress || true
-	@kubectl delete deployment webook-deployment || true
+	@kubectl delete ing mercury-ingress || true
+	@kubectl delete deployment mercury-deployment || true
 
 .PHONY: k8s-teardown-db
 k8s-teardown-db:

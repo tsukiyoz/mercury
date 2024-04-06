@@ -13,7 +13,7 @@ import (
 )
 
 func InitOTel() func(ctx context.Context) {
-	res, err := newResource("webook", "v0.0.1")
+	res, err := newResource("mercury", "v0.0.1")
 	if err != nil {
 		panic(err)
 	}

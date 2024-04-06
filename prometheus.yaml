@@ -3,7 +3,7 @@ global:
     monitor: 'prometheus-monitor'
 
 scrape_configs:
-  - job_name: "webook"
+  - job_name: "mercury"
     scrape_interval: 5s
     scrape_timeout: 3s
     static_configs:

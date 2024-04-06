@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: webook-ingress
+  name: mercury-ingress
 spec:
   ingressClassName: nginx
   rules:
-    - host: live.webook.com
+    - host: live.mercury.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: webook-service
+                name: mercury-service
                 port:
                   number: 88
                 

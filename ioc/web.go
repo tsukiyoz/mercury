@@ -56,14 +56,14 @@ func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Han
 	})
 	metricsBdr := &metrics.PrometheusBuilder{
 		Namespace:  "tsukiyo",
-		Subsystem:  "webook",
+		Subsystem:  "mercury",
 		Name:       "gin_http",
 		Help:       "metrics gin http interface",
 		InstanceID: "instance_id",
 	}
 	ginx.InitCounterVec(prometheus.CounterOpts{
 		Namespace: "tsukiyo",
-		Subsystem: "webook",
+		Subsystem: "mercury",
 		Name:      "biz_code",
 		Help:      "metrics http biz code",
 	})
@@ -71,7 +71,7 @@ func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl ijwt.Han
 		corsHdl(),
 		accessLogBdr.Build(),
 		metricsBdr.Build(),
-		otelgin.Middleware("webook"),
+		otelgin.Middleware("mercury"),
 		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
 			"/",
 			"/users/signup",

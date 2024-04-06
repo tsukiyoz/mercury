@@ -1,5 +1,5 @@
-create database if not exists webook;
-create table if not exists webook.interactives
+create database if not exists mercury;
+create table if not exists mercury.interactives
 (
     id           bigint auto_increment
         primary key,
@@ -14,7 +14,7 @@ create table if not exists webook.interactives
         unique (biz_id, biz)
 );
 
-create table if not exists webook.favorite_items
+create table if not exists mercury.favorite_items
 (
     id     bigint auto_increment
         primary key,
@@ -31,7 +31,7 @@ create table if not exists webook.favorite_items
 create index idx_favorite_items_fid
     on favorite_items (fid);
 
-create table webook.likes
+create table mercury.likes
 (
     id     bigint auto_increment
         primary key,

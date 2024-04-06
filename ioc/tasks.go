@@ -26,7 +26,7 @@ func InitTasks(l logger.Logger, ranking *task.RankingJob) *cron.Cron {
 	croj := cron.New(cron.WithSeconds())
 	bdr := task.NewCronJobBuilder(prometheus.SummaryOpts{
 		Namespace: "tsukiyo",
-		Subsystem: "webook",
+		Subsystem: "mercury",
 		Name:      "cron_job",
 		Help:      "metrics cron job",
 	}, l)

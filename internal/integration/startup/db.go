@@ -19,7 +19,7 @@ var db *gorm.DB
 
 func InitTestDB() *gorm.DB {
 	if db == nil {
-		dsn := "root:for.nothing@tcp(localhost:13316)/webook"
+		dsn := "root:for.nothing@tcp(localhost:13316)/mercury"
 		sqlDB, err := sql.Open("mysql", dsn)
 		if err != nil {
 			panic(err)
@@ -65,7 +65,7 @@ func InitMongoDB() *mongo.Database {
 		if err != nil {
 			panic(err)
 		}
-		mongoDB = client.Database("webook")
+		mongoDB = client.Database("mercury")
 	}
 	return mongoDB
 }

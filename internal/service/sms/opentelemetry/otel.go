@@ -17,7 +17,7 @@ type Service struct {
 
 func NewService(svc sms.Service) sms.Service {
 	tp := otel.GetTracerProvider()
-	tracer := tp.Tracer("github.com/tsukaychan/webook/internal/service/sms/opentelemetry")
+	tracer := tp.Tracer("github.com/tsukaychan/mercury/internal/service/sms/opentelemetry")
 	return &Service{
 		svc:    svc,
 		tracer: tracer,

@@ -15,7 +15,7 @@ var _ ArticleDAO = (*MongoDBDAO)(nil)
 
 type MongoDBDAO struct {
 	client *mongo.Client
-	// mdb for webook
+	// mdb for mercury
 	// mdb *mongo.Database
 	// Production Library
 	col *mongo.Collection

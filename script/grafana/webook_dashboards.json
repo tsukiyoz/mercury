@@ -100,7 +100,7 @@
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "tsukiyo_webook_gin_http_response_time{job=\"webook\"}",
+          "expr": "tsukiyo_mercury_gin_http_response_time{job=\"mercury\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -192,7 +192,7 @@
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "go_goroutines{job=\"webook\"}",
+          "expr": "go_goroutines{job=\"mercury\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -284,7 +284,7 @@
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "tsukiyo_webook_gin_http_active_request{job=\"webook\"}",
+          "expr": "tsukiyo_mercury_gin_http_active_request{job=\"mercury\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -310,7 +310,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Webook 服务监控",
+  "title": "Mercury 服务监控",
   "uid": "eacf4598-3a97-49a3-aaa2-3ade2b7cfbc2",
   "version": 6,
   "weekStart": ""

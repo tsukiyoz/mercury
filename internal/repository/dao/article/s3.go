@@ -55,7 +55,7 @@ func (dao *S3DAO) Sync(ctx context.Context, atcl Article) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	key := fmt.Sprintf("webook/%v", atcl.Id)
+	key := fmt.Sprintf("mercury/%v", atcl.Id)
 	contentType := "text/plain;charset=utf-8"
 	_, err = dao.oss.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      dao.bucket,
@@ -99,7 +99,7 @@ func (dao *S3DAO) SyncStatus(ctx context.Context, id int64, authorId int64, stat
 	if err != nil {
 		return err
 	}
-	key := fmt.Sprintf("webook/%v", id)
+	key := fmt.Sprintf("mercury/%v", id)
 	if status == statusPrivate {
 		_, err = dao.oss.DeleteObject(ctx, &s3.DeleteObjectInput{
 			Bucket: dao.bucket,

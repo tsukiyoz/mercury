@@ -1,5 +1,5 @@
 db:
-  dsn: "root:for.nothing@tcp(127.0.0.1:3306)/webook"
+  dsn: "root:for.nothing@tcp(127.0.0.1:3306)/mercury"
 
 redis:
   addr: "localhost:6379"
