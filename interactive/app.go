@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/tsukaychan/webook/pkg/grpcx"
-	"github.com/tsukaychan/webook/pkg/saramax"
+	"github.com/tsukaychan/mercury/pkg/grpcx"
+	"github.com/tsukaychan/mercury/pkg/saramax"
 )
 
 type App struct {

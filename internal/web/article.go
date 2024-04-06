@@ -6,15 +6,15 @@ import (
 	"strconv"
 	"time"
 
-	interactivev1 "github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
+	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/service"
-	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
-	"github.com/tsukaychan/webook/pkg/ginx"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/internal/service"
+	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
+	"github.com/tsukaychan/mercury/pkg/ginx"
+	"github.com/tsukaychan/mercury/pkg/logger"
 	"golang.org/x/sync/errgroup"
 )
 

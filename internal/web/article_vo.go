@@ -1,6 +1,6 @@
 package web
 
-import "github.com/tsukaychan/webook/internal/domain"
+import "github.com/tsukaychan/mercury/internal/domain"
 
 type ArticleVO struct {
 	Id       int64  `json:"id"`

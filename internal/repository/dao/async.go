@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ecodeclub/ekit/sqlx"
-	"github.com/tsukaychan/webook/internal/service/sms"
+	"github.com/tsukaychan/mercury/internal/service/sms"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

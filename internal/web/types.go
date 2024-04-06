@@ -2,7 +2,7 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tsukaychan/webook/pkg/ginx"
+	"github.com/tsukaychan/mercury/pkg/ginx"
 )
 
 type Result = ginx.Result

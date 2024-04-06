@@ -12,10 +12,10 @@ import (
 	gormLogger "gorm.io/gorm/logger"
 	gormPrometheus "gorm.io/plugin/prometheus"
 
-	interactiveDao "github.com/tsukaychan/webook/interactive/repository/dao"
-	"github.com/tsukaychan/webook/internal/repository/dao"
-	"github.com/tsukaychan/webook/pkg/gormx/callbacks/metrics"
-	"github.com/tsukaychan/webook/pkg/logger"
+	interactiveDao "github.com/tsukaychan/mercury/interactive/repository/dao"
+	"github.com/tsukaychan/mercury/internal/repository/dao"
+	"github.com/tsukaychan/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 func InitDB(l logger.Logger) *gorm.DB {

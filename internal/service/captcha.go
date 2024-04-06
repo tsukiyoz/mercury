@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/tsukaychan/webook/internal/repository"
-	"github.com/tsukaychan/webook/internal/service/sms"
+	"github.com/tsukaychan/mercury/internal/repository"
+	"github.com/tsukaychan/mercury/internal/service/sms"
 )
 
 var (

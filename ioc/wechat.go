@@ -2,9 +2,9 @@ package ioc
 
 import (
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/webook/internal/service/oauth2/wechat"
-	"github.com/tsukaychan/webook/internal/web"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/service/oauth2/wechat"
+	"github.com/tsukaychan/mercury/internal/web"
+	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 func InitWechatService(logger logger.Logger) wechat.Service {

@@ -7,10 +7,10 @@ import (
 
 	"golang.org/x/sync/semaphore"
 
-	"github.com/tsukaychan/webook/internal/service"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/service"
+	"github.com/tsukaychan/mercury/pkg/logger"
 
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 // this kind of task scheduling framework is based on mysql

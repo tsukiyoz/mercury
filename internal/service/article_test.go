@@ -6,10 +6,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/repository"
-	articlerepomocks "github.com/tsukaychan/webook/internal/repository/mocks"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/internal/repository"
+	articlerepomocks "github.com/tsukaychan/mercury/internal/repository/mocks"
+	"github.com/tsukaychan/mercury/pkg/logger"
 	"go.uber.org/mock/gomock"
 )
 

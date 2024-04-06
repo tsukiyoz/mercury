@@ -4,11 +4,11 @@ package startup
 
 import (
 	"github.com/google/wire"
-	"github.com/tsukaychan/webook/interactive/grpc"
-	repository2 "github.com/tsukaychan/webook/interactive/repository"
-	"github.com/tsukaychan/webook/interactive/repository/cache"
-	dao2 "github.com/tsukaychan/webook/interactive/repository/dao"
-	service2 "github.com/tsukaychan/webook/interactive/service"
+	"github.com/tsukaychan/mercury/interactive/grpc"
+	repository2 "github.com/tsukaychan/mercury/interactive/repository"
+	"github.com/tsukaychan/mercury/interactive/repository/cache"
+	dao2 "github.com/tsukaychan/mercury/interactive/repository/dao"
+	service2 "github.com/tsukaychan/mercury/interactive/service"
 )
 
 var thirdProvider = wire.NewSet(

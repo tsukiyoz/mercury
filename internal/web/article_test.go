@@ -8,16 +8,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	service2 "github.com/tsukaychan/webook/interactive/service"
+	service2 "github.com/tsukaychan/mercury/interactive/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/service"
-	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
-	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/internal/service"
+	svcmock "github.com/tsukaychan/mercury/internal/service/mocks"
+	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
+	"github.com/tsukaychan/mercury/pkg/logger"
 	"go.uber.org/mock/gomock"
 )
 

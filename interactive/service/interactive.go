@@ -3,13 +3,13 @@ package service
 import (
 	"context"
 
-	"github.com/tsukaychan/webook/interactive/domain"
+	"github.com/tsukaychan/mercury/interactive/domain"
 
-	"github.com/tsukaychan/webook/interactive/repository"
+	"github.com/tsukaychan/mercury/interactive/repository"
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 //go:generate mockgen -source=interactive.go -package=svcmocks -destination=mocks/interactive.mock.go InteractiveService

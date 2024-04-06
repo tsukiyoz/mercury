@@ -2,8 +2,8 @@ package ioc
 
 import (
 	"github.com/spf13/viper"
-	grpc2 "github.com/tsukaychan/webook/interactive/grpc"
-	"github.com/tsukaychan/webook/pkg/grpcx"
+	grpc2 "github.com/tsukaychan/mercury/interactive/grpc"
+	"github.com/tsukaychan/mercury/pkg/grpcx"
 	"google.golang.org/grpc"
 )
 

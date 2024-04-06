@@ -8,11 +8,11 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tsukaychan/webook/internal/domain"
-	user "github.com/tsukaychan/webook/internal/repository/cache/user"
-	cachemock "github.com/tsukaychan/webook/internal/repository/cache/user/mocks"
-	"github.com/tsukaychan/webook/internal/repository/dao"
-	daomock "github.com/tsukaychan/webook/internal/repository/dao/mocks"
+	"github.com/tsukaychan/mercury/internal/domain"
+	user "github.com/tsukaychan/mercury/internal/repository/cache/user"
+	cachemock "github.com/tsukaychan/mercury/internal/repository/cache/user/mocks"
+	"github.com/tsukaychan/mercury/internal/repository/dao"
+	daomock "github.com/tsukaychan/mercury/internal/repository/dao/mocks"
 	"go.uber.org/mock/gomock"
 )
 

@@ -9,7 +9,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tsukaychan/webook/ioc"
+	"github.com/tsukaychan/mercury/ioc"
 
 	"github.com/fsnotify/fsnotify"
 	"go.uber.org/zap"

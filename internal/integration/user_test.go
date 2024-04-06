@@ -11,9 +11,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tsukaychan/webook/internal/integration/startup"
-	"github.com/tsukaychan/webook/internal/web"
-	"github.com/tsukaychan/webook/ioc"
+	"github.com/tsukaychan/mercury/internal/integration/startup"
+	"github.com/tsukaychan/mercury/internal/web"
+	"github.com/tsukaychan/mercury/ioc"
 )
 
 func TestUserHandler_e2e_SendLoginCaptcha(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/ecodeclub/ekit/syncx/atomicx"
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 type RankingLocalCache struct {

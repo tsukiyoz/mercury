@@ -10,14 +10,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tsukaychan/webook/internal/errs"
+	"github.com/tsukaychan/mercury/internal/errs"
 
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/repository"
-	"github.com/tsukaychan/webook/internal/service"
-	ijwt "github.com/tsukaychan/webook/internal/web/jwt"
-	"github.com/tsukaychan/webook/pkg/ginx"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/internal/repository"
+	"github.com/tsukaychan/mercury/internal/service"
+	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
+	"github.com/tsukaychan/mercury/pkg/ginx"
+	"github.com/tsukaychan/mercury/pkg/logger"
 
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-contrib/sessions"

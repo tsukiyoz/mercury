@@ -10,9 +10,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/repository"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/internal/repository"
+	"github.com/tsukaychan/mercury/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 )
 

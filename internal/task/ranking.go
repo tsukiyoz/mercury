@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/pkg/logger"
 
 	rlock "github.com/gotomicro/redis-lock"
-	"github.com/tsukaychan/webook/internal/service"
+	"github.com/tsukaychan/mercury/internal/service"
 )
 
 var _ Job = (*RankingJob)(nil)

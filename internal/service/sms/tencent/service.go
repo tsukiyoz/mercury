@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	isms "github.com/tsukaychan/webook/internal/service/sms"
-	"github.com/tsukaychan/webook/pkg/ratelimit"
+	isms "github.com/tsukaychan/mercury/internal/service/sms"
+	"github.com/tsukaychan/mercury/pkg/ratelimit"
 
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
 )

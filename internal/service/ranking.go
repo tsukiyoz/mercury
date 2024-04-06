@@ -6,13 +6,13 @@ import (
 	"math"
 	"time"
 
-	interactivev1 "github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
+	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 
-	"github.com/tsukaychan/webook/internal/repository"
+	"github.com/tsukaychan/mercury/internal/repository"
 
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 //go:generate mockgen -source=ranking.go -package=svcmocks -destination=mocks/ranking.mock.go RankingService

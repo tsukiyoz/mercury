@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 type Executor interface {

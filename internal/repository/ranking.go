@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	cache "github.com/tsukaychan/webook/internal/repository/cache/ranking"
+	cache "github.com/tsukaychan/mercury/internal/repository/cache/ranking"
 
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 type RankingRepository interface {

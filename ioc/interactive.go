@@ -3,9 +3,9 @@ package ioc
 import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
-	interactivev1 "github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
-	"github.com/tsukaychan/webook/interactive/service"
-	"github.com/tsukaychan/webook/internal/web/client"
+	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
+	"github.com/tsukaychan/mercury/interactive/service"
+	"github.com/tsukaychan/mercury/internal/web/client"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

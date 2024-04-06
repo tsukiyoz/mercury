@@ -8,10 +8,10 @@ import (
 	rlock "github.com/gotomicro/redis-lock"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron/v3"
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/service"
-	"github.com/tsukaychan/webook/internal/task"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/internal/service"
+	"github.com/tsukaychan/mercury/internal/task"
+	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 // -------------------------------------------

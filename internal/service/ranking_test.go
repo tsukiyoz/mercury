@@ -5,13 +5,13 @@ import (
 	"testing"
 	"time"
 
-	domain2 "github.com/tsukaychan/webook/interactive/domain"
+	domain2 "github.com/tsukaychan/mercury/interactive/domain"
 
-	"github.com/tsukaychan/webook/interactive/service"
+	"github.com/tsukaychan/mercury/interactive/service"
 
-	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
+	svcmock "github.com/tsukaychan/mercury/internal/service/mocks"
 
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 
 	"github.com/stretchr/testify/assert"
 

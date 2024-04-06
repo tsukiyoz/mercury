@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 //go:generate mockgen -source=./article.go -package=cachemocks -destination=mocks/article.mock.go ArticleCache

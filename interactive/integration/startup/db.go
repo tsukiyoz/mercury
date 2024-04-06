@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/tsukaychan/webook/interactive/repository/dao"
+	"github.com/tsukaychan/mercury/interactive/repository/dao"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

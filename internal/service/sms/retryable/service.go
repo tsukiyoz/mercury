@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/tsukaychan/webook/internal/service/sms"
+	"github.com/tsukaychan/mercury/internal/service/sms"
 )
 
 type RetryService struct {

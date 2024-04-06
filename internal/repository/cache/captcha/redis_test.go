@@ -7,7 +7,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
-	redismock "github.com/tsukaychan/webook/internal/repository/mocks/cache/redis"
+	redismock "github.com/tsukaychan/mercury/internal/repository/mocks/cache/redis"
 	"go.uber.org/mock/gomock"
 )
 

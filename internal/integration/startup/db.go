@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/mercury/internal/repository/dao"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

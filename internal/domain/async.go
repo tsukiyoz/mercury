@@ -1,6 +1,6 @@
 package domain
 
-import "github.com/tsukaychan/webook/internal/service/sms"
+import "github.com/tsukaychan/mercury/internal/service/sms"
 
 type AsyncSms struct {
 	Id       int64

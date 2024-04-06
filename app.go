@@ -13,7 +13,7 @@ import (
 	"github.com/robfig/cron/v3"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tsukaychan/webook/internal/events"
+	"github.com/tsukaychan/mercury/internal/events"
 )
 
 type App struct {

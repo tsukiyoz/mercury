@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 var redirectURI = url.PathEscape("https://tsukiyo.top/oauth2/wechat/callback")

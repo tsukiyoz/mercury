@@ -2,7 +2,7 @@ package ioc
 
 import (
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/pkg/logger"
 	"go.uber.org/zap"
 )
 

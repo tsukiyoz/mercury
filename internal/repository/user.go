@@ -11,9 +11,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/tsukaychan/webook/internal/domain"
-	cache "github.com/tsukaychan/webook/internal/repository/cache/user"
-	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/mercury/internal/domain"
+	cache "github.com/tsukaychan/mercury/internal/repository/cache/user"
+	"github.com/tsukaychan/mercury/internal/repository/dao"
 )
 
 var (

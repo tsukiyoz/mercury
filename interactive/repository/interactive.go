@@ -3,14 +3,14 @@ package repository
 import (
 	"context"
 
-	"github.com/tsukaychan/webook/interactive/domain"
+	"github.com/tsukaychan/mercury/interactive/domain"
 
-	"github.com/tsukaychan/webook/interactive/repository/cache"
-	"github.com/tsukaychan/webook/interactive/repository/dao"
+	"github.com/tsukaychan/mercury/interactive/repository/cache"
+	"github.com/tsukaychan/mercury/interactive/repository/dao"
 
 	"github.com/ecodeclub/ekit/slice"
 
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 //go:generate mockgen -source=./interactive.go -package=repomocks -destination=mocks/interactive.mock.go InteractiveRepository

@@ -5,13 +5,13 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/tsukaychan/webook/interactive/domain"
+	"github.com/tsukaychan/mercury/interactive/domain"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
-	"github.com/tsukaychan/webook/interactive/service"
+	"github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
+	"github.com/tsukaychan/mercury/interactive/service"
 )
 
 type InteractiveServiceServer struct {

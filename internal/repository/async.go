@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/ecodeclub/ekit/sqlx"
-	"github.com/tsukaychan/webook/internal/domain"
-	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/internal/repository/dao"
 )
 
 var ErrWaitingSMSNotFound = dao.ErrWaitingSMSNotFound

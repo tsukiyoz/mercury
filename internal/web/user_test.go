@@ -7,13 +7,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/pkg/logger"
 
-	"github.com/tsukaychan/webook/internal/domain"
-	redismock "github.com/tsukaychan/webook/internal/repository/mocks/cache/redis"
-	"github.com/tsukaychan/webook/internal/service"
-	svcmock "github.com/tsukaychan/webook/internal/service/mocks"
-	"github.com/tsukaychan/webook/internal/web/jwt"
+	"github.com/tsukaychan/mercury/internal/domain"
+	redismock "github.com/tsukaychan/mercury/internal/repository/mocks/cache/redis"
+	"github.com/tsukaychan/mercury/internal/service"
+	svcmock "github.com/tsukaychan/mercury/internal/service/mocks"
+	"github.com/tsukaychan/mercury/internal/web/jwt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"

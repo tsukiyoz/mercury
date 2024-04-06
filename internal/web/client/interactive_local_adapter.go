@@ -3,10 +3,10 @@ package client
 import (
 	"context"
 
-	"github.com/tsukaychan/webook/interactive/domain"
+	"github.com/tsukaychan/mercury/interactive/domain"
 
-	interactivev1 "github.com/tsukaychan/webook/api/proto/gen/interactive/v1"
-	"github.com/tsukaychan/webook/interactive/service"
+	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
+	"github.com/tsukaychan/mercury/interactive/service"
 	"google.golang.org/grpc"
 )
 

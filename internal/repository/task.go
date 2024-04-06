@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/webook/internal/repository/dao"
+	"github.com/tsukaychan/mercury/internal/repository/dao"
 
-	"github.com/tsukaychan/webook/internal/domain"
+	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 type TaskRepository interface {

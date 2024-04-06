@@ -3,7 +3,7 @@ package logger
 import (
 	"context"
 
-	"github.com/tsukaychan/webook/internal/service/sms"
+	"github.com/tsukaychan/mercury/internal/service/sms"
 	"go.uber.org/zap"
 )
 

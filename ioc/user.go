@@ -1,9 +1,9 @@
 package ioc
 
 import (
-	"github.com/tsukaychan/webook/internal/repository"
-	"github.com/tsukaychan/webook/internal/service"
-	"github.com/tsukaychan/webook/pkg/logger"
+	"github.com/tsukaychan/mercury/internal/repository"
+	"github.com/tsukaychan/mercury/internal/service"
+	"github.com/tsukaychan/mercury/pkg/logger"
 	"go.uber.org/zap"
 )
 

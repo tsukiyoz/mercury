@@ -5,7 +5,7 @@ import (
 
 	"go.opentelemetry.io/otel/attribute"
 
-	"github.com/tsukaychan/webook/internal/service/sms"
+	"github.com/tsukaychan/mercury/internal/service/sms"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 )
