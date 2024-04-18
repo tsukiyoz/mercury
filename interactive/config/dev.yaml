@@ -1,5 +1,13 @@
 db:
-  dsn: "root:for.nothing@tcp(127.0.0.1:3306)/mercury"
+#  dsn: "root:for.nothing@tcp(127.0.0.1:3306)/mercury"
+  src:
+    dsn: "root:for.nothing@tcp(127.0.0.1:3306)/mercury"
+  dst:
+    dsn: "root:for.nothing@tcp(127.0.0.1:3306)/mercury_interactive"
+
+migrator:
+  http:
+    addr: ":8082"
 
 redis:
   addr: "localhost:6379"

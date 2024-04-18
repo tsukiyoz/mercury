@@ -14,10 +14,15 @@ import (
 )
 
 var thirdProvider = wire.NewSet(
-	ioc.InitDB,
+	ioc.InitSrcDB,
+	ioc.InitDstDB,
+	ioc.InitDualWritePool,
+	ioc.InitDualWriteDB,
+	//ioc.initDB,
 	ioc.InitRedis,
 	ioc.InitKafka,
 	ioc.InitLogger,
+	ioc.NewSyncProducer,
 )
 
 var interactiveSvcProvider = wire.NewSet(
@@ -27,10 +32,17 @@ var interactiveSvcProvider = wire.NewSet(
 	cache.NewRedisInteractiveCache,
 )
 
+var migratorSet = wire.NewSet(
+	ioc.InitMigratorProducer,
+	ioc.InitFixDataConsumer,
+	ioc.InitMigratorWeb,
+)
+
 func InitApp() *App {
 	wire.Build(
 		thirdProvider,
 		interactiveSvcProvider,
+		migratorSet,
 		grpc.NewInteractiveServiceServer,
 		events.NewInteractiveReadEventConsumer,
 		ioc.InitGRPCxServer,

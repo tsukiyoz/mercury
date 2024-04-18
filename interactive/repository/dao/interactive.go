@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"github.com/tsukaychan/mercury/pkg/migrator"
 	"time"
 
 	"gorm.io/gorm"
@@ -25,6 +26,11 @@ type Interactive struct {
 
 func (i Interactive) ID() int64 {
 	return i.Id
+}
+
+func (i Interactive) Equal(dst migrator.Entity) bool {
+	di, ok := dst.(Interactive)
+	return ok && di == i
 }
 
 type Like struct {

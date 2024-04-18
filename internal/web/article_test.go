@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/tsukaychan/mercury/internal/web/client"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -104,7 +105,8 @@ func TestArticleHandler_Publish(t *testing.T) {
 				})
 			})
 			atclSvc, intrSvc := tc.mock(ctrl)
-			h := NewArticleHandler(atclSvc, intrSvc, logger.NewNopLogger())
+			intrCli := client.NewInteractiveLocalAdapter(intrSvc)
+			h := NewArticleHandler(atclSvc, intrCli, logger.NewNopLogger())
 			h.RegisterRoutes(server)
 
 			reqBody, err := json.Marshal(tc.req)

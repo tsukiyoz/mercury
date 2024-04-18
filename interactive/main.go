@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/pflag"
@@ -20,6 +21,11 @@ func main() {
 			panic(err)
 		}
 	}
+
+	go func() {
+		err := app.web.Start()
+		log.Println(err)
+	}()
 
 	app.server.Serve()
 }

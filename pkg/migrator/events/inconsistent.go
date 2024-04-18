@@ -2,12 +2,12 @@ package events
 
 import (
 	"context"
-	"github.com/tsukaychan/mercury/migrator/validator"
+	"github.com/tsukaychan/mercury/pkg/migrator"
 )
 
 type InconsistentEvent struct {
 	ID        int64
-	Direction validator.DirectionType
+	Direction migrator.Direction
 	Type      InconsistentEventType
 }
 

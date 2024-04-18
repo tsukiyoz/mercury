@@ -4,6 +4,8 @@ import (
 	"github.com/IBM/sarama"
 	"github.com/spf13/viper"
 	"github.com/tsukaychan/mercury/interactive/events"
+	"github.com/tsukaychan/mercury/interactive/repository/dao"
+	migratorEvt "github.com/tsukaychan/mercury/pkg/migrator/events/fixer"
 	"github.com/tsukaychan/mercury/pkg/saramax"
 )
 
@@ -34,6 +36,6 @@ func NewSyncProducer(client sarama.Client) sarama.SyncProducer {
 	return syncProducer
 }
 
-func NewConsumers(consumer *events.InteractiveReadEventConsumer) []saramax.Consumer {
+func NewConsumers(consumer *events.InteractiveReadEventConsumer, fix *migratorEvt.Consumer[dao.Interactive]) []saramax.Consumer {
 	return []saramax.Consumer{consumer}
 }

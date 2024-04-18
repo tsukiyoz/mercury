@@ -24,6 +24,21 @@ func SetLogger(l logger.Logger) {
 	log = l
 }
 
+func Wrap(fn func(*gin.Context) (Result, error)) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		res, err := fn(ctx)
+		if err != nil {
+			log.Error("processing business logic error",
+				logger.String("path", ctx.Request.URL.Path),
+				logger.String("route", ctx.FullPath()),
+				logger.Error(err),
+			)
+		}
+		counterVec.WithLabelValues(strconv.Itoa(res.Code)).Inc()
+		ctx.JSON(http.StatusOK, res)
+	}
+}
+
 func WrapReq[Req any](fn func(ctx *gin.Context, req Req) (Result, error)) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req Req

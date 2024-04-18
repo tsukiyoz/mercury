@@ -2,6 +2,7 @@ package ioc
 
 import (
 	"fmt"
+	"github.com/tsukaychan/mercury/pkg/gormx/connpool"
 	"time"
 
 	"gorm.io/plugin/opentelemetry/tracing"
@@ -17,13 +18,23 @@ import (
 	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
-func InitDB(l logger.Logger) *gorm.DB {
+func InitDualWriteDB(pool *connpool.DualWritePool) *gorm.DB {
+	db, err := gorm.Open(mysql.New(mysql.Config{
+		Conn: pool,
+	}))
+	if err != nil {
+		panic(err)
+	}
+	return db
+}
+
+func initDB(key, name string, l logger.Logger) *gorm.DB {
 	type Config struct {
 		DSN string `yaml:"dsn"`
 	}
 
 	var cfg Config
-	err := viper.UnmarshalKey("db", &cfg)
+	err := viper.UnmarshalKey(key, &cfg)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +67,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 	prom := metrics.NewCallbacks(
 		"tsukiyo",
 		"mercury",
-		"prometheus_query",
+		"gorm_"+name,
 		"instance-0",
 		"metrics gorm db query",
 	)
@@ -90,4 +101,16 @@ type gormLoggerFunc func(msg string, fields ...logger.Field)
 
 func (g gormLoggerFunc) Printf(msg string, args ...interface{}) {
 	g("[SQL]", logger.Field{Key: "args", Value: fmt.Sprintf(msg, args...)})
+}
+
+type SrcDB *gorm.DB
+
+func InitSrcDB(l logger.Logger) SrcDB {
+	return initDB("db.src", "mercury", l)
+}
+
+type DstDB *gorm.DB
+
+func InitDstDB(l logger.Logger) DstDB {
+	return initDB("db.dst", "mercury_interactive", l)
 }
