@@ -46,7 +46,7 @@ func InitMigratorWeb(
 		},
 	})
 	s := scheduler.NewScheduler[dao.Interactive](src, dst, pool, producer, l)
-	s.RegisterRoutes(web.Group("/migrator/interactive"))
+	s.RegisterRoutes(web.Group("/migrator"))
 	addr := viper.GetString("migrator.http.addr")
 	return &ginx.Server{
 		Engine: web,

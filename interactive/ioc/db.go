@@ -3,8 +3,6 @@ package ioc
 import (
 	"fmt"
 	"github.com/tsukaychan/mercury/pkg/gormx/connpool"
-	"time"
-
 	"gorm.io/plugin/opentelemetry/tracing"
 
 	"github.com/spf13/viper"
@@ -39,12 +37,13 @@ func initDB(key, name string, l logger.Logger) *gorm.DB {
 		panic(err)
 	}
 	db, err := gorm.Open(mysql.Open(cfg.DSN), &gorm.Config{
-		Logger: gormLogger.New(gormLoggerFunc(l.Debug), gormLogger.Config{
-			SlowThreshold:             time.Millisecond * 20,
-			IgnoreRecordNotFoundError: true,
-			ParameterizedQueries:      true,
-			LogLevel:                  gormLogger.Info,
-		}),
+		Logger: gormLogger.Default.LogMode(gormLogger.Info),
+		//Logger: gormLogger.New(gormLoggerFunc(l.Debug), gormLogger.Config{
+		//	SlowThreshold:             time.Millisecond * 20,
+		//	IgnoreRecordNotFoundError: true,
+		//	ParameterizedQueries:      true,
+		//	LogLevel:                  gormLogger.Info,
+		//}),
 	})
 	if err != nil {
 		panic(err)

@@ -1,11 +1,16 @@
 package fixer
 
 import (
+	"context"
+	"errors"
 	"github.com/IBM/sarama"
 	"github.com/tsukaychan/mercury/pkg/logger"
 	"github.com/tsukaychan/mercury/pkg/migrator"
+	"github.com/tsukaychan/mercury/pkg/migrator/events"
 	"github.com/tsukaychan/mercury/pkg/migrator/fixer"
+	"github.com/tsukaychan/mercury/pkg/saramax"
 	"gorm.io/gorm"
+	"time"
 )
 
 type Consumer[T migrator.Entity] struct {
@@ -34,4 +39,33 @@ func NewConsumer[T migrator.Entity](client sarama.Client, src, dst *gorm.DB, top
 		topic:    topic,
 		l:        l,
 	}, nil
+}
+
+func (r *Consumer[T]) Start() error {
+	cg, err := sarama.NewConsumerGroupFromClient("migrator-fix", r.client)
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		err := cg.Consume(context.Background(), []string{r.topic}, saramax.NewHandler[events.InconsistentEvent](r.l, r.Consume))
+		if err != nil {
+			r.l.Error("exit consume loop error", logger.Error(err))
+		}
+	}()
+
+	return err
+}
+
+func (r *Consumer[T]) Consume(msg *sarama.ConsumerMessage, evt events.InconsistentEvent) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	switch evt.Direction {
+	case migrator.DirectionToTarget:
+		return r.srcFirst.Fix(ctx, evt)
+	case migrator.DirectionToBase:
+		return r.dstFirst.Fix(ctx, evt)
+	default:
+		return errors.New("unknown direction")
+	}
 }

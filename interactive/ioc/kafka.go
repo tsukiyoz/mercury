@@ -37,5 +37,5 @@ func NewSyncProducer(client sarama.Client) sarama.SyncProducer {
 }
 
 func NewConsumers(consumer *events.InteractiveReadEventConsumer, fix *migratorEvt.Consumer[dao.Interactive]) []saramax.Consumer {
-	return []saramax.Consumer{consumer}
+	return []saramax.Consumer{consumer, fix}
 }

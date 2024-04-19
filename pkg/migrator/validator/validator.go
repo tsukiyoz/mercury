@@ -2,7 +2,6 @@ package validator
 
 import (
 	"context"
-	"fmt"
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/tsukaychan/mercury/pkg/logger"
 	"github.com/tsukaychan/mercury/pkg/migrator"
@@ -28,11 +27,11 @@ type Validator[T migrator.Entity] struct {
 	// utime is the utime of the last synchronized data
 	utime int64
 
-	// sleepInterval is the interval between each synchronization,
+	// loopInterval is the interval between each synchronization,
 	// <= 0 means no sleep, quit this loop,
 	// > 0 means sleep this interval.
 	// unit is second
-	sleepInterval time.Duration
+	loopInterval time.Duration
 
 	// order is the order of the data
 	order string
@@ -72,9 +71,9 @@ func (v *Validator[T]) WithUtime(utime int64) *Validator[T] {
 	return v
 }
 
-// WithSleepInterval set the sleep interval between each synchronization
-func (v *Validator[T]) WithSleepInterval(sleepInterval time.Duration) *Validator[T] {
-	v.sleepInterval = sleepInterval
+// WithLoopInterval set the sleep interval between each synchronization
+func (v *Validator[T]) WithLoopInterval(loopInterval time.Duration) *Validator[T] {
+	v.loopInterval = max(loopInterval, time.Millisecond*200)
 	return v
 }
 
@@ -85,6 +84,7 @@ func (v *Validator[T]) WithMaxRetry(maxRetry int) *Validator[T] {
 }
 
 func (v *Validator[T]) Validate(ctx context.Context) error {
+	v.l.Debug("validation started")
 	var eg errgroup.Group
 	eg.Go(func() error {
 		v.baseToTarget(ctx)
@@ -95,40 +95,34 @@ func (v *Validator[T]) Validate(ctx context.Context) error {
 		return nil
 	})
 
-	return eg.Wait()
+	err := eg.Wait()
+	v.l.Debug("validate finished")
+	return err
 }
 
 // validateBaseToTarget try to synchronize data from base to target
 func (v *Validator[T]) baseToTarget(ctx context.Context) {
 	offset := 0
-	errCnt := 0
-	skip := func() bool {
-		errCnt++
-		if errCnt >= v.maxRetry {
-			// skip this data, update offset
-			offset++
-			errCnt = 0
-			return true
-		}
-		return false
-	}
 
 	for {
 		var src T
-		ctx, cancel := context.WithTimeout(ctx, time.Second)
-		srcErr := v.base.WithContext(ctx).
+		dbCtx, cancel := context.WithTimeout(ctx, time.Second)
+		srcErr := v.base.WithContext(dbCtx).
 			Where("utime > ?", v.utime).
 			Offset(offset).
-			Order("utime").
+			Order("id").
 			First(&src).Error
 		cancel()
 
 		switch srcErr {
+		case context.Canceled, context.DeadlineExceeded:
+			v.l.Debug("exit base==>target validation")
+			return
 		case nil:
 			// find data
-			ctx, cancel := context.WithTimeout(ctx, time.Second)
+			dbCtx, cancel := context.WithTimeout(ctx, time.Second)
 			var dst T
-			dstErr := v.target.WithContext(ctx).Where("id = ?", src.ID()).First(&dst).Error
+			dstErr := v.target.WithContext(dbCtx).Where("id = ?", src.ID()).First(&dst).Error
 			cancel()
 
 			switch dstErr {
@@ -139,83 +133,57 @@ func (v *Validator[T]) baseToTarget(ctx context.Context) {
 			case gorm.ErrRecordNotFound:
 				v.notify(ctx, src.ID(), events.InconsistentEventTypeTargetMissing)
 			default:
-				// database error
-				if !skip() {
-					v.l.Error("validate data, query target failed", logger.Error(dstErr))
-					continue
-				} else {
-					//  skip this data
-					v.l.Error(fmt.Sprintf("validate data, query target failed in %s tries", v.maxRetry), logger.Error(dstErr))
-				}
+				v.l.Error("validate data, query target failed", logger.Error(dstErr))
+				continue
 			}
 
 		case gorm.ErrRecordNotFound:
 			// no more data
-			if v.sleepInterval <= 0 {
+			if v.loopInterval <= 0 {
 				// finish validate
+				v.l.Debug("exit base==>target validation")
 				return
 			}
-			time.Sleep(v.sleepInterval)
+			time.Sleep(v.loopInterval)
 			continue
 
 		default:
-			// database error
-			// retry
-			if !skip() {
-				v.l.Error("validate data, query base failed", logger.Error(srcErr))
-				continue
-			} else {
-				//  skip this data
-				v.l.Error(fmt.Sprintf("validate data, query base failed in %s tries", v.maxRetry), logger.Error(srcErr))
-			}
+			v.l.Error("validate data, query base failed", logger.Error(srcErr))
+			continue
 		}
 
 		offset++
-		errCnt = 0
 	}
 }
 
 // targetToBase find data from target that doesn't exist in base and try to fix(delete) it
 func (v *Validator[T]) targetToBase(ctx context.Context) {
 	offset := 0
-	errCnt := 0
-	skip := func() bool {
-		errCnt++
-		if errCnt >= v.maxRetry {
-			// skip this data, update offset
-			offset++
-			errCnt = 0
-			return true
-		}
-		return false
-	}
 
 	for {
 		dbCtx, cancel := context.WithTimeout(ctx, time.Second)
 		var dstTs []T
 		err := v.target.WithContext(dbCtx).
 			Where("utime > ?", v.utime).
+			Select("id").
 			Offset(offset).
 			Limit(v.batchSize).
-			Order("utime").
 			First(&dstTs).Error
 		cancel()
 
-		if len(dstTs) == 0 {
-			if v.sleepInterval <= 0 {
-				return
-			}
-			time.Sleep(v.sleepInterval)
-			continue
-		}
-
 		switch err {
+		case context.Canceled, context.DeadlineExceeded:
+			v.l.Debug("exit target==>base validation")
+			return
+
 		case nil:
 			ids := slice.Map(dstTs, func(idx int, t T) int64 {
 				return t.ID()
 			})
 			var srcTs []T
-			err := v.base.Where("id IN ?", ids).Find(&srcTs).Error
+			dbCtx, cancel := context.WithTimeout(ctx, time.Second)
+			err := v.base.WithContext(dbCtx).Where("id IN ?", ids).Find(&srcTs).Error
+			cancel()
 			switch err {
 			case nil:
 				srcIds := slice.Map(srcTs, func(idx int, t T) int64 {
@@ -226,39 +194,34 @@ func (v *Validator[T]) targetToBase(ctx context.Context) {
 			case gorm.ErrRecordNotFound:
 				v.notifyBaseMissing(ctx, ids)
 			default:
-				if !skip() {
-					v.l.Error("validate data, query base failed", logger.Error(err))
-					continue
-				}
-				v.l.Error(fmt.Sprintf("validate data, query base failed in %s tries", v.maxRetry), logger.Error(err))
+				v.l.Error("validate data, query base failed", logger.Error(err))
+				continue
 			}
 
 		case gorm.ErrRecordNotFound:
-			if v.sleepInterval <= 0 {
+			if v.loopInterval <= 0 {
+				v.l.Debug("exit target==>base validation")
 				return
 			}
-			time.Sleep(v.sleepInterval)
+			time.Sleep(v.loopInterval)
 			continue
 
 		default:
-			if !skip() {
-				v.l.Error("validate data, query target failed", logger.Error(err))
-				continue
-			}
-			v.l.Error("validate data, query target failed")
+			v.l.Error("validate data, query target failed", logger.Error(err))
+			continue
 		}
 
 		if len(dstTs) < v.batchSize {
 			// no more data
-			if v.sleepInterval <= 0 {
+			if v.loopInterval <= 0 {
 				return
 			}
-			time.Sleep(v.sleepInterval)
+			time.Sleep(v.loopInterval)
+			offset += len(dstTs)
 			continue
 		}
 
 		offset += v.batchSize
-		errCnt = 0
 	}
 }
 

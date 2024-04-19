@@ -48,8 +48,8 @@ func NewScheduler[T migrator.Entity](
 
 func (s *Scheduler[T]) RegisterRoutes(server *gin.RouterGroup) {
 	server.GET("/status", ginx.Wrap(s.Status))
-	server.POST("/forward", ginx.Wrap(s.Forward))
-	server.POST("/backward", ginx.Wrap(s.Backward))
+	server.POST("/next", ginx.Wrap(s.Next))
+	server.POST("/prev", ginx.Wrap(s.Prev))
 	server.POST("/full/start", ginx.Wrap(s.StartFullValidation))
 	server.POST("/full/stop", ginx.Wrap(s.StopFullValidation))
 	server.POST("/incr/start", ginx.WrapReq[StartIncrementRequest](s.StartIncrementValidation))
@@ -60,22 +60,22 @@ func (s *Scheduler[T]) Status(c *gin.Context) (ginx.Result, error) {
 	return ginx.Result{Data: s.pattern.String()}, nil
 }
 
-func (s *Scheduler[T]) Forward(c *gin.Context) (ginx.Result, error) {
+func (s *Scheduler[T]) Next(c *gin.Context) (ginx.Result, error) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	ptn := min(connpool.PatternDstFirst, s.pattern) + 1
+	ptn := min(connpool.PatternDstOnly, s.pattern+1)
 	s.pattern = ptn
 	s.pool.WithPattern(ptn)
 
 	return ginx.Result{Data: s.pattern.String()}, nil
 }
 
-func (s *Scheduler[T]) Backward(c *gin.Context) (ginx.Result, error) {
+func (s *Scheduler[T]) Prev(c *gin.Context) (ginx.Result, error) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	ptn := max(connpool.PatternSrcFirst, s.pattern) - 1
+	ptn := max(connpool.PatternSrcOnly, s.pattern-1)
 
 	s.pattern = ptn
 	s.pool.WithPattern(ptn)
@@ -86,9 +86,9 @@ func (s *Scheduler[T]) Backward(c *gin.Context) (ginx.Result, error) {
 func (s *Scheduler[T]) newValidator() (*validator.Validator[T], error) {
 	switch s.pattern {
 	case connpool.PatternSrcOnly, connpool.PatternSrcFirst:
-		return validator.NewValidator[T](s.src, s.dst, s.producer, migrator.DirectionToBase, s.l), nil
+		return validator.NewValidator[T](s.src, s.dst, s.producer, migrator.DirectionToTarget, s.l), nil
 	case connpool.PatternDstFirst, connpool.PatternDstOnly:
-		return validator.NewValidator[T](s.dst, s.src, s.producer, migrator.DirectionToTarget, s.l), nil
+		return validator.NewValidator[T](s.dst, s.src, s.producer, migrator.DirectionToBase, s.l), nil
 	default:
 		return nil, fmt.Errorf("pattern: %s", s.pattern.String())
 	}
@@ -146,7 +146,7 @@ func (s *Scheduler[T]) StartIncrementValidation(c *gin.Context, req StartIncreme
 		return ginx.Result{Msg: "internal error"}, err
 	}
 
-	v.WithSleepInterval(time.Duration(req.Interval) * time.Millisecond).WithUtime(req.Utime)
+	v.WithLoopInterval(time.Duration(req.Interval) * time.Millisecond).WithUtime(req.Utime)
 	var ctx context.Context
 	ctx, s.cancelIncr = context.WithCancel(context.Background())
 

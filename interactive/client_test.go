@@ -11,9 +11,9 @@ import (
 )
 
 func TestGRPCClient(t *testing.T) {
-	cc, err := grpc.Dial("localhost:8090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	c, err := grpc.NewClient("localhost:8090", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	require.NoError(t, err)
-	client := interactivev1.NewInteractiveServiceClient(cc)
+	client := interactivev1.NewInteractiveServiceClient(c)
 	resp, err := client.Get(context.Background(), &interactivev1.GetRequest{
 		Biz:   "test",
 		BizId: 2,
@@ -21,4 +21,16 @@ func TestGRPCClient(t *testing.T) {
 	})
 	require.NoError(t, err)
 	t.Log(resp.Interactive)
+}
+
+func TestDualWrite(t *testing.T) {
+	c, err := grpc.NewClient("localhost:8090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	require.NoError(t, err)
+	client := interactivev1.NewInteractiveServiceClient(c)
+	resp, err := client.IncrReadCnt(context.Background(), &interactivev1.IncrReadCntRequest{
+		Biz:   "test",
+		BizId: 2,
+	})
+	require.NoError(t, err)
+	t.Log(resp.String())
 }
