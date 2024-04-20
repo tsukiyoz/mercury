@@ -27,7 +27,10 @@ func main() {
 		log.Println(err)
 	}()
 
-	app.server.Serve()
+	err := app.server.Serve()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func initViper() {

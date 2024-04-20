@@ -6,13 +6,42 @@ import (
 	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
 	"github.com/tsukaychan/mercury/interactive/service"
 	"github.com/tsukaychan/mercury/internal/web/client"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func InitInteractiveGRPCClient(svc service.InteractiveService) interactivev1.InteractiveServiceClient {
+// InitInteractiveClient return grpc client
+func InitInteractiveClient(etcdCli *clientv3.Client) interactivev1.InteractiveServiceClient {
 	type Config struct {
-		Addr      string
+		Target string `json:"target"`
+		Secure bool   `json:"secure"`
+	}
+	var cfg Config
+	err := viper.UnmarshalKey("grpc.client.interactive", &cfg)
+	if err != nil {
+		panic(err)
+	}
+	rs, err := resolver.NewBuilder(etcdCli)
+	if err != nil {
+		panic(err)
+	}
+	opts := []grpc.DialOption{grpc.WithResolvers(rs)}
+	if !cfg.Secure {
+		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	}
+	cc, err := grpc.Dial(cfg.Target, opts...)
+	if err != nil {
+		panic(err)
+	}
+	return interactivev1.NewInteractiveServiceClient(cc)
+}
+
+// InitTrafficControlInteractiveGRPCClient return grpc client with traffic control
+func InitTrafficControlInteractiveGRPCClient(svc service.InteractiveService) interactivev1.InteractiveServiceClient {
+	type Config struct {
+		Target    string
 		Secure    bool
 		Threshold int32
 	}
@@ -26,7 +55,7 @@ func InitInteractiveGRPCClient(svc service.InteractiveService) interactivev1.Int
 	} else {
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
-	cc, err := grpc.Dial(cfg.Addr, opts...)
+	cc, err := grpc.Dial(cfg.Target, opts...)
 	if err != nil {
 		panic(err)
 	}

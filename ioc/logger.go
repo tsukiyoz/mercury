@@ -9,6 +9,7 @@ import (
 func InitLogger() logger.Logger {
 	cfg := zap.NewDevelopmentConfig()
 	cfg.DisableStacktrace = true
+	cfg.DisableCaller = true
 	err := viper.UnmarshalKey("log", &cfg)
 	if err != nil {
 		panic(err)

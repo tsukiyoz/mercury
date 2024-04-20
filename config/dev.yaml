@@ -25,6 +25,8 @@ kafka:
 grpc:
   client:
     interactive:
-      addr: "localhost:8090"
-      secure: false
-      threshold: 100
+      target: "etcd:///service/interactive"
+
+etcd:
+  endpoints:
+    - "localhost:12379"

@@ -61,6 +61,7 @@ func InitWebServer() *App {
 	wire.Build(
 		ioc.InitDB, ioc.InitRedis,
 		ioc.InitLimiter,
+		ioc.InitEtcdClient,
 		ioc.InitLogger,
 		ioc.InitKafka,
 		ioc.NewSyncProducer,
@@ -86,7 +87,7 @@ func InitWebServer() *App {
 		web.NewOAuth2Handler,
 		web.NewArticleHandler,
 		ijwt.NewRedisJWTHandler,
-		ioc.InitInteractiveGRPCClient,
+		ioc.InitInteractiveClient,
 
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,

@@ -8,4 +8,4 @@ scrape_configs:
     scrape_timeout: 3s
     static_configs:
       # wsl: ifconfig eth0
-      - targets: ["host.docker.internal:8081", "172.21.154.21:8081"]
+      - targets: ["host.docker.internal:8081", "172.21.154.21:8081", "172.17.0.1:8081"]
