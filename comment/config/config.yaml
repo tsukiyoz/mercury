@@ -1,0 +1,7 @@
+db:
+  dsn: "root:for.nothing@tcp(localhost:3306)/mercury"
+
+grpc:
+  server:
+    port: 8091
+    etcd: "localhost:12379"
