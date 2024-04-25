@@ -1,0 +1,9 @@
+grpc:
+  server:
+    port: 8096
+    etcd: "localhost:12379"
+    ttl: 15
+
+tencentSms:
+  secretId: "xxxxxx"
+  secretKey: "oooooo"
