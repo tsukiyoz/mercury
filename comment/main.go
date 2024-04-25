@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -24,10 +21,6 @@ func initViper() {
 	pflag.Parse()
 
 	viper.SetConfigFile(*cfile)
-	viper.WatchConfig()
-	viper.OnConfigChange(func(in fsnotify.Event) {
-		fmt.Println(in.Name, in.Op)
-	})
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
@@ -40,5 +33,5 @@ func initLogger() {
 		panic(err)
 	}
 	zap.ReplaceGlobals(logger)
-	zap.L().Info("Logger initialized :)")
+	zap.L().Info("logger initialized :)")
 }

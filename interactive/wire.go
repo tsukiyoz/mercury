@@ -38,7 +38,7 @@ var migratorSet = wire.NewSet(
 	ioc.InitMigratorWeb,
 )
 
-func InitApp() *App {
+func InitAPP() *App {
 	wire.Build(
 		thirdProvider,
 		interactiveSvcProvider,

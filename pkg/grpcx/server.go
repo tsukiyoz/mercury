@@ -3,35 +3,37 @@ package grpcx
 import (
 	"context"
 	"fmt"
-	"github.com/tsukaychan/mercury/pkg/logger"
-	"github.com/tsukaychan/mercury/pkg/netx"
-	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"net"
 	"strconv"
 	"time"
 
+	"github.com/tsukaychan/mercury/pkg/logger"
+	"github.com/tsukaychan/mercury/pkg/netx"
 	etcdv3 "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"google.golang.org/grpc"
 )
 
 type Server struct {
 	*grpc.Server
-	Name      string
-	Port      int
-	EtcdAddrs []string
-	l         logger.Logger
-	cancel    func()
-	key       string
-	em        endpoints.Manager
-	client    *etcdv3.Client
+	Name        string
+	Port        int
+	EtcdAddrs   []string
+	EtcdTTL     int64
+	EtcdClient  *etcdv3.Client
+	etcdKey     string
+	etcdManager endpoints.Manager
+	cancel      func()
+	l           logger.Logger
 }
 
-func NewServer(srv *grpc.Server, name string, port int, etcdAddrs []string, l logger.Logger) *Server {
+func NewServer(srv *grpc.Server, name string, port int, etcdAddrs []string, ttl int64, l logger.Logger) *Server {
 	return &Server{
 		Server:    srv,
 		Name:      name,
 		Port:      port,
 		EtcdAddrs: etcdAddrs,
+		EtcdTTL:   ttl,
 		l:         l,
 	}
 }
@@ -53,16 +55,19 @@ func (srv *Server) Serve() error {
 
 func (srv *Server) register(ctx context.Context) error {
 	cli, err := etcdv3.New(etcdv3.Config{
-		Endpoints: srv.EtcdAddrs,
+		Endpoints:   srv.EtcdAddrs,
+		DialTimeout: 3 * time.Second,
+		DialOptions: []grpc.DialOption{grpc.WithBlock()},
 	})
 	if err != nil {
 		return err
 	}
-	srv.client = cli
+
+	srv.EtcdClient = cli
 
 	name := fmt.Sprintf("service/%s", srv.Name)
 	addr := fmt.Sprintf("%s:%d", netx.GetOutboundIP(), srv.Port)
-	srv.key = fmt.Sprintf("%s/%s", name, addr)
+	srv.etcdKey = fmt.Sprintf("%s/%s", name, addr)
 
 	em, err := endpoints.NewManager(cli, name)
 	if err != nil {
@@ -70,13 +75,12 @@ func (srv *Server) register(ctx context.Context) error {
 	}
 
 	// get keep alive lease
-	var ttl int64 = 15
-	lease, err := cli.Grant(ctx, ttl)
+	lease, err := cli.Grant(ctx, srv.EtcdTTL)
 	if err != nil {
 		return err
 	}
 
-	err = em.AddEndpoint(ctx, srv.key, endpoints.Endpoint{
+	err = em.AddEndpoint(ctx, srv.etcdKey, endpoints.Endpoint{
 		Addr: addr,
 	}, etcdv3.WithLease(lease.ID))
 	if err != nil {
@@ -101,19 +105,19 @@ func (srv *Server) Close() error {
 	if srv.cancel != nil {
 		srv.cancel()
 	}
-	if srv.em != nil {
+	if srv.etcdManager != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-		err := srv.em.DeleteEndpoint(ctx, srv.key)
+		err := srv.etcdManager.DeleteEndpoint(ctx, srv.etcdKey)
 		cancel()
 		if err != nil {
 			srv.l.Error("delete endpoint failed", logger.Error(err))
 			return err
 		}
 	}
-	if srv.client != nil {
-		err := srv.client.Close()
+	if srv.EtcdClient != nil {
+		err := srv.EtcdClient.Close()
 		if err != nil {
-			srv.l.Error("close etcd client failed", logger.Error(err))
+			srv.l.Error("close etcd EtcdClient failed", logger.Error(err))
 			return err
 		}
 	}

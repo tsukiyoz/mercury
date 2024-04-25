@@ -4,12 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/mercury/user/repository"
+	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/tsukaychan/mercury/article/repository/cache"
+	"github.com/tsukaychan/mercury/article/repository/dao"
 
 	"github.com/ecodeclub/ekit/slice"
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/repository/cache/article"
-	articleDao "github.com/tsukaychan/mercury/internal/repository/dao/article"
 	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
@@ -28,23 +27,21 @@ type ArticleRepository interface {
 var _ ArticleRepository = (*CachedArticleRepository)(nil)
 
 type CachedArticleRepository struct {
-	userRepo     repository.UserRepository
-	articleDAO   articleDao.ArticleDAO
+	articleDAO   dao.ArticleDAO
 	articleCache cache.ArticleCache
 	logger       logger.Logger
 }
 
-func NewCachedArticleRepository(articleDao articleDao.ArticleDAO, articleCache cache.ArticleCache, userRepo repository.UserRepository, l logger.Logger) ArticleRepository {
+func NewCachedArticleRepository(articleDao dao.ArticleDAO, articleCache cache.ArticleCache, l logger.Logger) ArticleRepository {
 	return &CachedArticleRepository{
 		articleDAO:   articleDao,
 		articleCache: articleCache,
-		userRepo:     userRepo,
 		logger:       l,
 	}
 }
 
-func (repo *CachedArticleRepository) domainToEntity(atcl domain.Article) articleDao.Article {
-	return articleDao.Article{
+func (repo *CachedArticleRepository) domainToEntity(atcl domain.Article) dao.Article {
+	return dao.Article{
 		Id:       atcl.Id,
 		Title:    atcl.Title,
 		Content:  atcl.Content,
@@ -55,7 +52,7 @@ func (repo *CachedArticleRepository) domainToEntity(atcl domain.Article) article
 	}
 }
 
-func (repo *CachedArticleRepository) entityToDomain(atcl articleDao.Article) domain.Article {
+func (repo *CachedArticleRepository) entityToDomain(atcl dao.Article) domain.Article {
 	return domain.Article{
 		Id:      atcl.Id,
 		Title:   atcl.Title,
@@ -111,7 +108,7 @@ func (repo *CachedArticleRepository) List(ctx context.Context, authorId int64, o
 	if err != nil {
 		return nil, err
 	}
-	data, err := slice.Map[articleDao.Article, domain.Article](atcls, func(idx int, src articleDao.Article) domain.Article {
+	data, err := slice.Map[dao.Article, domain.Article](atcls, func(idx int, src dao.Article) domain.Article {
 		return repo.entityToDomain(src)
 	}), nil
 
@@ -132,8 +129,8 @@ func (repo *CachedArticleRepository) ListPub(ctx context.Context, utime time.Tim
 		return nil, err
 	}
 
-	return slice.Map[articleDao.PublishedArticle, domain.Article](pubAtcls, func(idx int, src articleDao.PublishedArticle) domain.Article {
-		return repo.entityToDomain(articleDao.Article(src))
+	return slice.Map[dao.PublishedArticle, domain.Article](pubAtcls, func(idx int, src dao.PublishedArticle) domain.Article {
+		return repo.entityToDomain(dao.Article(src))
 	}), nil
 }
 
@@ -145,14 +142,6 @@ func (repo *CachedArticleRepository) Sync(ctx context.Context, atcl domain.Artic
 	go func() {
 		if err := repo.articleCache.DelFirstPage(ctx, atcl.Author.Id); err != nil {
 			repo.logger.Error("write page back to redis failure", logger.Int64("author_id", atcl.Author.Id), logger.Error(err))
-		}
-		if user, err := repo.userRepo.FindById(ctx, atcl.Author.Id); err != nil {
-			repo.logger.Error("pre set user detail failed")
-		} else {
-			atcl.Author = domain.Author{
-				Id:   user.Id,
-				Name: user.NickName,
-			}
 		}
 		if err := repo.articleCache.SetPub(ctx, atcl); err != nil {
 			repo.logger.Error("write article back to redis failure", logger.Int64("id", atcl.Id), logger.Error(err))
@@ -185,18 +174,18 @@ func (repo *CachedArticleRepository) GetPublishedById(ctx context.Context, id in
 	if err != nil {
 		return domain.Article{}, err
 	}
-	dbUser, err := repo.userRepo.FindById(ctx, atcl.AuthorId)
-	if err != nil {
-		return domain.Article{}, err
-	}
+	//dbUser, err := repo.userRepo.FindById(ctx, atcl.AuthorId)
+	//if err != nil {
+	//	return domain.Article{}, err
+	//}
 	res := domain.Article{
 		Id:      atcl.Id,
 		Title:   atcl.Title,
 		Content: atcl.Content,
 		Status:  domain.ArticleStatus(atcl.Status),
 		Author: domain.Author{
-			Id:   atcl.AuthorId,
-			Name: dbUser.NickName,
+			Id: atcl.AuthorId,
+			// Name: dbUser.NickName,
 		},
 		Ctime: time.UnixMilli(atcl.Ctime),
 		Utime: time.UnixMilli(atcl.Utime),

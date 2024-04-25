@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	cache "github.com/tsukaychan/mercury/internal/repository/cache/captcha"
+	"github.com/tsukaychan/mercury/captcha/repository/cache"
 )
 
 var (

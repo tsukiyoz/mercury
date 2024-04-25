@@ -133,13 +133,13 @@ func (c *commentRepository) toEntity(bizComment domain.Comment) dao.Comment {
 		BizID:   bizComment.BizID,
 		Content: bizComment.Content,
 	}
-	if bizComment.RootComment != nil {
+	if bizComment.RootComment != nil && bizComment.RootComment.ID != 0 {
 		dbComment.RootID = sql.NullInt64{
 			Int64: bizComment.RootComment.ID,
 			Valid: true,
 		}
 	}
-	if bizComment.ParentComment != nil {
+	if bizComment.ParentComment != nil && bizComment.ParentComment.ID != 0 {
 		dbComment.PID = sql.NullInt64{
 			Int64: bizComment.ParentComment.ID,
 			Valid: true,

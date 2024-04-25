@@ -24,7 +24,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
-func InitWebServer(mdls []gin.HandlerFunc, userHdl *web.UserHandler, oAuth2Hdl *web.OAuth2WechatHandler, articleHdl *web.ArticleHandler, logger logger.Logger) *gin.Engine {
+func InitWebServer(mdls []gin.HandlerFunc, userHdl *web.UserHandler, oAuth2Hdl *web.OAuth2WechatHandler, articleHdl *web.ArticleHandler, commentHdl *web.CommentHandler, logger logger.Logger) *gin.Engine {
 	ginx.SetLogger(logger)
 	gin.SetMode(gin.ReleaseMode)
 	gin.DefaultWriter = io.Discard
@@ -33,6 +33,7 @@ func InitWebServer(mdls []gin.HandlerFunc, userHdl *web.UserHandler, oAuth2Hdl *
 	userHdl.RegisterRoutes(server)
 	oAuth2Hdl.RegisterRoutes(server)
 	articleHdl.RegisterRoutes(server)
+	commentHdl.RegisterRoutes(server)
 	web.NewObservabilityHandler().RegisterRoutes(server)
 	return server
 }

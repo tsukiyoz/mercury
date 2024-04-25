@@ -1,0 +1,9 @@
+grpc:
+  server:
+    port: 8097
+    etcd: "localhost:12379"
+    ttl: 15
+
+wechat:
+  app_id: "app_id"
+  app_secret: "app_secret"

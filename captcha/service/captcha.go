@@ -2,11 +2,13 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math/rand"
 
-	"github.com/tsukaychan/mercury/internal/repository"
-	"github.com/tsukaychan/mercury/internal/service/sms"
+	"github.com/tsukaychan/mercury/captcha/repository"
+
+	smsv1 "github.com/tsukaychan/mercury/api/proto/gen/sms/v1"
 )
 
 var (
@@ -19,17 +21,16 @@ var _ CaptchaService = (*captchaService)(nil)
 //go:generate mockgen -source=./captcha.go -package=svcmocks -destination=mocks/captcha.mock.go CaptchaService
 type CaptchaService interface {
 	Send(ctx context.Context, biz string, phone string) error
-	Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error)
+	Verify(ctx context.Context, biz string, phone string, captcha string) (bool, error)
 }
 
 type captchaService struct {
-	repo    repository.CaptchaRepository
-	smsSvc  sms.Service
-	tplId   string
-	argName string
+	repo   repository.CaptchaRepository
+	smsSvc smsv1.SmsServiceClient
+	tplId  string
 }
 
-func NewCaptchaService(repo repository.CaptchaRepository, smsSvc sms.Service) CaptchaService {
+func NewCaptchaService(repo repository.CaptchaRepository, smsSvc smsv1.SmsServiceClient) CaptchaService {
 	return &captchaService{
 		repo:   repo,
 		smsSvc: smsSvc,
@@ -42,12 +43,11 @@ func (svc *captchaService) Send(ctx context.Context, biz string, phone string) e
 	if err != nil {
 		return err
 	}
-	err = svc.smsSvc.Send(ctx, svc.tplId, []sms.ArgVal{
-		{
-			Name: svc.argName,
-			Val:  captcha,
-		},
-	}, phone)
+	_, err = svc.smsSvc.Send(ctx, &smsv1.SmsSendRequest{
+		TplId:    svc.tplId,
+		Phones:   []string{phone},
+		Messages: []string{captcha},
+	})
 	if err != nil {
 		// TODO
 		return err
@@ -55,8 +55,13 @@ func (svc *captchaService) Send(ctx context.Context, biz string, phone string) e
 	return nil
 }
 
-func (svc *captchaService) Verify(ctx context.Context, biz string, phone string, inputCaptcha string) (bool, error) {
-	return svc.repo.Verify(ctx, biz, phone, inputCaptcha)
+func (svc *captchaService) Verify(ctx context.Context, biz string, phone string, captcha string) (bool, error) {
+	ok, err := svc.repo.Verify(ctx, biz, phone, captcha)
+	if errors.Is(err, ErrCodeVerifyTooManyTimes) {
+		// TODO alarm here
+		return false, nil
+	}
+	return ok, err
 }
 
 func (svc *captchaService) generateCaptcha() string {

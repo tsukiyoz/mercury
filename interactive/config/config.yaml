@@ -16,8 +16,9 @@ redis:
 
 grpc:
   server:
-    port: 8090
+    port: 8093
     etcd: "localhost:12379"
+    ttl: 15
 
 kafka:
   addrs:

@@ -6,10 +6,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tsukaychan/mercury/user/domain"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/repository"
 	repomock "github.com/tsukaychan/mercury/internal/repository/mocks"
+	"github.com/tsukaychan/mercury/user/repository"
 	"go.uber.org/mock/gomock"
 	"golang.org/x/crypto/bcrypt"
 )

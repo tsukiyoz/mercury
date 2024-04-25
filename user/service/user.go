@@ -10,16 +10,15 @@ import (
 	"errors"
 	"time"
 
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/repository"
 	"github.com/tsukaychan/mercury/pkg/logger"
+	"github.com/tsukaychan/mercury/user/domain"
+	repository2 "github.com/tsukaychan/mercury/user/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var (
-	ErrUserDuplicate         = repository.ErrUserDuplicate
+	ErrUserDuplicate         = repository2.ErrUserDuplicate
 	ErrInvalidUserOrPassword = errors.New("incorrect account or password")
-	ErrCaptchaSendFrequently = repository.ErrCaptchaSendTooManyTimes
 )
 
 var _ UserService = (*userService)(nil)
@@ -35,11 +34,11 @@ type UserService interface {
 }
 
 type userService struct {
-	repo   repository.UserRepository
+	repo   repository2.UserRepository
 	logger logger.Logger
 }
 
-func NewUserService(r repository.UserRepository, logger logger.Logger) UserService {
+func NewUserService(r repository2.UserRepository, logger logger.Logger) UserService {
 	return &userService{
 		repo:   r,
 		logger: logger,
@@ -57,7 +56,7 @@ func (svc *userService) SignUp(ctx context.Context, u domain.User) error {
 
 func (svc *userService) Login(ctx context.Context, email string, password string) (domain.User, error) {
 	user, err := svc.repo.FindByEmail(ctx, email)
-	if err == repository.ErrUserNoFound {
+	if err == repository2.ErrUserNoFound {
 		return domain.User{}, ErrInvalidUserOrPassword
 	}
 	if err != nil {
@@ -84,7 +83,7 @@ func (svc *userService) Profile(ctx context.Context, uid int64) (domain.User, er
 
 func (svc *userService) FindOrCreate(ctx context.Context, phone string) (domain.User, error) {
 	u, err := svc.repo.FindByPhone(ctx, phone)
-	if err != repository.ErrUserNoFound {
+	if err != repository2.ErrUserNoFound {
 		return u, err
 	}
 	svc.logger.Info("user not registered", logger.String("phone", phone))
@@ -101,14 +100,14 @@ func (svc *userService) FindOrCreate(ctx context.Context, phone string) (domain.
 
 func (svc *userService) FindOrCreateByWechat(ctx context.Context, info domain.WechatInfo) (domain.User, error) {
 	u, err := svc.repo.FindByWechat(ctx, info.OpenID)
-	if err != repository.ErrUserNoFound {
+	if err != repository2.ErrUserNoFound {
 		return u, err
 	}
 	u = domain.User{
 		WechatInfo: info,
 	}
 	err = svc.repo.Create(ctx, u)
-	if err != nil && err != repository.ErrUserDuplicate {
+	if err != nil && err != repository2.ErrUserDuplicate {
 		return u, err
 	}
 	return svc.repo.FindByWechat(ctx, info.OpenID)

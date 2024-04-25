@@ -12,6 +12,7 @@ func InitGRPCxServer(comment *igrpc.CommentServiceServer, l logger.Logger) *grpc
 	type Config struct {
 		Port int    `yaml:"port"`
 		Etcd string `yaml:"etcd"`
+		TTL  int64  `yaml:"ttl"`
 	}
 	var cfg Config
 	err := viper.UnmarshalKey("grpc.server", &cfg)
@@ -20,5 +21,5 @@ func InitGRPCxServer(comment *igrpc.CommentServiceServer, l logger.Logger) *grpc
 	}
 	srv := grpc.NewServer()
 	comment.Register(srv)
-	return grpcx.NewServer(srv, "comment", cfg.Port, []string{cfg.Etcd}, l)
+	return grpcx.NewServer(srv, "comment", cfg.Port, []string{cfg.Etcd}, cfg.TTL, l)
 }

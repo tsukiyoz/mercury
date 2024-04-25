@@ -55,7 +55,7 @@ func (repo *asyncSmsRepository) domainToEntity(sms domain.AsyncSms) dao.AsyncSms
 			Val: dao.SMSConfig{
 				TplId:  sms.TplId,
 				Args:   sms.Args,
-				Phones: sms.Phones,
+				Target: sms.Target,
 			},
 			Valid: true,
 		},
@@ -68,7 +68,7 @@ func (repo *asyncSmsRepository) entityToDomain(sms dao.AsyncSms) domain.AsyncSms
 		Id:       sms.Id,
 		TplId:    sms.Config.Val.TplId,
 		Args:     sms.Config.Val.Args,
-		Phones:   sms.Config.Val.Phones,
+		Target:   sms.Config.Val.Target,
 		RetryMax: sms.RetryMax,
 	}
 }

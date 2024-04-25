@@ -10,11 +10,17 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/tsukaychan/mercury/captcha/repository"
+
+	"github.com/tsukaychan/mercury/captcha/service"
+
+	"github.com/tsukaychan/mercury/user/domain"
+
+	repository2 "github.com/tsukaychan/mercury/user/repository"
+	service2 "github.com/tsukaychan/mercury/user/service"
+
 	"github.com/tsukaychan/mercury/internal/errs"
 
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/repository"
-	"github.com/tsukaychan/mercury/internal/service"
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 	"github.com/tsukaychan/mercury/pkg/ginx"
 	"github.com/tsukaychan/mercury/pkg/logger"
@@ -35,7 +41,7 @@ const (
 var _ handler = (*UserHandler)(nil)
 
 type UserHandler struct {
-	userService    service.UserService
+	userService    service2.UserService
 	captchaService service.CaptchaService
 	emailExp       *regexp.Regexp
 	passwordExp    *regexp.Regexp
@@ -43,7 +49,7 @@ type UserHandler struct {
 	logger logger.Logger
 }
 
-func NewUserHandler(userService service.UserService, captchaService service.CaptchaService, jwtHandler ijwt.Handler, l logger.Logger) *UserHandler {
+func NewUserHandler(userService service2.UserService, captchaService service.CaptchaService, jwtHandler ijwt.Handler, l logger.Logger) *UserHandler {
 	return &UserHandler{
 		userService:    userService,
 		captchaService: captchaService,
@@ -167,7 +173,7 @@ func (h *UserHandler) SignUp(ctx *gin.Context) {
 		Ctime:    time.Now(),
 		Utime:    time.Now(),
 	})
-	if err == service.ErrUserDuplicate {
+	if err == service2.ErrUserDuplicate {
 		ctx.JSON(http.StatusOK, Result{
 			Code: 4,
 			Msg:  "the email has been registered",
@@ -195,7 +201,7 @@ func (h *UserHandler) Login(ctx *gin.Context) {
 	}
 
 	user, err := h.userService.Login(ctx.Request.Context(), req.Email, req.Password)
-	if err == service.ErrInvalidUserOrPassword {
+	if err == service2.ErrInvalidUserOrPassword {
 		ctx.JSON(http.StatusOK, Result{
 			Code: errs.UserInvalidOrPassword,
 			Msg:  "incorrect account or password",
@@ -239,7 +245,7 @@ type LoginReq struct {
 
 func (h *UserHandler) LoginJWT(ctx *gin.Context, req LoginReq) (Result, error) {
 	user, err := h.userService.Login(ctx.Request.Context(), req.Email, req.Password)
-	if err == service.ErrInvalidUserOrPassword {
+	if err == service2.ErrInvalidUserOrPassword {
 		return Result{
 			Code: 4,
 			Msg:  "incorrect account or password",
@@ -439,7 +445,7 @@ func (h *UserHandler) LoginSMS(ctx *gin.Context, req LoginSMSReq) (Result, error
 		break
 	case repository.ErrCaptchaVerifyTooManyTimes:
 		return Result{
-			Code: 2,
+			Code: 4,
 			Msg:  "verify too many times, please resend the captcha",
 		}, nil
 	default:
@@ -457,7 +463,7 @@ func (h *UserHandler) LoginSMS(ctx *gin.Context, req LoginSMSReq) (Result, error
 	}
 
 	user, err := h.userService.FindOrCreate(ctx, req.Phone)
-	if err != nil && err != repository.ErrUserDuplicate {
+	if err != nil && err != repository2.ErrUserDuplicate {
 		return Result{
 			Code: 5,
 			Msg:  "internal error",
@@ -472,7 +478,6 @@ func (h *UserHandler) LoginSMS(ctx *gin.Context, req LoginSMSReq) (Result, error
 	}
 
 	return Result{
-		Code: 2,
-		Msg:  "captcha validate success",
+		Msg: "success",
 	}, nil
 }

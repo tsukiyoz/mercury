@@ -7,3 +7,5 @@ mercury
 .env
 script/grafana/grafana.ini
 /api/proto/gen/
+
+**/*.log

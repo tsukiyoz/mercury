@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tsukaychan/mercury/internal/service"
-	"github.com/tsukaychan/mercury/internal/service/oauth2/wechat"
+	"github.com/tsukaychan/mercury/oauth2/service/wechat"
+
+	"github.com/tsukaychan/mercury/user/service"
+
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +28,8 @@ type OAuth2WechatHandler struct {
 }
 
 type WechatHandlerConfig struct {
-	Secure bool
+	Secure   bool
+	HTTPOnly bool
 }
 
 func NewOAuth2Handler(svc wechat.Service, userSvc service.UserService, cfg WechatHandlerConfig, jwtHdl ijwt.Handler) *OAuth2WechatHandler {

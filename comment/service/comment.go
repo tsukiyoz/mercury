@@ -44,6 +44,10 @@ func (c *commentService) CreateComment(ctx context.Context, comment domain.Comme
 	return c.repo.CreateComment(ctx, comment)
 }
 
+func (c *commentService) GetCommentByIds(ctx context.Context, id []int64) ([]domain.Comment, error) {
+	return c.repo.GetCommentByIds(ctx, id)
+}
+
 func (c *commentService) GetMoreReplies(ctx context.Context, rid int64, maxID int64, limit int64) ([]domain.Comment, error) {
 	return c.repo.GetMoreReplies(ctx, rid, maxID, limit)
 }

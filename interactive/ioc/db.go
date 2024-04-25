@@ -76,7 +76,7 @@ func initDB(key, name string, l logger.Logger) *gorm.DB {
 	}
 
 	// tracing
-	db.Use(
+	err = db.Use(
 		tracing.NewPlugin(
 			tracing.WithDBName("mercury"),
 			tracing.WithQueryFormatter(func(query string) string {
@@ -87,6 +87,9 @@ func initDB(key, name string, l logger.Logger) *gorm.DB {
 			tracing.WithoutQueryVariables(),
 		),
 	)
+	if err != nil {
+		panic(err)
+	}
 
 	err = dao.InitTable(db)
 	if err != nil {

@@ -3,5 +3,6 @@ db:
 
 grpc:
   server:
-    port: 8091
+    port: 8094
     etcd: "localhost:12379"
+    ttl: 15

@@ -14,7 +14,7 @@ func main() {
 	initViper()
 	initLogger()
 
-	app := InitApp()
+	app := InitAPP()
 	for _, c := range app.consumers {
 		err := c.Start()
 		if err != nil {
@@ -34,7 +34,7 @@ func main() {
 }
 
 func initViper() {
-	cfile := pflag.String("config", "config/dev.yaml", "set config file path")
+	cfile := pflag.String("config", "config/config.yaml", "set config file path")
 	pflag.Parse()
 
 	viper.SetConfigFile(*cfile)
@@ -54,5 +54,5 @@ func initLogger() {
 		panic(err)
 	}
 	zap.ReplaceGlobals(logger)
-	zap.L().Info("Logger initialized :)")
+	zap.L().Info("logger initialized :)")
 }

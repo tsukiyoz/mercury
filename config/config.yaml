@@ -26,6 +26,8 @@ grpc:
   client:
     interactive:
       target: "etcd:///service/interactive"
+    comment:
+      target: "etcd:///service/comment"
 
 etcd:
   endpoints:

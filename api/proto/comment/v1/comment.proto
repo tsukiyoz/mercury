@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package comment.v1;
+option go_package="comment/v1;commentv1";
+
+import "google/protobuf/timestamp.proto";
+
+
+service CommentService {
+  // GetCommentList if id = 0, means get top comments
+  rpc GetCommentList (CommentListRequest) returns (CommentListResponse);
+
+  // DeleteComment Delete its own and all descendant comments
+  rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentResponse);
+
+  // CreateComment create a comment
+  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse);
+
+//  rpc GetCommentByIds (GetCommentByIdsRequest) returns (GetCommentByIdsResponse);
+
+  rpc GetMoreReplies(GetMoreRepliesRequest) returns (GetMoreRepliesResponse);
+}
+
+message CommentListRequest {
+  string biz = 1;
+  int64 biz_id = 2;
+  int64 min_id = 3;
+  int64 limit = 4;
+}
+
+message CommentListResponse {
+  repeated Comment comments = 1;
+}
+
+message DeleteCommentRequest {
+  int64 id = 1;
+}
+
+message DeleteCommentResponse {
+}
+
+message CreateCommentRequest {
+  Comment comment = 1;
+}
+
+message CreateCommentResponse {
+}
+
+//message GetCommentByIdsRequest {
+//  repeated int64 ids = 1;
+//}
+//
+//message GetCommentByIdsResponse {
+//  repeated Comment comments = 1;
+//}
+
+message GetMoreRepliesRequest {
+  int64 rid = 1;
+  int64 max_id = 2;
+  int64 limit = 3;
+}
+message GetMoreRepliesResponse {
+  repeated Comment replies = 1;
+}
+
+message Comment {
+  int64 id = 1;
+  int64 uid = 2;
+  string biz = 3;
+  int64 biz_id = 4;
+  string content = 5;
+  Comment root_comment = 6;
+  Comment parent_comment = 7;
+  google.protobuf.Timestamp ctime = 9;
+  google.protobuf.Timestamp utime = 10;
+}

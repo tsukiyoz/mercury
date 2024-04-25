@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/redis/go-redis/v9"
+	"github.com/tsukaychan/mercury/article/domain"
 
-	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/redis/go-redis/v9"
 )
 
 var _ RankingCache = (*RankingRedisCache)(nil)

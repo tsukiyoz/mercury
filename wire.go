@@ -4,6 +4,13 @@ package main
 
 import (
 	"github.com/google/wire"
+	repository5 "github.com/tsukaychan/mercury/article/repository"
+	articleCache "github.com/tsukaychan/mercury/article/repository/cache"
+	articleDao "github.com/tsukaychan/mercury/article/repository/dao"
+	service5 "github.com/tsukaychan/mercury/article/service"
+	repository4 "github.com/tsukaychan/mercury/captcha/repository"
+	captchaCache "github.com/tsukaychan/mercury/captcha/repository/cache"
+	service4 "github.com/tsukaychan/mercury/captcha/service"
 	"github.com/tsukaychan/mercury/interactive/events"
 	repository2 "github.com/tsukaychan/mercury/interactive/repository"
 	"github.com/tsukaychan/mercury/interactive/repository/cache"
@@ -11,34 +18,33 @@ import (
 	service2 "github.com/tsukaychan/mercury/interactive/service"
 	events2 "github.com/tsukaychan/mercury/internal/events"
 	"github.com/tsukaychan/mercury/internal/repository"
-	articleCache "github.com/tsukaychan/mercury/internal/repository/cache/article"
-	captchaCache "github.com/tsukaychan/mercury/internal/repository/cache/captcha"
 	rankingCache "github.com/tsukaychan/mercury/internal/repository/cache/ranking"
-	userCache "github.com/tsukaychan/mercury/internal/repository/cache/user"
-	"github.com/tsukaychan/mercury/internal/repository/dao"
-	articleDao "github.com/tsukaychan/mercury/internal/repository/dao/article"
 	"github.com/tsukaychan/mercury/internal/service"
 	"github.com/tsukaychan/mercury/internal/web"
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 	"github.com/tsukaychan/mercury/ioc"
+	repository3 "github.com/tsukaychan/mercury/user/repository"
+	userCache "github.com/tsukaychan/mercury/user/repository/cache"
+	"github.com/tsukaychan/mercury/user/repository/dao"
+	service3 "github.com/tsukaychan/mercury/user/service"
 )
 
 var userSvcProvider = wire.NewSet(
-	service.NewUserService,
-	repository.NewCachedUserRepository,
+	service3.NewUserService,
+	repository3.NewCachedUserRepository,
 	dao.NewGORMUserDAO,
 	userCache.NewUserRedisCache,
 )
 
 var captchaSvcProvider = wire.NewSet(
-	service.NewCaptchaService,
+	service4.NewCaptchaService,
 	captchaCache.NewCaptchaRedisCache,
-	repository.NewCachedCaptchaRepository,
+	repository4.NewCachedCaptchaRepository,
 )
 
 var articleSvcProvider = wire.NewSet(
-	service.NewArticleService,
-	repository.NewCachedArticleRepository,
+	service5.NewArticleService,
+	repository5.NewCachedArticleRepository,
 	articleDao.NewGORMArticleDAO,
 	articleCache.NewRedisArticleCache,
 )
@@ -57,7 +63,7 @@ var rankingSvcSet = wire.NewSet(
 	rankingCache.NewRankingLocalCache,
 )
 
-func InitWebServer() *App {
+func InitAPP() *App {
 	wire.Build(
 		ioc.InitDB, ioc.InitRedis,
 		ioc.InitLimiter,
@@ -83,12 +89,13 @@ func InitWebServer() *App {
 		ioc.InitWechatService,
 		ioc.NewWechatHandlerConfig,
 
+		web.NewCommentHandler,
 		web.NewUserHandler,
 		web.NewOAuth2Handler,
 		web.NewArticleHandler,
 		ijwt.NewRedisJWTHandler,
 		ioc.InitInteractiveClient,
-
+		ioc.InitCommentClient,
 		ioc.InitWebServer,
 		ioc.InitMiddlewares,
 		// ioc.InitLocalCache,

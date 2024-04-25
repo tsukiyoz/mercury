@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/ecodeclub/ekit/sqlx"
-	"github.com/tsukaychan/mercury/internal/service/sms"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -31,8 +30,9 @@ type AsyncSms struct {
 
 type SMSConfig struct {
 	TplId  string
-	Args   []sms.ArgVal
-	Phones []string
+	Target string
+	Args   []string
+	Values []string
 }
 
 const (

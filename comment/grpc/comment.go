@@ -72,6 +72,7 @@ func (c *CommentServiceServer) toDTO(bizComments []domain.Comment) []*commentv1.
 	for _, bizComment := range bizComments {
 		dtoComment := &commentv1.Comment{
 			Id:      bizComment.ID,
+			Uid:     bizComment.Commentator.ID,
 			Biz:     bizComment.Biz,
 			BizId:   bizComment.BizID,
 			Content: bizComment.Content,

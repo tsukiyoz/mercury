@@ -7,12 +7,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/tsukaychan/mercury/article/repository/dao"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tsukaychan/mercury/internal/domain"
 	"github.com/tsukaychan/mercury/internal/integration/startup"
-	articleDao "github.com/tsukaychan/mercury/internal/repository/dao/article"
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 	"gorm.io/gorm"
 
@@ -35,7 +36,7 @@ func (s *ArticleGORMTestSuite) SetupSuite() {
 
 	s.db = startup.InitTestDB()
 
-	articleHdl := startup.InitArticleHandler(articleDao.NewGORMArticleDAO(s.db))
+	articleHdl := startup.InitArticleHandler(dao.NewGORMArticleDAO(s.db))
 	articleHdl.RegisterRoutes(s.server)
 }
 
@@ -66,14 +67,14 @@ func (s *ArticleGORMTestSuite) TestEdit() {
 			before: func(t *testing.T) {},
 			after: func(t *testing.T) {
 				// check db
-				var article articleDao.Article
+				var article dao.Article
 				err := s.db.Where("id = ?", 1).First(&article).Error
 
 				assert.NoError(t, err)
 				assert.True(t, article.Ctime > 0)
 				assert.True(t, article.Utime > 0)
 				article.Ctime, article.Utime = 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       1,
 					Title:    "my title",
 					Content:  "my content",
@@ -93,7 +94,7 @@ func (s *ArticleGORMTestSuite) TestEdit() {
 		{
 			name: "update atcl",
 			before: func(t *testing.T) {
-				err := s.db.Create(articleDao.Article{
+				err := s.db.Create(dao.Article{
 					Id:       2,
 					Title:    "my title",
 					Content:  "my content",
@@ -107,13 +108,13 @@ func (s *ArticleGORMTestSuite) TestEdit() {
 			},
 			after: func(t *testing.T) {
 				// check db
-				var article articleDao.Article
+				var article dao.Article
 				err := s.db.Where("id = ?", 2).First(&article).Error
 
 				assert.NoError(t, err)
 				assert.True(t, article.Utime > 234)
 				article.Utime = 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       2,
 					Title:    "my new title",
 					Content:  "my new content",
@@ -135,7 +136,7 @@ func (s *ArticleGORMTestSuite) TestEdit() {
 		{
 			name: "update someone else's atcl",
 			before: func(t *testing.T) {
-				err := s.db.Create(articleDao.Article{
+				err := s.db.Create(dao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "my content",
@@ -149,11 +150,11 @@ func (s *ArticleGORMTestSuite) TestEdit() {
 			},
 			after: func(t *testing.T) {
 				// check db
-				var article articleDao.Article
+				var article dao.Article
 				err := s.db.Where("id = ?", 3).First(&article).Error
 
 				assert.NoError(t, err)
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "my content",
@@ -220,28 +221,28 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 			name:   "create and publish",
 			before: func(t *testing.T) {},
 			after: func(t *testing.T) {
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.db.Where("author_id = ?", 123).First(&atcl).Error
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				assert.True(t, atcl.Id > 0)
 				atcl.Id, atcl.Ctime, atcl.Utime = 0, 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Title:    "my title",
 					Content:  "my content",
 					AuthorId: 123,
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.db.Where("author_id = ?", 123).First(&pubAtcl).Error
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				assert.True(t, pubAtcl.Id > 0)
 				pubAtcl.Id, pubAtcl.Ctime, pubAtcl.Utime = 0, 0, 0
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Title:    "my title",
 						Content:  "my content",
 						AuthorId: 123,
@@ -261,7 +262,7 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 		{
 			name: "update unpublished and publish",
 			before: func(t *testing.T) {
-				err := s.db.Create(&articleDao.Article{
+				err := s.db.Create(&dao.Article{
 					Id:       2,
 					Title:    "my title",
 					Content:  "my content",
@@ -274,13 +275,13 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 			},
 			after: func(t *testing.T) {
 				// validate
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.db.Where("id = ?", 2).First(&atcl).Error
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				atcl.Ctime, atcl.Utime = 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       2,
 					Title:    "my new title",
 					Content:  "my new content",
@@ -288,15 +289,15 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
 
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.db.Where("id = ?", 2).First(&pubAtcl).Error
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				pubAtcl.Ctime, pubAtcl.Utime = 0, 0
 
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Id:       2,
 						Title:    "my new title",
 						Content:  "my new content",
@@ -318,7 +319,7 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 		{
 			name: "update published and publish",
 			before: func(t *testing.T) {
-				atcl := articleDao.Article{
+				atcl := dao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "my content",
@@ -329,7 +330,7 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 				}
 				err := s.db.Create(&atcl).Error
 				assert.NoError(t, err)
-				pubAtcl := articleDao.PublishedArticle(
+				pubAtcl := dao.PublishedArticle(
 					atcl,
 				)
 				err = s.db.Create(&pubAtcl).Error
@@ -337,13 +338,13 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 			},
 			after: func(t *testing.T) {
 				// validate
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.db.Where("id = ?", 3).First(&atcl).Error
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				atcl.Ctime, atcl.Utime = 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       3,
 					Title:    "my new title",
 					Content:  "my new content",
@@ -351,14 +352,14 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
 
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.db.Where("id = ?", 3).First(&pubAtcl).Error
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				pubAtcl.Ctime, pubAtcl.Utime = 0, 0
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Id:       3,
 						Title:    "my new title",
 						Content:  "my new content",
@@ -380,7 +381,7 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 		{
 			name: "update someone else's article failed",
 			before: func(t *testing.T) {
-				atcl := articleDao.Article{
+				atcl := dao.Article{
 					Id:       4,
 					Title:    "my title",
 					Content:  "my content",
@@ -392,8 +393,8 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 				err := s.db.Create(&atcl).Error
 				assert.NoError(t, err)
 
-				pubAtcl := articleDao.PublishedArticle(
-					articleDao.Article{
+				pubAtcl := dao.PublishedArticle(
+					dao.Article{
 						Id:       4,
 						Title:    "my title",
 						Content:  "my content",
@@ -407,14 +408,14 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 				assert.NoError(t, err)
 			},
 			after: func(t *testing.T) {
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.db.Where("id = ?", 4).First(&atcl).Error
 
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				atcl.Ctime, atcl.Utime = 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       4,
 					Title:    "my title",
 					Content:  "my content",
@@ -422,14 +423,14 @@ func (s *ArticleGORMTestSuite) TestArticle_Publish() {
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
 
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.db.Where("id = ?", 4).First(&pubAtcl).Error
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				pubAtcl.Ctime, pubAtcl.Utime = 0, 0
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Id:       4,
 						Title:    "my title",
 						Content:  "my content",

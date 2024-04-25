@@ -1,0 +1,19 @@
+http:
+  addr: ":8080"
+  secure: false
+  http_only: false
+
+etcd:
+  endpoints:
+    - "localhost:12379"
+
+grpc:
+  client:
+    user:
+      target: "etcd:///service/user"
+    article:
+      target: "etcd:///service/article"
+    captcha:
+      target: "etcd:///service/captcha"
+    interactive:
+      target: "etcd:///service/interactive"

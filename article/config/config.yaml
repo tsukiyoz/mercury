@@ -1,0 +1,19 @@
+db:
+  dsn: "root:for.nothing@tcp(localhost:3306)/mercury"
+
+redis:
+  addr: "localhost:6379"
+
+kafka:
+  addrs:
+    - "localhost:9094"
+
+etcd:
+  endpoints:
+    - "localhost:12379"
+
+grpc:
+  server:
+    port: 8092
+    etcd: "localhost:12379"
+    ttl: 15

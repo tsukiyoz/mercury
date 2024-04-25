@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/tsukaychan/mercury/article/domain"
+
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/tsukaychan/mercury/internal/domain"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

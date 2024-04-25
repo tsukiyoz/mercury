@@ -5,7 +5,9 @@
 
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	Id         int64
@@ -18,4 +20,9 @@ type User struct {
 	Birthday   time.Time
 	Ctime      time.Time
 	Utime      time.Time
+}
+
+type WechatInfo struct {
+	OpenID  string
+	UnionID string
 }

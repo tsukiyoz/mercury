@@ -4,18 +4,20 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/tsukaychan/mercury/internal/web/client"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/tsukaychan/mercury/article/domain"
+
+	"github.com/tsukaychan/mercury/article/service"
+	"github.com/tsukaychan/mercury/internal/web/client"
 
 	service2 "github.com/tsukaychan/mercury/interactive/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/service"
 	svcmock "github.com/tsukaychan/mercury/internal/service/mocks"
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 	"github.com/tsukaychan/mercury/pkg/logger"

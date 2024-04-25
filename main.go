@@ -28,12 +28,12 @@ func main() {
 
 	initPrometheus()
 
-	app := InitWebServer()
+	app := InitAPP()
 	app.Start(":8080")
 }
 
 func initViper() {
-	cfile := pflag.String("config", "config/dev.yaml", "set config file path")
+	cfile := pflag.String("config", "config/config.yaml", "set config file path")
 	pflag.Parse()
 
 	viper.SetConfigFile(*cfile)
@@ -63,5 +63,5 @@ func initLogger() {
 		panic(err)
 	}
 	zap.ReplaceGlobals(logger)
-	zap.L().Info("Logger initialized :)")
+	zap.L().Info("logger initialized :)")
 }

@@ -1,10 +1,10 @@
 package startup
 
 import (
-	"github.com/tsukaychan/mercury/internal/service/oauth2/wechat"
+	wechat2 "github.com/tsukaychan/mercury/oauth2/service/wechat"
 	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
-func InitPhantomWechatService(l logger.Logger) wechat.Service {
-	return wechat.NewService("", "", l)
+func InitPhantomWechatService(l logger.Logger) wechat2.Service {
+	return wechat2.NewService("", "", l)
 }

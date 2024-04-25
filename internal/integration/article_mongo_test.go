@@ -9,13 +9,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/tsukaychan/mercury/article/repository/dao"
+
 	"github.com/bwmarrin/snowflake"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tsukaychan/mercury/internal/domain"
 	"github.com/tsukaychan/mercury/internal/integration/startup"
-	articleDao "github.com/tsukaychan/mercury/internal/repository/dao/article"
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -42,14 +43,14 @@ func (s *ArticleMongoTestSuite) SetupSuite() {
 	s.mdb = startup.InitMongoDB()
 	node, err := snowflake.NewNode(1)
 	assert.NoError(s.T(), err)
-	err = articleDao.InitCollections(s.mdb)
+	err = dao.InitCollections(s.mdb)
 	if err != nil {
 		panic(err)
 	}
 	s.col = s.mdb.Collection("articles")
 	s.liveCol = s.mdb.Collection("published_articles")
 
-	articleHdl := startup.InitArticleHandler(articleDao.NewMongoDBDAO(s.mdb, node))
+	articleHdl := startup.InitArticleHandler(dao.NewMongoDBDAO(s.mdb, node))
 	articleHdl.RegisterRoutes(s.server)
 }
 
@@ -87,7 +88,7 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 				// check db
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.col.FindOne(ctx, bson.M{"author_id": 123}).Decode(&atcl)
 
 				assert.NoError(t, err)
@@ -95,7 +96,7 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 				assert.True(t, atcl.Utime > 0)
 				assert.True(t, atcl.Id > 0)
 				atcl.Id, atcl.Ctime, atcl.Utime = 0, 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Title:    "my title",
 					Content:  "my content",
 					AuthorId: 123,
@@ -117,7 +118,7 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 
-				_, err := s.col.InsertOne(ctx, &articleDao.Article{
+				_, err := s.col.InsertOne(ctx, &dao.Article{
 					Id:       2,
 					Title:    "my title",
 					Content:  "my content",
@@ -134,13 +135,13 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 				defer cancel()
 
 				// check db
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.col.FindOne(ctx, bson.M{"id": 2}).Decode(&atcl)
 
 				assert.NoError(t, err)
 				assert.True(t, atcl.Utime > 234)
 				atcl.Utime = 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       2,
 					Title:    "my new title",
 					Content:  "my new content",
@@ -165,7 +166,7 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 
-				_, err := s.col.InsertOne(ctx, &articleDao.Article{
+				_, err := s.col.InsertOne(ctx, &dao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "my content",
@@ -181,11 +182,11 @@ func (s *ArticleMongoTestSuite) TestEdit() {
 				defer cancel()
 
 				// check db
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.col.FindOne(ctx, bson.M{"id": 3}).Decode(&atcl)
 
 				assert.NoError(t, err)
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "my content",
@@ -259,28 +260,28 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.col.FindOne(ctx, bson.M{"author_id": 123}).Decode(&atcl)
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				assert.True(t, atcl.Id > 0)
 				atcl.Id, atcl.Ctime, atcl.Utime = 0, 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Title:    "my title",
 					Content:  "my content",
 					AuthorId: 123,
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.liveCol.FindOne(ctx, bson.M{"author_id": 123}).Decode(&pubAtcl)
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				assert.True(t, pubAtcl.Id > 0)
 				pubAtcl.Id, pubAtcl.Ctime, pubAtcl.Utime = 0, 0, 0
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Title:    "my title",
 						Content:  "my content",
 						AuthorId: 123,
@@ -303,7 +304,7 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 
-				_, err := s.col.InsertOne(ctx, &articleDao.Article{
+				_, err := s.col.InsertOne(ctx, &dao.Article{
 					Id:       2,
 					Title:    "my title",
 					Content:  "my content",
@@ -319,13 +320,13 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				defer cancel()
 
 				// validate
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.col.FindOne(ctx, bson.M{"id": 2}).Decode(&atcl)
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				atcl.Ctime, atcl.Utime = 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       2,
 					Title:    "my new title",
 					Content:  "my new content",
@@ -333,14 +334,14 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
 
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.liveCol.FindOne(ctx, bson.M{"id": 2, "author_id": 123}).Decode(&pubAtcl)
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				pubAtcl.Ctime, pubAtcl.Utime = 0, 0
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Id:       2,
 						Title:    "my new title",
 						Content:  "my new content",
@@ -365,7 +366,7 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 
-				atcl := articleDao.Article{
+				atcl := dao.Article{
 					Id:       3,
 					Title:    "my title",
 					Content:  "my content",
@@ -376,7 +377,7 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				}
 				_, err := s.col.InsertOne(ctx, &atcl)
 				assert.NoError(t, err)
-				pubAtcl := articleDao.PublishedArticle(
+				pubAtcl := dao.PublishedArticle(
 					atcl,
 				)
 				_, err = s.liveCol.InsertOne(ctx, &pubAtcl)
@@ -387,13 +388,13 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				defer cancel()
 
 				// validate
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.col.FindOne(ctx, bson.M{"id": 3}).Decode(&atcl)
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				atcl.Ctime, atcl.Utime = 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       3,
 					Title:    "my new title",
 					Content:  "my new content",
@@ -401,14 +402,14 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
 
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.liveCol.FindOne(ctx, bson.M{"author_id": 123}).Decode(&pubAtcl)
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				pubAtcl.Ctime, pubAtcl.Utime = 0, 0
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Id:       3,
 						Title:    "my new title",
 						Content:  "my new content",
@@ -433,7 +434,7 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 
-				atcl := articleDao.Article{
+				atcl := dao.Article{
 					Id:       4,
 					Title:    "my title",
 					Content:  "my content",
@@ -445,8 +446,8 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				_, err := s.col.InsertOne(ctx, &atcl)
 				assert.NoError(t, err)
 
-				pubAtcl := articleDao.PublishedArticle(
-					articleDao.Article{
+				pubAtcl := dao.PublishedArticle(
+					dao.Article{
 						Id:       4,
 						Title:    "my title",
 						Content:  "my content",
@@ -463,14 +464,14 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 				defer cancel()
 
-				var atcl articleDao.Article
+				var atcl dao.Article
 				err := s.col.FindOne(ctx, bson.M{"id": 4}).Decode(&atcl)
 
 				assert.NoError(t, err)
 				assert.True(t, atcl.Ctime > 0)
 				assert.True(t, atcl.Utime > 0)
 				atcl.Ctime, atcl.Utime = 0, 0
-				assert.Equal(t, articleDao.Article{
+				assert.Equal(t, dao.Article{
 					Id:       4,
 					Title:    "my title",
 					Content:  "my content",
@@ -478,14 +479,14 @@ func (s *ArticleMongoTestSuite) TestArticle_Publish() {
 					Status:   domain.ArticleStatusPublished.ToUint8(),
 				}, atcl)
 
-				var pubAtcl articleDao.PublishedArticle
+				var pubAtcl dao.PublishedArticle
 				err = s.liveCol.FindOne(ctx, bson.M{"id": 4}).Decode(&pubAtcl)
 				assert.NoError(t, err)
 				assert.True(t, pubAtcl.Ctime > 0)
 				assert.True(t, pubAtcl.Utime > 0)
 				pubAtcl.Ctime, pubAtcl.Utime = 0, 0
-				assert.Equal(t, articleDao.PublishedArticle(
-					articleDao.Article{
+				assert.Equal(t, dao.PublishedArticle(
+					dao.Article{
 						Id:       4,
 						Title:    "my title",
 						Content:  "my content",

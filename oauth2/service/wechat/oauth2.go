@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/oauth2/domain"
 	"github.com/tsukaychan/mercury/pkg/logger"
 )
 

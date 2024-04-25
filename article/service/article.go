@@ -4,10 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/mercury/internal/events"
+	"golang.org/x/sync/errgroup"
 
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/repository"
+	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/tsukaychan/mercury/article/events"
+	"github.com/tsukaychan/mercury/article/repository"
 	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
@@ -32,6 +33,7 @@ type ArticleService interface {
 
 type articleService struct {
 	articleRepo repository.ArticleRepository
+	userRepo    repository.AuthorRepository
 	producer    events.Producer
 	logger      logger.Logger
 }
@@ -56,6 +58,11 @@ func (svc *articleService) Save(ctx context.Context, atcl domain.Article) (int64
 
 func (svc *articleService) Publish(ctx context.Context, atcl domain.Article) (int64, error) {
 	atcl.Status = domain.ArticleStatusPublished
+	author, err := svc.userRepo.FindAuthor(ctx, atcl.Id)
+	if err != nil {
+		return 0, err
+	}
+	atcl.Author = author
 	return svc.articleRepo.Sync(ctx, atcl)
 }
 
@@ -72,7 +79,25 @@ func (svc *articleService) GetById(ctx context.Context, id int64) (domain.Articl
 }
 
 func (svc *articleService) GetPublishedById(ctx context.Context, id, uid int64) (domain.Article, error) {
-	atcl, err := svc.articleRepo.GetPublishedById(ctx, id)
+	var eg errgroup.Group
+	var err error
+	var atcl *domain.Article
+	var author *domain.Author
+	eg.Go(func() error {
+		res, err := svc.articleRepo.GetPublishedById(ctx, id)
+		atcl = &res
+		return err
+	})
+	eg.Go(func() error {
+		res, err := svc.userRepo.FindAuthor(ctx, id)
+		author = &res
+		return err
+	})
+	err = eg.Wait()
+	if err != nil {
+		return domain.Article{}, err
+	}
+	atcl.Author = *author
 	if err == nil {
 		go func() {
 			er := svc.producer.ProduceReadEvent(events.ReadEvent{
@@ -87,7 +112,7 @@ func (svc *articleService) GetPublishedById(ctx context.Context, id, uid int64) 
 			}
 		}()
 	}
-	return atcl, err
+	return *atcl, err
 }
 
 func (svc *articleService) ListPub(ctx context.Context, start time.Time, offset, limit int) ([]domain.Article, error) {

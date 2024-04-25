@@ -5,21 +5,25 @@ package startup
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"github.com/tsukaychan/mercury/article/repository"
+	articleCache "github.com/tsukaychan/mercury/article/repository/cache"
+	dao3 "github.com/tsukaychan/mercury/article/repository/dao"
+	"github.com/tsukaychan/mercury/article/service"
+	repository4 "github.com/tsukaychan/mercury/captcha/repository"
+	captchaCache "github.com/tsukaychan/mercury/captcha/repository/cache"
+	service4 "github.com/tsukaychan/mercury/captcha/service"
 	repository3 "github.com/tsukaychan/mercury/interactive/repository"
 	"github.com/tsukaychan/mercury/interactive/repository/cache"
 	dao2 "github.com/tsukaychan/mercury/interactive/repository/dao"
 	service2 "github.com/tsukaychan/mercury/interactive/service"
 	"github.com/tsukaychan/mercury/internal/events"
-	"github.com/tsukaychan/mercury/internal/repository"
-	articleCache "github.com/tsukaychan/mercury/internal/repository/cache/article"
-	captchaCache "github.com/tsukaychan/mercury/internal/repository/cache/captcha"
-	userCache "github.com/tsukaychan/mercury/internal/repository/cache/user"
-	"github.com/tsukaychan/mercury/internal/repository/dao"
-	articleDao "github.com/tsukaychan/mercury/internal/repository/dao/article"
-	"github.com/tsukaychan/mercury/internal/service"
 	"github.com/tsukaychan/mercury/internal/web"
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 	"github.com/tsukaychan/mercury/ioc"
+	repository2 "github.com/tsukaychan/mercury/user/repository"
+	userCache "github.com/tsukaychan/mercury/user/repository/cache"
+	"github.com/tsukaychan/mercury/user/repository/dao"
+	service3 "github.com/tsukaychan/mercury/user/service"
 )
 
 var thirdProvider = wire.NewSet(
@@ -31,9 +35,9 @@ var thirdProvider = wire.NewSet(
 )
 
 var userSvcProvider = wire.NewSet(
-	service.NewUserService,
+	service3.NewUserService,
 	events.NewSaramaSyncProducer,
-	repository.NewCachedUserRepository,
+	repository2.NewCachedUserRepository,
 	dao.NewGORMUserDAO,
 	userCache.NewUserRedisCache,
 )
@@ -41,7 +45,7 @@ var userSvcProvider = wire.NewSet(
 var articleSvcProvider = wire.NewSet(
 	service.NewArticleService,
 	repository.NewCachedArticleRepository,
-	articleDao.NewGORMArticleDAO,
+	dao3.NewGORMArticleDAO,
 	articleCache.NewRedisArticleCache,
 )
 
@@ -64,8 +68,8 @@ func InitWebServer() *gin.Engine {
 		web.NewArticleHandler,
 		web.NewOAuth2Handler,
 
-		service.NewCaptchaService,
-		repository.NewCachedCaptchaRepository,
+		service4.NewCaptchaService,
+		repository4.NewCachedCaptchaRepository,
 		captchaCache.NewCaptchaRedisCache,
 
 		ioc.InitSMSService,
@@ -81,7 +85,7 @@ func InitWebServer() *gin.Engine {
 	return gin.Default()
 }
 
-func InitArticleHandler(atclDao articleDao.ArticleDAO) *web.ArticleHandler {
+func InitArticleHandler(atclDao dao3.ArticleDAO) *web.ArticleHandler {
 	wire.Build(
 		thirdProvider,
 		interactiveSvcProvider,
@@ -94,12 +98,12 @@ func InitArticleHandler(atclDao articleDao.ArticleDAO) *web.ArticleHandler {
 	return &web.ArticleHandler{}
 }
 
-func InitUserSvc() service.UserService {
+func InitUserSvc() service3.UserService {
 	wire.Build(
 		thirdProvider,
 		userSvcProvider,
 	)
-	return service.NewUserService(nil, nil)
+	return service3.NewUserService(nil, nil)
 }
 
 func InitJwtHdl() ijwt.Handler {

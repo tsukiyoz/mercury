@@ -6,13 +6,15 @@ import (
 	"math"
 	"time"
 
+	"github.com/tsukaychan/mercury/article/domain"
+
+	"github.com/tsukaychan/mercury/article/service"
+
 	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 
 	"github.com/tsukaychan/mercury/internal/repository"
-
-	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 //go:generate mockgen -source=ranking.go -package=svcmocks -destination=mocks/ranking.mock.go RankingService
@@ -26,7 +28,7 @@ type RankingService interface {
 var _ RankingService = (*BatchRankingService)(nil)
 
 type BatchRankingService struct {
-	atclSvc ArticleService
+	atclSvc service.ArticleService
 	intrSvc interactivev1.InteractiveServiceClient
 
 	repo      repository.RankingRepository
@@ -37,7 +39,7 @@ type BatchRankingService struct {
 }
 
 func NewBatchRankingService(
-	atclSvc ArticleService,
+	atclSvc service.ArticleService,
 	intrSvc interactivev1.InteractiveServiceClient,
 	repo repository.RankingRepository,
 ) RankingService {

@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/tsukaychan/mercury/user/domain"
+
 	"github.com/redis/go-redis/v9"
-	"github.com/tsukaychan/mercury/internal/domain"
 )
 
 var ErrKeyNotExist = redis.Nil

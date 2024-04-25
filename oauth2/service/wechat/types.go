@@ -3,7 +3,7 @@ package wechat
 import (
 	"context"
 
-	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/oauth2/domain"
 )
 
 //go:generate mockgen -source=./types.go -package=wechatmocks -destination=mocks/svc.mock.go Service

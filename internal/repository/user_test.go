@@ -7,11 +7,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tsukaychan/mercury/user/domain"
+
+	"github.com/tsukaychan/mercury/user/repository"
+	user "github.com/tsukaychan/mercury/user/repository/cache"
+	"github.com/tsukaychan/mercury/user/repository/dao"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/tsukaychan/mercury/internal/domain"
-	user "github.com/tsukaychan/mercury/internal/repository/cache/user"
 	cachemock "github.com/tsukaychan/mercury/internal/repository/cache/user/mocks"
-	"github.com/tsukaychan/mercury/internal/repository/dao"
 	daomock "github.com/tsukaychan/mercury/internal/repository/dao/mocks"
 	"go.uber.org/mock/gomock"
 )
@@ -168,7 +171,7 @@ func TestUserCachedRepository_FindById(t *testing.T) {
 			defer ctrl.Finish()
 
 			userDao, userCache := tc.mock(ctrl)
-			repo := NewCachedUserRepository(userDao, userCache)
+			repo := repository.NewCachedUserRepository(userDao, userCache)
 
 			user, err := repo.FindById(tc.in.ctx, tc.in.id)
 			assert.Equal(t, tc.want.err, err)

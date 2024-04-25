@@ -5,13 +5,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/tsukaychan/mercury/article/domain"
+
+	service2 "github.com/tsukaychan/mercury/article/service"
+
 	domain2 "github.com/tsukaychan/mercury/interactive/domain"
 
 	"github.com/tsukaychan/mercury/interactive/service"
 
 	svcmock "github.com/tsukaychan/mercury/internal/service/mocks"
-
-	"github.com/tsukaychan/mercury/internal/domain"
 
 	"github.com/stretchr/testify/assert"
 
@@ -27,14 +29,14 @@ func TestRankingTopN(t *testing.T) {
 
 	testCases := []struct {
 		name string
-		mock func(ctrl *gomock.Controller) (ArticleService, service.InteractiveService)
+		mock func(ctrl *gomock.Controller) (service2.ArticleService, service.InteractiveService)
 
 		wantErr   error
 		wantAtcls []domain.Article
 	}{
 		{
 			name: "calculate TopN success",
-			mock: func(ctrl *gomock.Controller) (ArticleService, service.InteractiveService) {
+			mock: func(ctrl *gomock.Controller) (service2.ArticleService, service.InteractiveService) {
 				atclSvc := svcmock.NewMockArticleService(ctrl)
 				intrSvc := svcmock.NewMockInteractiveService(ctrl)
 
