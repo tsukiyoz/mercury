@@ -9,8 +9,6 @@ import (
 	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
 	"github.com/tsukaychan/mercury/article/service"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type ArticleServiceServer struct {
@@ -72,7 +70,15 @@ func (a *ArticleServiceServer) GetPublishedById(ctx context.Context, req *articl
 }
 
 func (a *ArticleServiceServer) ListPub(ctx context.Context, req *articlev1.ListPubRequest) (*articlev1.ListPubResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListPub not implemented")
+	atcls, err := a.service.ListPub(ctx, req.GetStartTime().AsTime(), int(req.GetOffset()), int(req.GetLimit()))
+	if err != nil {
+		return nil, err
+	}
+	list := make([]*articlev1.Article, 0, len(atcls))
+	for _, atcl := range atcls {
+		list = append(list, convertToV(atcl))
+	}
+	return &articlev1.ListPubResponse{Articles: list}, nil
 }
 
 func convertToV(domainArticle domain.Article) *articlev1.Article {

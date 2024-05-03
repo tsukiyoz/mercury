@@ -15,6 +15,7 @@ import (
 var thirdProviderSet = wire.NewSet(
 	ioc.InitLogger,
 	ioc.InitRedis,
+	ioc.InitEtcdClient,
 	ioc.InitSmsServiceClient,
 )
 

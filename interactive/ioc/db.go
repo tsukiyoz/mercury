@@ -2,13 +2,15 @@ package ioc
 
 import (
 	"fmt"
+
+	gormLogger "gorm.io/gorm/logger"
+
 	"github.com/tsukaychan/mercury/pkg/gormx/connpool"
 	"gorm.io/plugin/opentelemetry/tracing"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	gormLogger "gorm.io/gorm/logger"
 	gormPrometheus "gorm.io/plugin/prometheus"
 
 	"github.com/tsukaychan/mercury/interactive/repository/dao"
@@ -19,7 +21,9 @@ import (
 func InitDualWriteDB(pool *connpool.DualWritePool) *gorm.DB {
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		Conn: pool,
-	}))
+	}), &gorm.Config{
+		Logger: gormLogger.Default.LogMode(gormLogger.Info),
+	})
 	if err != nil {
 		panic(err)
 	}

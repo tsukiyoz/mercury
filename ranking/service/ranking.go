@@ -6,15 +6,17 @@ import (
 	"math"
 	"time"
 
-	"github.com/tsukaychan/mercury/article/domain"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/tsukaychan/mercury/article/service"
+	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
+
+	"github.com/tsukaychan/mercury/ranking/repository"
+
+	"github.com/tsukaychan/mercury/article/domain"
 
 	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
-
-	"github.com/tsukaychan/mercury/internal/repository"
 )
 
 //go:generate mockgen -source=ranking.go -package=svcmocks -destination=mocks/ranking.mock.go RankingService
@@ -28,8 +30,8 @@ type RankingService interface {
 var _ RankingService = (*BatchRankingService)(nil)
 
 type BatchRankingService struct {
-	atclSvc service.ArticleService
-	intrSvc interactivev1.InteractiveServiceClient
+	atclCli articlev1.ArticleServiceClient
+	intrCli interactivev1.InteractiveServiceClient
 
 	repo      repository.RankingRepository
 	BatchSize int
@@ -39,13 +41,13 @@ type BatchRankingService struct {
 }
 
 func NewBatchRankingService(
-	atclSvc service.ArticleService,
-	intrSvc interactivev1.InteractiveServiceClient,
+	atclCli articlev1.ArticleServiceClient,
+	intrCli interactivev1.InteractiveServiceClient,
 	repo repository.RankingRepository,
 ) RankingService {
 	svc := &BatchRankingService{
-		intrSvc:   intrSvc,
-		atclSvc:   atclSvc,
+		intrCli:   intrCli,
+		atclCli:   atclCli,
 		repo:      repo,
 		BatchSize: 100,
 		TopNSize:  200,
@@ -121,9 +123,18 @@ func (svc *BatchRankingService) rankTopN(ctx context.Context) ([]domain.Article,
 
 	for {
 		// get a batch of publishedArticles
-		atcls, err := svc.atclSvc.ListPub(ctx, now, offset, svc.BatchSize)
+		listPubResp, err := svc.atclCli.ListPub(ctx, &articlev1.ListPubRequest{
+			StartTime: timestamppb.New(now),
+			Offset:    int32(offset),
+			Limit:     int32(svc.BatchSize),
+		})
 		if err != nil {
 			return nil, err
+		}
+
+		atcls := make([]domain.Article, 0, len(listPubResp.Articles))
+		for _, atcl := range listPubResp.Articles {
+			atcls = append(atcls, articleToDomain(atcl))
 		}
 
 		// get ids
@@ -131,8 +142,8 @@ func (svc *BatchRankingService) rankTopN(ctx context.Context) ([]domain.Article,
 			return src.Id
 		})
 
-		// ues ids get interactive infos from intrSvc
-		resp, err := svc.intrSvc.GetByIds(ctx, &interactivev1.GetByIdsRequest{
+		// ues ids get interactive infos from intrCli
+		resp, err := svc.intrCli.GetByIds(ctx, &interactivev1.GetByIdsRequest{
 			Biz:    "article",
 			BizIds: atclIds,
 		})
@@ -181,4 +192,21 @@ func (svc *BatchRankingService) TopN(ctx context.Context) ([]domain.Article, err
 func (svc *BatchRankingService) score(likeCnt int64, utime time.Time) float64 {
 	const factor = 1.5
 	return float64(likeCnt-1) / math.Pow(time.Since(utime).Hours()+2, factor)
+}
+
+func articleToDomain(article *articlev1.Article) domain.Article {
+	domainArticle := domain.Article{}
+	if article != nil {
+		domainArticle.Id = article.GetId()
+		domainArticle.Title = article.GetTitle()
+		domainArticle.Content = article.GetContent()
+		domainArticle.Author = domain.Author{
+			Id:   article.GetAuthor().GetId(),
+			Name: article.GetAuthor().GetName(),
+		}
+		domainArticle.Status = domain.ArticleStatus(article.GetStatus())
+		domainArticle.Ctime = article.GetCtime().AsTime()
+		domainArticle.Utime = article.GetUtime().AsTime()
+	}
+	return domainArticle
 }

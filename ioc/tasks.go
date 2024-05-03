@@ -5,6 +5,8 @@ import (
 	"log"
 	"time"
 
+	service2 "github.com/tsukaychan/mercury/ranking/service"
+
 	rlock "github.com/gotomicro/redis-lock"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron/v3"
@@ -18,7 +20,7 @@ import (
 // distributed task schedule base on redis
 // -------------------------------------------
 
-func InitRankingJob(svc service.RankingService, rlockClient *rlock.Client, l logger.Logger) *task.RankingJob {
+func InitRankingJob(svc service2.RankingService, rlockClient *rlock.Client, l logger.Logger) *task.RankingJob {
 	return task.NewRankingJob(svc, time.Second*30, rlockClient, l)
 }
 
@@ -61,7 +63,7 @@ func InitScheduler(svc service.TaskService,
 	return scheduler
 }
 
-func InitLocalFuncExecutor(svc service.RankingService) task.Executor {
+func InitLocalFuncExecutor(svc service2.RankingService) task.Executor {
 	executor := task.NewLocalFuncExecutor()
 	executor.AddLocalFunc("ranking", func(ctx context.Context, tsk domain.Task) error {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)

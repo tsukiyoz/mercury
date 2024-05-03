@@ -4,19 +4,19 @@ import (
 	"context"
 	"testing"
 
+	rankingv1 "github.com/tsukaychan/mercury/api/proto/gen/ranking/v1"
+
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
-
-	smsv1 "github.com/tsukaychan/mercury/api/proto/gen/sms/v1"
 
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-var target = "etcd:///service/sms"
+var target = "etcd:///service/ranking"
 
-func TestSmsGRPCClient(t *testing.T) {
+func TestRankingGRPCClient(t *testing.T) {
 	etcdCli, err := clientv3.New(clientv3.Config{
 		Endpoints: []string{"localhost:12379"},
 	})
@@ -30,13 +30,16 @@ func TestSmsGRPCClient(t *testing.T) {
 	}
 	c, err := grpc.NewClient(target, opts...)
 	require.NoError(t, err)
-	client := smsv1.NewSmsServiceClient(c)
-	resp, err := client.Send(context.Background(), &smsv1.SmsSendRequest{
-		TplId:  "tpl",
-		Target: "18888888888",
-		Args:   []string{"captcha"},
-		Values: []string{"123456"},
-	})
-	require.NoError(t, err)
-	t.Log(resp)
+
+	client := rankingv1.NewRankingServiceClient(c)
+	{
+		resp, err := client.RankTopN(context.Background(), &rankingv1.RankTopNRequest{})
+		require.NoError(t, err)
+		t.Log(resp)
+	}
+	{
+		resp, err := client.TopN(context.Background(), &rankingv1.TopNRequest{})
+		require.NoError(t, err)
+		t.Log(resp)
+	}
 }

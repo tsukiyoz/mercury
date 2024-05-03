@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/tsukaychan/mercury/article/domain"
+	cache2 "github.com/tsukaychan/mercury/ranking/repository/cache"
 
-	cache "github.com/tsukaychan/mercury/internal/repository/cache/ranking"
+	"github.com/tsukaychan/mercury/article/domain"
 )
 
 type RankingRepository interface {
@@ -16,11 +16,11 @@ type RankingRepository interface {
 var _ RankingRepository = (*RankingCachedRepository)(nil)
 
 type RankingCachedRepository struct {
-	redis *cache.RankingRedisCache
-	local *cache.RankingLocalCache
+	redis *cache2.RankingRedisCache
+	local *cache2.RankingLocalCache
 }
 
-func NewRankingCachedRepository(redisCache *cache.RankingRedisCache, localCache *cache.RankingLocalCache) RankingRepository {
+func NewRankingCachedRepository(redisCache *cache2.RankingRedisCache, localCache *cache2.RankingLocalCache) RankingRepository {
 	return &RankingCachedRepository{
 		redis: redisCache,
 		local: localCache,

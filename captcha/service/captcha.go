@@ -44,9 +44,10 @@ func (svc *captchaService) Send(ctx context.Context, biz string, phone string) e
 		return err
 	}
 	_, err = svc.smsSvc.Send(ctx, &smsv1.SmsSendRequest{
-		TplId:    svc.tplId,
-		Phones:   []string{phone},
-		Messages: []string{captcha},
+		TplId:  svc.tplId,
+		Target: phone,
+		Args:   []string{"captcha"},
+		Values: []string{captcha},
 	})
 	if err != nil {
 		// TODO

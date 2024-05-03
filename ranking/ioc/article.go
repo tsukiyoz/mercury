@@ -2,20 +2,20 @@ package ioc
 
 import (
 	"github.com/spf13/viper"
-	smsv1 "github.com/tsukaychan/mercury/api/proto/gen/sms/v1"
+	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func InitSmsServiceClient(etcdCli *clientv3.Client) smsv1.SmsServiceClient {
+func InitArticleRpcClient(etcdCli *clientv3.Client) articlev1.ArticleServiceClient {
 	type config struct {
 		Target string `yaml:"target"`
 		Secure bool   `yaml:"secure"`
 	}
 	var cfg config
-	err := viper.UnmarshalKey("grpc.client.sms", &cfg)
+	err := viper.UnmarshalKey("grpc.client.article", &cfg)
 	if err != nil {
 		panic(err)
 	}
@@ -31,6 +31,6 @@ func InitSmsServiceClient(etcdCli *clientv3.Client) smsv1.SmsServiceClient {
 	if err != nil {
 		panic(err)
 	}
-	client := smsv1.NewSmsServiceClient(conn)
+	client := articlev1.NewArticleServiceClient(conn)
 	return client
 }

@@ -1,0 +1,19 @@
+redis:
+  addr: "localhost:6379"
+  password: "for.nothing"
+  db: 1
+
+grpc:
+  server:
+    port: 8098
+    etcd: "localhost:12379"
+    ttl: 15
+  client:
+    article:
+      target: "etcd:///service/article"
+    interactive:
+      target: "etcd:///service/interactive"
+
+etcd:
+  endpoints:
+    - "localhost:12379"

@@ -17,12 +17,12 @@ import (
 	dao2 "github.com/tsukaychan/mercury/interactive/repository/dao"
 	service2 "github.com/tsukaychan/mercury/interactive/service"
 	events2 "github.com/tsukaychan/mercury/internal/events"
-	"github.com/tsukaychan/mercury/internal/repository"
-	rankingCache "github.com/tsukaychan/mercury/internal/repository/cache/ranking"
-	"github.com/tsukaychan/mercury/internal/service"
 	"github.com/tsukaychan/mercury/internal/web"
 	ijwt "github.com/tsukaychan/mercury/internal/web/jwt"
 	"github.com/tsukaychan/mercury/ioc"
+	"github.com/tsukaychan/mercury/ranking/repository"
+	cache2 "github.com/tsukaychan/mercury/ranking/repository/cache"
+	"github.com/tsukaychan/mercury/ranking/service"
 	repository3 "github.com/tsukaychan/mercury/user/repository"
 	userCache "github.com/tsukaychan/mercury/user/repository/cache"
 	"github.com/tsukaychan/mercury/user/repository/dao"
@@ -59,8 +59,8 @@ var interactiveSvcProvider = wire.NewSet(
 var rankingSvcSet = wire.NewSet(
 	service.NewBatchRankingService,
 	repository.NewRankingCachedRepository,
-	rankingCache.NewRankingRedisCache,
-	rankingCache.NewRankingLocalCache,
+	cache2.NewRankingRedisCache,
+	cache2.NewRankingLocalCache,
 )
 
 func InitAPP() *App {

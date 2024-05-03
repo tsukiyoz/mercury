@@ -13,7 +13,7 @@ import (
 
 	"github.com/tsukaychan/mercury/interactive/service"
 
-	svcmock "github.com/tsukaychan/mercury/internal/service/mocks"
+	svcmock "github.com/tsukaychan/mercury/ranking/service/mocks"
 
 	"github.com/stretchr/testify/assert"
 
@@ -37,7 +37,7 @@ func TestRankingTopN(t *testing.T) {
 		{
 			name: "calculate TopN success",
 			mock: func(ctrl *gomock.Controller) (service2.ArticleService, service.InteractiveService) {
-				atclSvc := svcmock.NewMockArticleService(ctrl)
+				atclSvc := svcmock.NewMockRankingService(ctrl)
 				intrSvc := svcmock.NewMockInteractiveService(ctrl)
 
 				offset := 0
@@ -104,8 +104,8 @@ func TestRankingTopN(t *testing.T) {
 			atclSvc, intrSvc := tc.mock(ctrl)
 			var svc *BatchRankingService
 			svc = &BatchRankingService{
-				atclSvc:   atclSvc,
-				intrSvc:   intrSvc,
+				atclCli:   atclSvc,
+				intrCli:   intrSvc,
 				BatchSize: batchSize,
 				TopNSize:  topNSize,
 				scoreFunc: func(likeCnt int64, utime time.Time) float64 {
