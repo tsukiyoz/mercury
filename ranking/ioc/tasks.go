@@ -5,13 +5,14 @@ import (
 	"log"
 	"time"
 
+	"github.com/tsukaychan/mercury/crontask/domain"
+	"github.com/tsukaychan/mercury/crontask/service"
+
 	service2 "github.com/tsukaychan/mercury/ranking/service"
 
 	rlock "github.com/gotomicro/redis-lock"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron/v3"
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/service"
 	"github.com/tsukaychan/mercury/internal/task"
 	"github.com/tsukaychan/mercury/pkg/logger"
 )

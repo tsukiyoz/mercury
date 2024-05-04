@@ -1,4 +1,4 @@
-package task
+package cronx
 
 import (
 	"strconv"
@@ -24,7 +24,7 @@ func NewCronJobBuilder(opts prometheus.SummaryOpts, l logger.Logger) *CronJobBui
 	}
 }
 
-func (bdr *CronJobBuilder) Build(job Job) cron.Job {
+func (bdr *CronJobBuilder) Build(job Task) cron.Job {
 	name := job.Name()
 	return cronJobFuncAdapter(func() error {
 		start := time.Now()
