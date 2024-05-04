@@ -13,7 +13,7 @@ func main() {
 	initViper()
 	initLogger()
 	app := InitAPP()
-	err := app.WebServer.Start()
+	err := app.GRPCServer.Serve()
 	if err != nil {
 		panic(err)
 	}

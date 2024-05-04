@@ -4,9 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/mercury/internal/repository/dao"
-
-	"github.com/tsukaychan/mercury/internal/domain"
+	"github.com/tsukaychan/mercury/crontask/domain"
+	"github.com/tsukaychan/mercury/crontask/repository/dao"
 )
 
 type TaskRepository interface {
@@ -21,6 +20,12 @@ var _ TaskRepository = (*PreemptTaskRepository)(nil)
 
 type PreemptTaskRepository struct {
 	dao dao.TaskDAO
+}
+
+func NewPreemptTaskRepository(dao dao.TaskDAO) TaskRepository {
+	return &PreemptTaskRepository{
+		dao: dao,
+	}
 }
 
 func (repo *PreemptTaskRepository) Preempt(ctx context.Context) (domain.Task, error) {

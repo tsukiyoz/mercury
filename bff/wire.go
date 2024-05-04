@@ -20,12 +20,17 @@ var hdlProviderSet = wire.NewSet(
 	web.NewUserHandler,
 	jwt.NewRedisJWTHandler,
 	web.NewOAuth2Handler,
+	web.NewArticleHandler,
+	web.NewCommentHandler,
 )
 
 var cliProviderSet = wire.NewSet(
 	ioc.InitUserClient,
 	ioc.InitCaptchaClient,
 	ioc.InitOAuth2Client,
+	ioc.InitArticleClient,
+	ioc.InitInteractiveClient,
+	ioc.InitCommentClient,
 )
 
 func InitAPP() *wego.App {

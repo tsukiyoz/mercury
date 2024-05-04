@@ -1,4 +1,4 @@
-package cron
+package cronx
 
 type Task interface {
 	Name() string

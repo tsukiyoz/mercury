@@ -27,13 +27,20 @@ var svcProviderSet = wire.NewSet(
 	cache.NewRankingRedisCache,
 )
 
+var cronProviderSet = wire.NewSet(
+	ioc.InitTasks,
+	ioc.InitRankingJob,
+	ioc.InitRLockClient,
+)
+
 func InitAPP() *wego.App {
 	wire.Build(
 		thirdProviderSet,
 		svcProviderSet,
+		cronProviderSet,
 		grpc.NewRankingServiceServer,
 		ioc.InitGRPCxServer,
-		wire.Struct(new(wego.App), "GRPCServer"),
+		wire.Struct(new(wego.App), "GRPCServer", "Cron"),
 	)
 	return new(wego.App)
 }

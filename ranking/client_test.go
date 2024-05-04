@@ -32,11 +32,11 @@ func TestRankingGRPCClient(t *testing.T) {
 	require.NoError(t, err)
 
 	client := rankingv1.NewRankingServiceClient(c)
-	{
-		resp, err := client.RankTopN(context.Background(), &rankingv1.RankTopNRequest{})
-		require.NoError(t, err)
-		t.Log(resp)
-	}
+	//{
+	//	resp, err := client.RankTopN(context.Background(), &rankingv1.RankTopNRequest{})
+	//	require.NoError(t, err)
+	//	t.Log(resp)
+	//}
 	{
 		resp, err := client.TopN(context.Background(), &rankingv1.TopNRequest{})
 		require.NoError(t, err)

@@ -6,6 +6,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
+	ginxlogger "github.com/tsukaychan/mercury/pkg/ginx/middleware/logger"
+	"github.com/tsukaychan/mercury/pkg/ginx/middleware/metrics"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+
 	"github.com/redis/go-redis/v9"
 
 	"github.com/tsukaychan/mercury/pkg/ratelimit"
@@ -29,8 +34,18 @@ func InitWebServer(limiter ratelimit.Limiter, jwtHdl jwt.Handler, userHdl *web.U
 	engine.Use(
 		corsHdl(),
 		timeout(),
-		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).Build(),
-		ginRatelimit.NewBuilder(limiter).Build(),
+		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
+			"/",
+			"/users/signup",
+			"/users/login",
+			"/users/refresh_token",
+			"/users/login_sms/captcha/send",
+			"/users/login_sms",
+			"/oauth2/wechat/authurl",
+			"/oauth2/wechat/callback",
+			"/test/metric",
+		).Build(),
+		// ginRatelimit.NewBuilder(limiter).Build(),
 	)
 	userHdl.RegisterRoutes(engine)
 	oAuth2Hdl.RegisterRoutes(engine)
@@ -56,11 +71,55 @@ func InitWebLimiter(cmd redis.Cmdable) ratelimit.Limiter {
 	return r
 }
 
+func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl jwt.Handler) []gin.HandlerFunc {
+	accessLogBdr := ginxlogger.NewMiddlewareBuilder(func(ctx context.Context, aL *ginxlogger.AccessLog) {
+		l.Debug("[HTTP request]", logger.Field{
+			Key:   "accessLog",
+			Value: aL,
+		})
+	}).AllowReqBody(viper.GetBool("web.log.req")).AllowRespBody(viper.GetBool("web.log.resp"))
+	viper.OnConfigChange(func(in fsnotify.Event) {
+		accessLogBdr.AllowReqBody(viper.GetBool("web.log.req"))
+		accessLogBdr.AllowRespBody(viper.GetBool("web.log.resp"))
+	})
+	metricsBdr := &metrics.PrometheusBuilder{
+		Namespace:  "tsukiyo",
+		Subsystem:  "mercury",
+		Name:       "gin_http",
+		Help:       "metrics gin http interface",
+		InstanceID: "instance_id",
+	}
+	ginx.InitCounterVec(prometheus.CounterOpts{
+		Namespace: "tsukiyo",
+		Subsystem: "mercury",
+		Name:      "biz_code",
+		Help:      "metrics http biz code",
+	})
+	return []gin.HandlerFunc{
+		corsHdl(),
+		accessLogBdr.Build(),
+		metricsBdr.Build(),
+		otelgin.Middleware("mercury"),
+		middleware.NewLoginJWTMiddlewareBuilder(jwtHdl).IgnorePaths(
+			"/",
+			"/users/signup",
+			"/users/login",
+			"/users/refresh_token",
+			"/users/login_sms/captcha/send",
+			"/users/login_sms",
+			"/oauth2/wechat/authurl",
+			"/oauth2/wechat/callback",
+			"/test/metric",
+		).Build(),
+		ginRatelimit.NewBuilder(limiter).Build(),
+	}
+}
+
 func timeout() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		_, ok := ctx.Request.Context().Deadline()
 		if !ok {
-			newCtx, cancel := context.WithTimeout(ctx.Request.Context(), time.Second*10)
+			newCtx, cancel := context.WithTimeout(ctx.Request.Context(), time.Second*3)
 			defer cancel()
 			ctx.Request = ctx.Request.Clone(newCtx)
 		}

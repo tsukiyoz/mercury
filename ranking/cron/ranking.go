@@ -1,9 +1,11 @@
-package task
+package cron
 
 import (
 	"context"
 	"sync"
 	"time"
+
+	"github.com/tsukaychan/mercury/pkg/cronx"
 
 	"github.com/tsukaychan/mercury/ranking/service"
 
@@ -12,7 +14,7 @@ import (
 	rlock "github.com/gotomicro/redis-lock"
 )
 
-var _ Job = (*RankingJob)(nil)
+var _ cronx.Task = (*RankingJob)(nil)
 
 type RankingJob struct {
 	svc     service.RankingService

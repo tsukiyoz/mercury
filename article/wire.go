@@ -20,6 +20,8 @@ var thirdProviderSet = wire.NewSet(
 	ioc.InitRedis,
 	ioc.InitKafka,
 	ioc.NewSyncProducer,
+	ioc.InitEtcdClient,
+	ioc.InitUserRpcClient,
 )
 
 var svcProviderSet = wire.NewSet(

@@ -39,6 +39,12 @@ type GORMTaskDAO struct {
 	db *gorm.DB
 }
 
+func NewGORMTaskDAO(db *gorm.DB) TaskDAO {
+	return &GORMTaskDAO{
+		db: db,
+	}
+}
+
 func (dao *GORMTaskDAO) Preempt(ctx context.Context) (Task, error) {
 	db := dao.db.WithContext(ctx)
 	for {

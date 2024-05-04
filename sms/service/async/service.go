@@ -4,8 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/repository"
+	"github.com/tsukaychan/mercury/sms/domain"
+
+	"github.com/tsukaychan/mercury/sms/repository"
+
 	"github.com/tsukaychan/mercury/pkg/logger"
 	"github.com/tsukaychan/mercury/sms/service"
 )

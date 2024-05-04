@@ -17,3 +17,5 @@ grpc:
       target: "etcd:///service/captcha"
     interactive:
       target: "etcd:///service/interactive"
+    comment:
+      target: "etcd:///service/comment"

@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	userv1 "github.com/tsukaychan/mercury/api/proto/gen/user/v1"
+
 	"golang.org/x/sync/errgroup"
 
 	"github.com/tsukaychan/mercury/article/domain"
@@ -33,14 +35,20 @@ type ArticleService interface {
 
 type articleService struct {
 	articleRepo repository.ArticleRepository
-	userRepo    repository.AuthorRepository
+	userSvc     userv1.UserServiceClient
 	producer    events.Producer
 	logger      logger.Logger
 }
 
-func NewArticleService(articleRepo repository.ArticleRepository, producer events.Producer, logger logger.Logger) ArticleService {
+func NewArticleService(
+	articleRepo repository.ArticleRepository,
+	userSvc userv1.UserServiceClient,
+	producer events.Producer,
+	logger logger.Logger,
+) ArticleService {
 	return &articleService{
 		articleRepo: articleRepo,
+		userSvc:     userSvc,
 		producer:    producer,
 		logger:      logger,
 	}
@@ -58,7 +66,7 @@ func (svc *articleService) Save(ctx context.Context, atcl domain.Article) (int64
 
 func (svc *articleService) Publish(ctx context.Context, atcl domain.Article) (int64, error) {
 	atcl.Status = domain.ArticleStatusPublished
-	author, err := svc.userRepo.FindAuthor(ctx, atcl.Id)
+	author, err := svc.findAuthor(ctx, atcl.Id)
 	if err != nil {
 		return 0, err
 	}
@@ -89,7 +97,7 @@ func (svc *articleService) GetPublishedById(ctx context.Context, id, uid int64) 
 		return err
 	})
 	eg.Go(func() error {
-		res, err := svc.userRepo.FindAuthor(ctx, id)
+		res, err := svc.findAuthor(ctx, id)
 		author = &res
 		return err
 	})
@@ -117,4 +125,21 @@ func (svc *articleService) GetPublishedById(ctx context.Context, id, uid int64) 
 
 func (svc *articleService) ListPub(ctx context.Context, start time.Time, offset, limit int) ([]domain.Article, error) {
 	return svc.articleRepo.ListPub(ctx, start, offset, limit)
+}
+
+func (svc *articleService) findAuthor(ctx context.Context, id int64) (domain.Author, error) {
+	atcl, err := svc.articleRepo.GetPublishedById(ctx, id)
+	if err != nil {
+		return domain.Author{}, err
+	}
+	resp, err := svc.userSvc.Profile(ctx, &userv1.ProfileRequest{
+		Id: atcl.Author.Id,
+	})
+	if err != nil {
+		return domain.Author{}, err
+	}
+	return domain.Author{
+		Id:   resp.GetUser().GetId(),
+		Name: resp.GetUser().GetNickName(),
+	}, nil
 }

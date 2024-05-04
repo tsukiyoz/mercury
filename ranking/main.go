@@ -12,7 +12,10 @@ import (
 func main() {
 	initViper()
 	initLogger()
+
 	app := InitAPP()
+
+	app.Cron.Start()
 	err := app.GRPCServer.Serve()
 	if err != nil {
 		panic(err)

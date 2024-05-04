@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/tsukaychan/mercury/article/domain"
+	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
 )
 
 type ArticleVO struct {
@@ -24,8 +24,8 @@ type ArticleVO struct {
 }
 
 type ListReq struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
+	Offset int32 `json:"offset"`
+	Limit  int32 `json:"limit"`
 }
 
 type ArticleReq struct {
@@ -34,12 +34,12 @@ type ArticleReq struct {
 	Content string `json:"content"`
 }
 
-func (req ArticleReq) toDomain(uid int64) domain.Article {
-	return domain.Article{
+func (req ArticleReq) toDTO(uid int64) *articlev1.Article {
+	return &articlev1.Article{
 		Id:      req.Id,
 		Title:   req.Title,
 		Content: req.Content,
-		Author: domain.Author{
+		Author: &articlev1.Author{
 			Id: uid,
 		},
 	}

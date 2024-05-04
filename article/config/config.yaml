@@ -17,3 +17,6 @@ grpc:
     port: 8092
     etcd: "localhost:12379"
     ttl: 15
+  client:
+    user:
+      target: "etcd:///service/user"

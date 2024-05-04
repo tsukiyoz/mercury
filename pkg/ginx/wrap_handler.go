@@ -84,7 +84,7 @@ func WrapClaims[Claims jwt.Claims](fn func(ctx *gin.Context, uc Claims) (Result,
 	}
 }
 
-func WrapClaimsAndReq[Req any, Claims jwt.Claims](fn func(ctx *gin.Context, req Req, uc Claims) (Result, error)) gin.HandlerFunc {
+func WrapReqAndClaim[Req any, Claims jwt.Claims](fn func(ctx *gin.Context, req Req, uc Claims) (Result, error)) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req Req
 		if err := ctx.Bind(&req); err != nil {

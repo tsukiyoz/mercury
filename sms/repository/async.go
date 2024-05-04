@@ -3,9 +3,11 @@ package repository
 import (
 	"context"
 
+	"github.com/tsukaychan/mercury/sms/domain"
+
+	"github.com/tsukaychan/mercury/sms/repository/dao"
+
 	"github.com/ecodeclub/ekit/sqlx"
-	"github.com/tsukaychan/mercury/internal/domain"
-	"github.com/tsukaychan/mercury/internal/repository/dao"
 )
 
 var ErrWaitingSMSNotFound = dao.ErrWaitingSMSNotFound
