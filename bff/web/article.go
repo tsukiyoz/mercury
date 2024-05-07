@@ -46,7 +46,7 @@ func (h *ArticleHandler) RegisterRoutes(server *gin.Engine) {
 	g.POST("/list", ginx.WrapReqAndClaim[ListReq, ijwt.UserClaims](h.List))
 	g.GET("/detail/:id", ginx.WrapClaims[ijwt.UserClaims](h.Detail))
 
-	pub := server.Group("/pub")
+	pub := g.Group("/pub")
 	pub.GET("/:id", ginx.WrapClaims[ijwt.UserClaims](h.PubDetail))
 	pub.POST("/like", ginx.WrapReqAndClaim[LikeReq, ijwt.UserClaims](h.Like))
 	pub.POST("/favorite", ginx.WrapReqAndClaim[FavoriteReq, ijwt.UserClaims](h.Favorite))
@@ -260,21 +260,32 @@ func (h *ArticleHandler) Like(ctx *gin.Context, req LikeReq, uc ijwt.UserClaims)
 		}, err
 	}
 
-	return ginx.Result{Msg: "success"}, err
+	return ginx.Result{Msg: "OK"}, err
 }
 
 func (h *ArticleHandler) Favorite(ctx *gin.Context, req FavoriteReq, uc ijwt.UserClaims) (ginx.Result, error) {
-	_, err := h.intrSvc.Favorite(ctx, &interactivev1.FavoriteRequest{
-		Biz:   h.biz,
-		BizId: req.Id,
-		Uid:   uc.Uid,
-		Fid:   req.Fid,
-	})
+	var err error
+	if req.Favorite {
+		_, err = h.intrSvc.Favorite(ctx, &interactivev1.FavoriteRequest{
+			Biz:   h.biz,
+			BizId: req.Id,
+			Uid:   uc.Uid,
+			Fid:   req.Fid,
+		})
+	} else {
+		_, err = h.intrSvc.CancelFavorite(ctx, &interactivev1.CancelFavoriteRequest{
+			Biz:   h.biz,
+			BizId: req.Id,
+			Uid:   uc.Uid,
+			Fid:   req.Fid,
+		})
+	}
+
 	if err != nil {
 		return ginx.Result{
 			Code: 5,
 			Msg:  "internal error",
 		}, err
 	}
-	return ginx.Result{Msg: "success"}, nil
+	return ginx.Result{Msg: "OK"}, nil
 }

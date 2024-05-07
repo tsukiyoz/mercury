@@ -3,6 +3,9 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tsukaychan/mercury/pkg/ginx"
 	"github.com/tsukaychan/mercury/pkg/gormx/connpool"
@@ -11,8 +14,6 @@ import (
 	"github.com/tsukaychan/mercury/pkg/migrator/events"
 	"github.com/tsukaychan/mercury/pkg/migrator/validator"
 	"gorm.io/gorm"
-	"sync"
-	"time"
 )
 
 type Scheduler[T migrator.Entity] struct {
@@ -116,7 +117,7 @@ func (s *Scheduler[T]) StartFullValidation(c *gin.Context) (ginx.Result, error) 
 		}
 	}()
 
-	return ginx.Result{Msg: "success"}, nil
+	return ginx.Result{Msg: "OK"}, nil
 }
 
 func (s *Scheduler[T]) StopFullValidation(c *gin.Context) (ginx.Result, error) {
@@ -125,7 +126,7 @@ func (s *Scheduler[T]) StopFullValidation(c *gin.Context) (ginx.Result, error) {
 
 	s.cancelFull()
 
-	return ginx.Result{Msg: "success"}, nil
+	return ginx.Result{Msg: "OK"}, nil
 }
 
 type StartIncrementRequest struct {
@@ -158,7 +159,7 @@ func (s *Scheduler[T]) StartIncrementValidation(c *gin.Context, req StartIncreme
 		}
 	}()
 
-	return ginx.Result{Msg: "success"}, nil
+	return ginx.Result{Msg: "OK"}, nil
 }
 
 func (s *Scheduler[T]) StopIncrementValidation(c *gin.Context) (ginx.Result, error) {
@@ -167,5 +168,5 @@ func (s *Scheduler[T]) StopIncrementValidation(c *gin.Context) (ginx.Result, err
 
 	s.cancelIncr()
 
-	return ginx.Result{Msg: "success"}, nil
+	return ginx.Result{Msg: "OK"}, nil
 }

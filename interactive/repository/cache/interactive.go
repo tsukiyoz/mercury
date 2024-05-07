@@ -31,6 +31,7 @@ type InteractiveCache interface {
 	IncrLikeCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	DecrLikeCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	IncrFavoriteCntIfPresent(ctx context.Context, biz string, bizId int64) error
+	DecrFavoriteCntIfPresent(ctx context.Context, biz string, bizId int64) error
 	Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error)
 	Set(ctx context.Context, biz string, bizId int64, intr domain.Interactive) error
 }
@@ -73,6 +74,10 @@ func (cache *RedisInteractiveCache) DecrLikeCntIfPresent(ctx context.Context, bi
 
 func (cache *RedisInteractiveCache) IncrFavoriteCntIfPresent(ctx context.Context, biz string, bizId int64) error {
 	return cache.client.Eval(ctx, luaIncrCnt, []string{cache.key(biz, bizId)}, fieldFavoriteCnt, 1).Err()
+}
+
+func (cache *RedisInteractiveCache) DecrFavoriteCntIfPresent(ctx context.Context, biz string, bizId int64) error {
+	return cache.client.Eval(ctx, luaIncrCnt, []string{cache.key(biz, bizId)}, fieldFavoriteCnt, -1).Err()
 }
 
 func (cache *RedisInteractiveCache) Get(ctx context.Context, biz string, bizId int64) (domain.Interactive, error) {

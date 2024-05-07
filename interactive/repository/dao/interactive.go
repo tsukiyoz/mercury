@@ -2,8 +2,9 @@ package dao
 
 import (
 	"context"
-	"github.com/tsukaychan/mercury/pkg/migrator"
 	"time"
+
+	"github.com/tsukaychan/mercury/pkg/migrator"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -38,7 +39,7 @@ type Like struct {
 	BizId int64  `gorm:"uniqueIndex:biz_type_id_uid"`
 	Biz   string `gorm:"type:varchar(128);uniqueIndex:biz_type_id_uid"`
 	Uid   int64  `gorm:"uniqueIndex:biz_type_id_uid"`
-	// 0-unlike, 1-like
+	// 0-unliked, 1-liked
 	Status uint8
 	Ctime  int64
 	Utime  int64
@@ -59,9 +60,11 @@ type FavoriteItem struct {
 	Biz   string `gorm:"type:varchar(128);uniqueIndex:biz_type_id_uid"`
 	Uid   int64  `gorm:"uniqueIndex:biz_type_id_uid"`
 	// Favorites ID
-	Fid   int64 `gorm:"index"`
-	Ctime int64
-	Utime int64
+	Fid int64 `gorm:"index"`
+	// 0 -unfavorited, 1 - favorited
+	Status uint8
+	Ctime  int64
+	Utime  int64
 }
 
 //go:generate mockgen -source=./interactive.go -package=daomocks -destination=mocks/interactive.mock.go InteractiveDAO
@@ -72,6 +75,7 @@ type InteractiveDAO interface {
 	DeleteLikeInfo(ctx context.Context, biz string, bizId, uid int64) error
 	Get(ctx context.Context, biz string, bizId int64) (Interactive, error)
 	InsertFavoriteItem(ctx context.Context, ci FavoriteItem) error
+	DelFavoriteItem(ctx context.Context, ci FavoriteItem) error
 	GetFavoriteInfo(ctx context.Context, biz string, bizId, uid int64) (FavoriteItem, error)
 	BatchIncrReadCnt(ctx context.Context, biz string, ids []int64) error
 	GetByIds(ctx context.Context, biz string, ids []int64) ([]Interactive, error)
@@ -194,10 +198,16 @@ func (dao *GORMInteractiveDAO) InsertFavoriteItem(ctx context.Context, ci Favori
 	now := time.Now().UnixMilli()
 	ci.Ctime, ci.Utime = now, now
 	return dao.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		err := tx.Create(&ci).Error
+		err := tx.Clauses(clause.OnConflict{
+			DoUpdates: clause.Assignments(map[string]any{
+				"utime":  now,
+				"status": 1,
+			}),
+		}).Create(&ci).Error
 		if err != nil {
 			return err
 		}
+
 		return tx.Clauses(clause.OnConflict{
 			DoUpdates: clause.Assignments(map[string]any{
 				"favorite_cnt": gorm.Expr("`favorite_cnt` + 1"),
@@ -207,6 +217,35 @@ func (dao *GORMInteractiveDAO) InsertFavoriteItem(ctx context.Context, ci Favori
 			Biz:         ci.Biz,
 			BizId:       ci.BizId,
 			FavoriteCnt: 1,
+			Ctime:       now,
+			Utime:       now,
+		}).Error
+	})
+}
+
+func (dao *GORMInteractiveDAO) DelFavoriteItem(ctx context.Context, ci FavoriteItem) error {
+	now := time.Now().UnixMilli()
+	ci.Ctime, ci.Utime = now, now
+	return dao.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := tx.Model(&FavoriteItem{}).
+			Where("biz = ? AND biz_id = ? AND uid = ?", ci.Biz, ci.BizId, ci.BizId).
+			Updates(map[string]any{
+				"status": 0,
+				"utime":  now,
+			}).Error
+		if err != nil {
+			return err
+		}
+
+		return tx.Clauses(clause.OnConflict{
+			DoUpdates: clause.Assignments(map[string]any{
+				"favorite_cnt": gorm.Expr("`favorite_cnt` - 1"),
+				"utime":        now,
+			}),
+		}).Create(&Interactive{
+			Biz:         ci.Biz,
+			BizId:       ci.BizId,
+			FavoriteCnt: 0,
 			Ctime:       now,
 			Utime:       now,
 		}).Error

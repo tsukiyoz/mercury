@@ -63,6 +63,14 @@ func (srv *InteractiveServiceServer) Favorite(ctx context.Context, request *inte
 	return &interactivev1.FavoriteResponse{}, nil
 }
 
+func (srv *InteractiveServiceServer) CancelFavorite(ctx context.Context, request *interactivev1.CancelFavoriteRequest) (*interactivev1.CancelFavoriteResponse, error) {
+	err := srv.svc.CancelFavorite(ctx, request.GetBiz(), request.GetBizId(), request.GetUid(), request.GetFid())
+	if err != nil {
+		return nil, err
+	}
+	return &interactivev1.CancelFavoriteResponse{}, nil
+}
+
 func (srv *InteractiveServiceServer) Get(ctx context.Context, request *interactivev1.GetRequest) (*interactivev1.GetResponse, error) {
 	intr, err := srv.svc.Get(ctx, request.GetBiz(), request.GetBizId(), request.GetUid())
 	if err != nil {

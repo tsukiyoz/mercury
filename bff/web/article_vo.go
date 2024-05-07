@@ -51,6 +51,7 @@ type LikeReq struct {
 }
 
 type FavoriteReq struct {
-	Id  int64 `json:"id"`
-	Fid int64 `json:"fid"`
+	Id       int64 `json:"id"`
+	Fid      int64 `json:"fid"`
+	Favorite bool  `json:"favorite"`
 }

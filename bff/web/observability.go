@@ -19,6 +19,6 @@ func (hdl *ObservabilityHandler) RegisterRoutes(server *gin.Engine) {
 	g.GET("/metric", func(ctx *gin.Context) {
 		sleep := rand.Int31n(1000)
 		time.Sleep(time.Millisecond * time.Duration(sleep))
-		ctx.JSON(http.StatusOK, "success")
+		ctx.JSON(http.StatusOK, "OK")
 	})
 }

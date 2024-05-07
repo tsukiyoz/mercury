@@ -134,7 +134,7 @@ func (h *OAuth2WechatHandler) Callback(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, ginx.Result{Msg: "success"})
+	ctx.JSON(http.StatusOK, ginx.Result{Msg: "OK"})
 }
 
 func (h *OAuth2WechatHandler) verifyState(ctx *gin.Context) error {
