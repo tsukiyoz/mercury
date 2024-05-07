@@ -23,7 +23,7 @@ func (s *LoggerService) Send(ctx context.Context, tpl string, target string, arg
 		logger.String("biz", tpl),
 		logger.String("target", target),
 		logger.String("args", strings.Join(args, ",")),
-		logger.String("values", strings.Join(args, ",")),
+		logger.String("values", strings.Join(values, ",")),
 	)
 	err := s.svc.Send(ctx, tpl, target, args, values)
 	if err != nil {
