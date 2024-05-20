@@ -27,19 +27,16 @@ func (b *InterceptorBuilder) BuildServerInterceptor() grpc.UnaryServerIntercepto
 				b.breaker.MarkFailed()
 				return resp, err
 			}
-			if sts != nil && sts.Code() == codes.Unavailable {
+
+			if sts != nil && (sts.Code() == codes.Unavailable || sts.Code() == codes.Internal || sts.Code() == codes.DeadlineExceeded) || err != nil {
 				b.breaker.MarkFailed()
 			} else {
 				b.breaker.MarkSuccess()
 			}
-			if err != nil {
-				b.breaker.MarkFailed()
-			} else {
-				b.breaker.MarkSuccess()
-			}
+
 			return resp, err
 		}
 		b.breaker.MarkFailed()
-		return nil, err
+		return nil, ErrNotAllowed
 	}
 }
