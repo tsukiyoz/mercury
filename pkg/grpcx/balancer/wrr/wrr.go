@@ -107,6 +107,7 @@ func (p *Picker) Pick(info balancer.PickInfo) (balancer.PickResult, error) {
 							// update available
 							target.available = true
 							// update value, make it smoothly
+							// TODO with traffic control
 						}
 					}()
 				case codes.ResourceExhausted:
