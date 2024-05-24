@@ -58,6 +58,7 @@ func (bdr *TraceInterceptorBuilder) BuildTraceClientInterceptor() grpc.UnaryClie
 			trace.WithSpanKind(trace.SpanKindClient),
 			trace.WithAttributes(attrs...),
 		)
+		ctx = inject(ctx, propagator)
 		defer func() {
 			if err != nil {
 				span.RecordError(err)
@@ -70,7 +71,6 @@ func (bdr *TraceInterceptorBuilder) BuildTraceClientInterceptor() grpc.UnaryClie
 			}
 			span.End()
 		}()
-		ctx = inject(ctx, propagator)
 		err = invoker(ctx, method, req, reply, cc, opts...)
 		return
 	}
@@ -133,6 +133,7 @@ func inject(ctx context.Context, propagators propagation.TextMapPropagator) cont
 	if !ok {
 		md = metadata.MD{}
 	}
+	propagators.Inject(ctx, MetadataCarrier(md))
 	return metadata.NewOutgoingContext(ctx, md)
 }
 
