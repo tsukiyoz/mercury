@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package gender;
+
+option go_package = "github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel/test/inner";
+
+enum Gender {
+  Unknown = 0;
+  Male = 1;
+  Female = 2;
+}

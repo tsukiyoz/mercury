@@ -35,7 +35,7 @@ func NewTraceInterceptorBuilder(serviceName string, tracer trace.Tracer, propaga
 	}
 }
 
-func (bdr *TraceInterceptorBuilder) BuildTraceClientInterceptor() grpc.UnaryClientInterceptor {
+func (bdr *TraceInterceptorBuilder) BuildUnaryClientInterceptor() grpc.UnaryClientInterceptor {
 	propagator := bdr.propagator
 	if propagator == nil {
 		// global
@@ -71,12 +71,11 @@ func (bdr *TraceInterceptorBuilder) BuildTraceClientInterceptor() grpc.UnaryClie
 			}
 			span.End()
 		}()
-		err = invoker(ctx, method, req, reply, cc, opts...)
-		return
+		return invoker(ctx, method, req, reply, cc, opts...)
 	}
 }
 
-func (bdr *TraceInterceptorBuilder) BuildTraceServerInterceptor() grpc.UnaryServerInterceptor {
+func (bdr *TraceInterceptorBuilder) BuildUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	propagator := bdr.propagator
 	if propagator == nil {
 		// global
@@ -97,9 +96,7 @@ func (bdr *TraceInterceptorBuilder) BuildTraceServerInterceptor() grpc.UnaryServ
 			trace.WithSpanKind(trace.SpanKindServer),
 			trace.WithAttributes(attrs...),
 		)
-		defer func() {
-			span.End()
-		}()
+
 		span.SetAttributes(
 			semconv.RPCMethodKey.String(info.FullMethod),
 			semconv.NetPeerNameKey.String(bdr.PeerName(ctx)),
@@ -114,9 +111,9 @@ func (bdr *TraceInterceptorBuilder) BuildTraceServerInterceptor() grpc.UnaryServ
 					span.SetStatus(codes.Ok, "OK")
 				}
 			}
+			span.End()
 		}()
-		resp, err = handler(ctx, req)
-		return
+		return handler(ctx, req)
 	}
 }
 
