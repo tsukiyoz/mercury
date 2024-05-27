@@ -9,3 +9,4 @@ script/grafana/grafana.ini
 /api/proto/gen/
 
 **/*.log
+**/*.pb.go

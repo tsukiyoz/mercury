@@ -53,15 +53,18 @@ func (s *InterceptorTestSuite) TestClient() {
 	require.NoError(t, err)
 	cli := itest.NewUserServiceClient(conn)
 
-	for i := 0; i < 1; i++ {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Hour)
-		spanCtx, span := otel.GetTracerProvider().Tracer("github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel").Start(ctx, "client_getbyid")
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	spanCtx, span := otel.GetTracerProvider().Tracer("github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel").Start(ctx, "client_getbyid")
+
+	for i := 0; i < 3; i++ {
 		resp, err := cli.GetByID(spanCtx, &itest.GetByIDReq{Id: 123})
-		cancel()
 		time.Sleep(time.Millisecond * 20)
-		span.End()
 		require.NoError(t, err)
 		t.Log(resp.User)
 	}
+
+	cancel()
+	span.End()
+	// wait otel to observe span
 	time.Sleep(1 * time.Second)
 }
