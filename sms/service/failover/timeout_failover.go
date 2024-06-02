@@ -2,19 +2,18 @@ package failover
 
 import (
 	"context"
+	"github.com/tsukaychan/mercury/sms/service"
 	"sync/atomic"
-
-	"github.com/tsukaychan/mercury/internal/service/sms"
 )
 
 type TimeoutFailoverSMSService struct {
-	svcs       []sms.Service
+	svcs       []service.Service
 	lastUsedId uint32
 	timeoutCnt uint32
 	threshold  uint32
 }
 
-func (t *TimeoutFailoverSMSService) Send(ctx context.Context, tpl string, args []sms.ArgVal, phones ...string) error {
+func (t *TimeoutFailoverSMSService) Send(ctx context.Context, tpl string, target string, args []string, values []string) error {
 	idx := atomic.LoadUint32(&t.lastUsedId)
 	cnt := atomic.LoadUint32(&t.timeoutCnt)
 	if cnt > t.threshold {
@@ -27,7 +26,7 @@ func (t *TimeoutFailoverSMSService) Send(ctx context.Context, tpl string, args [
 	}
 
 	svc := t.svcs[idx]
-	err := svc.Send(ctx, tpl, args, phones...)
+	err := svc.Send(ctx, tpl, target, args, values)
 	switch err {
 	case context.DeadlineExceeded:
 		atomic.AddUint32(&t.timeoutCnt, 1)
@@ -40,6 +39,6 @@ func (t *TimeoutFailoverSMSService) Send(ctx context.Context, tpl string, args [
 	}
 }
 
-func NewTimeoutFailoverSMSService() sms.Service {
+func NewTimeoutFailoverSMSService() service.Service {
 	return &TimeoutFailoverSMSService{}
 }

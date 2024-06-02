@@ -39,15 +39,15 @@ k8s-teardown-db:
 
 .PHONY: k8s-teardown
 k8s-teardown:
-	make k8s-teardown-web
-	make k8s-teardown-db
+	@make k8s-teardown-web
+	@make k8s-teardown-db
 
 .PHONY: k8s-reload-web
 k8s-reload-web:
-	make k8s-teardown-web
-	make mock
-	make docker-k8s
-	make k8s-setup-web
+	@make k8s-teardown-web
+	@make mock
+	@make docker-k8s
+	@make k8s-setup-web
 
 .PHONY: mock
 mock:
@@ -57,3 +57,12 @@ mock:
 .PHONY: grpc
 grpc:
 	@buf generate api/proto
+
+.PHONYY: wire
+wire:
+	@./script/gen-wire.sh
+
+.PHONYY: wire.%
+wire.%:
+	@echo $*
+	@./script/gen-wire.sh $*
