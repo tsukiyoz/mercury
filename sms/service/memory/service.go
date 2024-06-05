@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tsukaychan/mercury/sms/service"
+	"github.com/lazywoo/mercury/sms/service"
 )
 
 type Service struct{}

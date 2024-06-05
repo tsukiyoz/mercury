@@ -7,8 +7,8 @@ import (
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 
+	interactivev1 "github.com/lazywoo/mercury/api/proto/gen/interactive/v1"
 	"github.com/stretchr/testify/require"
-	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

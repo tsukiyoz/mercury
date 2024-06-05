@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/tsukaychan/mercury/sms/service"
+	"github.com/lazywoo/mercury/sms/service"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"

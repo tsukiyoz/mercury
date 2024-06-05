@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/mercury/crontask/domain"
-	"github.com/tsukaychan/mercury/crontask/repository/dao"
+	"github.com/lazywoo/mercury/crontask/domain"
+	"github.com/lazywoo/mercury/crontask/repository/dao"
 )
 
 type TaskRepository interface {

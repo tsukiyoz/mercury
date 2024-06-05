@@ -8,10 +8,10 @@ import (
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
-	ijwt "github.com/tsukaychan/mercury/bff/web/jwt"
-	"github.com/tsukaychan/mercury/pkg/ginx"
+	ijwt "github.com/lazywoo/mercury/bff/web/jwt"
+	"github.com/lazywoo/mercury/pkg/ginx"
 
-	commentv1 "github.com/tsukaychan/mercury/api/proto/gen/comment/v1"
+	commentv1 "github.com/lazywoo/mercury/api/proto/gen/comment/v1"
 )
 
 var _ handler = (*CommentHandler)(nil)

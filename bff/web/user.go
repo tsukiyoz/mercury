@@ -5,20 +5,20 @@ import (
 	"net/http"
 	"time"
 
-	captchav1 "github.com/tsukaychan/mercury/api/proto/gen/captcha/v1"
+	captchav1 "github.com/lazywoo/mercury/api/proto/gen/captcha/v1"
 
-	"github.com/tsukaychan/mercury/captcha/repository"
+	"github.com/lazywoo/mercury/captcha/repository"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	userv1 "github.com/tsukaychan/mercury/api/proto/gen/user/v1"
+	userv1 "github.com/lazywoo/mercury/api/proto/gen/user/v1"
 
-	"github.com/tsukaychan/mercury/user/errs"
-	repository2 "github.com/tsukaychan/mercury/user/repository"
+	"github.com/lazywoo/mercury/user/errs"
+	repository2 "github.com/lazywoo/mercury/user/repository"
 
-	ijwt "github.com/tsukaychan/mercury/bff/web/jwt"
-	"github.com/tsukaychan/mercury/pkg/ginx"
-	"github.com/tsukaychan/mercury/pkg/logger"
+	ijwt "github.com/lazywoo/mercury/bff/web/jwt"
+	"github.com/lazywoo/mercury/pkg/ginx"
+	"github.com/lazywoo/mercury/pkg/logger"
 
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-gonic/gin"

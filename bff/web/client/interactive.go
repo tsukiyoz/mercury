@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/ecodeclub/ekit/syncx/atomicx"
-	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
+	interactivev1 "github.com/lazywoo/mercury/api/proto/gen/interactive/v1"
 )
 
 type InteractiveClient struct {

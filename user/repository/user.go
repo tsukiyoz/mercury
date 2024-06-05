@@ -11,9 +11,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/tsukaychan/mercury/user/domain"
-	"github.com/tsukaychan/mercury/user/repository/cache"
-	"github.com/tsukaychan/mercury/user/repository/dao"
+	"github.com/lazywoo/mercury/user/domain"
+	"github.com/lazywoo/mercury/user/repository/cache"
+	"github.com/lazywoo/mercury/user/repository/dao"
 )
 
 var (

@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/tsukaychan/mercury/sms/domain"
+	"github.com/lazywoo/mercury/sms/domain"
 
-	"github.com/tsukaychan/mercury/sms/repository/dao"
+	"github.com/lazywoo/mercury/sms/repository/dao"
 
 	"github.com/ecodeclub/ekit/sqlx"
 )

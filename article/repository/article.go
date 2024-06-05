@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/tsukaychan/mercury/article/domain"
-	"github.com/tsukaychan/mercury/article/repository/cache"
-	"github.com/tsukaychan/mercury/article/repository/dao"
+	"github.com/lazywoo/mercury/article/domain"
+	"github.com/lazywoo/mercury/article/repository/cache"
+	"github.com/lazywoo/mercury/article/repository/dao"
 
 	"github.com/ecodeclub/ekit/slice"
-	"github.com/tsukaychan/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 //go:generate mockgen -source=./article.go -package=repomocks -destination=mocks/article.mock.go ArticleRepository

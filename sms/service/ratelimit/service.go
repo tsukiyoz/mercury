@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tsukaychan/mercury/pkg/ratelimit"
-	"github.com/tsukaychan/mercury/sms/service"
-	"github.com/tsukaychan/mercury/sms/service/tencent"
+	"github.com/lazywoo/mercury/pkg/ratelimit"
+	"github.com/lazywoo/mercury/sms/service"
+	"github.com/lazywoo/mercury/sms/service/tencent"
 )
 
 var errLimited = fmt.Errorf("ratelimited")

@@ -2,7 +2,7 @@ package events
 
 import (
 	"context"
-	"github.com/tsukaychan/mercury/pkg/migrator"
+	"github.com/lazywoo/mercury/pkg/migrator"
 )
 
 type InconsistentEvent struct {

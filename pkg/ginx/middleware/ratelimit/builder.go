@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tsukaychan/mercury/pkg/ratelimit"
+	"github.com/lazywoo/mercury/pkg/ratelimit"
 )
 
 type Builder struct {

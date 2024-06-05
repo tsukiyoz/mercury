@@ -3,11 +3,11 @@ package grpc
 import (
 	"context"
 
-	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/lazywoo/mercury/article/domain"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	rankingv1 "github.com/tsukaychan/mercury/api/proto/gen/ranking/v1"
-	"github.com/tsukaychan/mercury/ranking/service"
+	rankingv1 "github.com/lazywoo/mercury/api/proto/gen/ranking/v1"
+	"github.com/lazywoo/mercury/ranking/service"
 	"google.golang.org/grpc"
 )
 

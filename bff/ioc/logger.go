@@ -1,8 +1,8 @@
 package ioc
 
 import (
+	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/mercury/pkg/logger"
 	"go.uber.org/zap"
 )
 

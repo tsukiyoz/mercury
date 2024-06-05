@@ -10,9 +10,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/tsukaychan/mercury/pkg/logger"
-	"github.com/tsukaychan/mercury/user/domain"
-	repository2 "github.com/tsukaychan/mercury/user/repository"
+	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/user/domain"
+	repository2 "github.com/lazywoo/mercury/user/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 

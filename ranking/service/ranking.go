@@ -8,13 +8,13 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
+	articlev1 "github.com/lazywoo/mercury/api/proto/gen/article/v1"
 
-	"github.com/tsukaychan/mercury/ranking/repository"
+	"github.com/lazywoo/mercury/ranking/repository"
 
-	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/lazywoo/mercury/article/domain"
 
-	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
+	interactivev1 "github.com/lazywoo/mercury/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 )

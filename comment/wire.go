@@ -4,11 +4,11 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/tsukaychan/mercury/comment/grpc"
-	"github.com/tsukaychan/mercury/comment/ioc"
-	"github.com/tsukaychan/mercury/comment/repository"
-	"github.com/tsukaychan/mercury/comment/repository/dao"
-	"github.com/tsukaychan/mercury/comment/service"
+	"github.com/lazywoo/mercury/comment/grpc"
+	"github.com/lazywoo/mercury/comment/ioc"
+	"github.com/lazywoo/mercury/comment/repository"
+	"github.com/lazywoo/mercury/comment/repository/dao"
+	"github.com/lazywoo/mercury/comment/service"
 )
 
 var thirdProviderSet = wire.NewSet(

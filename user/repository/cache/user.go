@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tsukaychan/mercury/user/domain"
+	"github.com/lazywoo/mercury/user/domain"
 
 	"github.com/redis/go-redis/v9"
 )

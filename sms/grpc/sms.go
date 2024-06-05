@@ -5,8 +5,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	smsv1 "github.com/tsukaychan/mercury/api/proto/gen/sms/v1"
-	"github.com/tsukaychan/mercury/sms/service"
+	smsv1 "github.com/lazywoo/mercury/api/proto/gen/sms/v1"
+	"github.com/lazywoo/mercury/sms/service"
 )
 
 type SmsServiceServer struct {

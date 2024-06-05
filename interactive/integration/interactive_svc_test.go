@@ -5,14 +5,14 @@ import (
 	"testing"
 	"time"
 
-	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
+	interactivev1 "github.com/lazywoo/mercury/api/proto/gen/interactive/v1"
 
-	"github.com/tsukaychan/mercury/interactive/repository/dao"
+	"github.com/lazywoo/mercury/interactive/repository/dao"
 
+	"github.com/lazywoo/mercury/interactive/integration/startup"
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/tsukaychan/mercury/interactive/integration/startup"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

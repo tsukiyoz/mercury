@@ -4,12 +4,12 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/tsukaychan/mercury/captcha/grpc"
-	"github.com/tsukaychan/mercury/captcha/ioc"
-	"github.com/tsukaychan/mercury/captcha/repository"
-	"github.com/tsukaychan/mercury/captcha/repository/cache"
-	"github.com/tsukaychan/mercury/captcha/service"
-	"github.com/tsukaychan/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/captcha/grpc"
+	"github.com/lazywoo/mercury/captcha/ioc"
+	"github.com/lazywoo/mercury/captcha/repository"
+	"github.com/lazywoo/mercury/captcha/repository/cache"
+	"github.com/lazywoo/mercury/captcha/service"
+	"github.com/lazywoo/mercury/pkg/wego"
 )
 
 var thirdProviderSet = wire.NewSet(

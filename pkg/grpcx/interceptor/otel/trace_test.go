@@ -9,9 +9,9 @@ import (
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/credentials/insecure"
 
+	itest "github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel/test"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	itest "github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel/test"
 	"google.golang.org/grpc"
 )
 
@@ -54,7 +54,7 @@ func (s *InterceptorTestSuite) TestClient() {
 	cli := itest.NewUserServiceClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	spanCtx, span := otel.GetTracerProvider().Tracer("github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel").Start(ctx, "client_getbyid")
+	spanCtx, span := otel.GetTracerProvider().Tracer("github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel").Start(ctx, "client_getbyid")
 
 	for i := 0; i < 3; i++ {
 		resp, err := cli.GetByID(spanCtx, &itest.GetByIDReq{Id: 123})

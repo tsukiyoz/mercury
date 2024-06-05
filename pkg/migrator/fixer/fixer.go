@@ -2,8 +2,8 @@ package fixer
 
 import (
 	"context"
-	"github.com/tsukaychan/mercury/pkg/migrator"
-	"github.com/tsukaychan/mercury/pkg/migrator/events"
+	"github.com/lazywoo/mercury/pkg/migrator"
+	"github.com/lazywoo/mercury/pkg/migrator/events"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

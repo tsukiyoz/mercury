@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	captchav1 "github.com/tsukaychan/mercury/api/proto/gen/captcha/v1"
-	"github.com/tsukaychan/mercury/captcha/service"
+	captchav1 "github.com/lazywoo/mercury/api/proto/gen/captcha/v1"
+	"github.com/lazywoo/mercury/captcha/service"
 	"google.golang.org/grpc"
 )
 

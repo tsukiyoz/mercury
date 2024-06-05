@@ -3,9 +3,9 @@ package validator
 import (
 	"context"
 	"github.com/ecodeclub/ekit/slice"
-	"github.com/tsukaychan/mercury/pkg/logger"
-	"github.com/tsukaychan/mercury/pkg/migrator"
-	"github.com/tsukaychan/mercury/pkg/migrator/events"
+	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/pkg/migrator"
+	"github.com/lazywoo/mercury/pkg/migrator/events"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 	"time"

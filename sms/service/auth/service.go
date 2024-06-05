@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/tsukaychan/mercury/sms/service"
+	"github.com/lazywoo/mercury/sms/service"
 
 	"github.com/golang-jwt/jwt/v5"
 )

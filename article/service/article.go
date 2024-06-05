@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
-	userv1 "github.com/tsukaychan/mercury/api/proto/gen/user/v1"
+	userv1 "github.com/lazywoo/mercury/api/proto/gen/user/v1"
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/tsukaychan/mercury/article/domain"
-	"github.com/tsukaychan/mercury/article/events"
-	"github.com/tsukaychan/mercury/article/repository"
-	"github.com/tsukaychan/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/article/domain"
+	"github.com/lazywoo/mercury/article/events"
+	"github.com/lazywoo/mercury/article/repository"
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 var _ ArticleService = (*articleService)(nil)

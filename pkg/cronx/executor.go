@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tsukaychan/mercury/crontask/domain"
+	"github.com/lazywoo/mercury/crontask/domain"
 )
 
 type Executor interface {

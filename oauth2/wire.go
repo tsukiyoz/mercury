@@ -4,9 +4,9 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/tsukaychan/mercury/oauth2/grpc"
-	"github.com/tsukaychan/mercury/oauth2/ioc"
-	"github.com/tsukaychan/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/oauth2/grpc"
+	"github.com/lazywoo/mercury/oauth2/ioc"
+	"github.com/lazywoo/mercury/pkg/wego"
 )
 
 var thirdProviderSet = wire.NewSet(

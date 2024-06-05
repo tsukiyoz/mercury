@@ -7,9 +7,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	commentv1 "github.com/tsukaychan/mercury/api/proto/gen/comment/v1"
-	"github.com/tsukaychan/mercury/comment/domain"
-	"github.com/tsukaychan/mercury/comment/service"
+	commentv1 "github.com/lazywoo/mercury/api/proto/gen/comment/v1"
+	"github.com/lazywoo/mercury/comment/domain"
+	"github.com/lazywoo/mercury/comment/service"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

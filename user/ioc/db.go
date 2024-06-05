@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tsukaychan/mercury/user/repository/dao"
+	"github.com/lazywoo/mercury/user/repository/dao"
 
+	interactiveDao "github.com/lazywoo/mercury/interactive/repository/dao"
+	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
-	interactiveDao "github.com/tsukaychan/mercury/interactive/repository/dao"
-	"github.com/tsukaychan/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/tsukaychan/mercury/pkg/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"

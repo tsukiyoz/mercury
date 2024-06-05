@@ -1,10 +1,10 @@
 package ioc
 
 import (
+	"github.com/lazywoo/mercury/pkg/grpcx"
+	"github.com/lazywoo/mercury/pkg/logger"
+	igrpc "github.com/lazywoo/mercury/ranking/grpc"
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/mercury/pkg/grpcx"
-	"github.com/tsukaychan/mercury/pkg/logger"
-	igrpc "github.com/tsukaychan/mercury/ranking/grpc"
 	"google.golang.org/grpc"
 )
 

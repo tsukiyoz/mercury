@@ -3,11 +3,11 @@ package grpc
 import (
 	"context"
 
-	"github.com/tsukaychan/mercury/crontask/domain"
+	"github.com/lazywoo/mercury/crontask/domain"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	crontaskv1 "github.com/tsukaychan/mercury/api/proto/gen/crontask/v1"
-	"github.com/tsukaychan/mercury/crontask/service"
+	crontaskv1 "github.com/lazywoo/mercury/api/proto/gen/crontask/v1"
+	"github.com/lazywoo/mercury/crontask/service"
 	"google.golang.org/grpc"
 )
 

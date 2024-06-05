@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/tsukaychan/mercury/captcha/repository"
+	"github.com/lazywoo/mercury/captcha/repository"
 
-	smsv1 "github.com/tsukaychan/mercury/api/proto/gen/sms/v1"
+	smsv1 "github.com/lazywoo/mercury/api/proto/gen/sms/v1"
 )
 
 var (

@@ -12,7 +12,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/tsukaychan/mercury/pkg/grpcx/interceptor"
+	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 
@@ -43,7 +43,7 @@ func (bdr *TraceInterceptorBuilder) BuildUnaryClientInterceptor() grpc.UnaryClie
 	}
 	tracer := bdr.tracer
 	if tracer == nil {
-		tracer = otel.GetTracerProvider().Tracer("github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel")
+		tracer = otel.GetTracerProvider().Tracer("github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel")
 	}
 	attrs := []attribute.KeyValue{
 		semconv.RPCSystemKey.String("grpc"),
@@ -83,7 +83,7 @@ func (bdr *TraceInterceptorBuilder) BuildUnaryServerInterceptor() grpc.UnaryServ
 	}
 	tracer := bdr.tracer
 	if tracer == nil {
-		tracer = otel.GetTracerProvider().Tracer("github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel")
+		tracer = otel.GetTracerProvider().Tracer("github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel")
 	}
 	attrs := []attribute.KeyValue{
 		semconv.RPCSystemKey.String("grpc"),

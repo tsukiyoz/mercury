@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tsukaychan/mercury/interactive/domain"
+	"github.com/lazywoo/mercury/interactive/domain"
 
 	"github.com/redis/go-redis/v9"
 )

@@ -1,9 +1,9 @@
 package ioc
 
 import (
+	"github.com/lazywoo/mercury/oauth2/service/wechat"
+	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/mercury/oauth2/service/wechat"
-	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 func InitWechatService(l logger.Logger) wechat.Service {

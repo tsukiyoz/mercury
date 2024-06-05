@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	captchav1 "github.com/tsukaychan/mercury/api/proto/gen/captcha/v1"
+	captchav1 "github.com/lazywoo/mercury/api/proto/gen/captcha/v1"
 
 	"github.com/stretchr/testify/require"
 	clientv3 "go.etcd.io/etcd/client/v3"

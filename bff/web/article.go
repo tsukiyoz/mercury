@@ -5,15 +5,15 @@ import (
 	"strconv"
 	"time"
 
-	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
+	articlev1 "github.com/lazywoo/mercury/api/proto/gen/article/v1"
 
-	interactivev1 "github.com/tsukaychan/mercury/api/proto/gen/interactive/v1"
+	interactivev1 "github.com/lazywoo/mercury/api/proto/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
-	ijwt "github.com/tsukaychan/mercury/bff/web/jwt"
-	"github.com/tsukaychan/mercury/pkg/ginx"
-	"github.com/tsukaychan/mercury/pkg/logger"
+	ijwt "github.com/lazywoo/mercury/bff/web/jwt"
+	"github.com/lazywoo/mercury/pkg/ginx"
+	"github.com/lazywoo/mercury/pkg/logger"
 	"golang.org/x/sync/errgroup"
 )
 

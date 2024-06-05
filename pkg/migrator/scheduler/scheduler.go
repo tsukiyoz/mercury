@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tsukaychan/mercury/pkg/ginx"
-	"github.com/tsukaychan/mercury/pkg/gormx/connpool"
-	"github.com/tsukaychan/mercury/pkg/logger"
-	"github.com/tsukaychan/mercury/pkg/migrator"
-	"github.com/tsukaychan/mercury/pkg/migrator/events"
-	"github.com/tsukaychan/mercury/pkg/migrator/validator"
+	"github.com/lazywoo/mercury/pkg/ginx"
+	"github.com/lazywoo/mercury/pkg/gormx/connpool"
+	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/pkg/migrator"
+	"github.com/lazywoo/mercury/pkg/migrator/events"
+	"github.com/lazywoo/mercury/pkg/migrator/validator"
 	"gorm.io/gorm"
 )
 

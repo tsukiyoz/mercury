@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tsukaychan/mercury/pkg/logger"
-	"github.com/tsukaychan/mercury/pkg/netx"
+	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/pkg/netx"
 	etcdv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"google.golang.org/grpc"

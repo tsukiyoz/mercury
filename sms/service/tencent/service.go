@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/lazywoo/mercury/pkg/ratelimit"
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
-	"github.com/tsukaychan/mercury/pkg/ratelimit"
 )
 
 type Service struct {

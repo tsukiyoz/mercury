@@ -3,11 +3,11 @@ package grpc
 import (
 	"context"
 
-	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/lazywoo/mercury/article/domain"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
-	"github.com/tsukaychan/mercury/article/service"
+	articlev1 "github.com/lazywoo/mercury/api/proto/gen/article/v1"
+	"github.com/lazywoo/mercury/article/service"
 	"google.golang.org/grpc"
 )
 

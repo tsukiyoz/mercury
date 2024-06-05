@@ -1,8 +1,8 @@
 package ioc
 
 import (
+	articlev1 "github.com/lazywoo/mercury/api/proto/gen/article/v1"
 	"github.com/spf13/viper"
-	articlev1 "github.com/tsukaychan/mercury/api/proto/gen/article/v1"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"

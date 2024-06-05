@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
+	userv1 "github.com/lazywoo/mercury/api/proto/gen/user/v1"
 	"github.com/stretchr/testify/require"
-	userv1 "github.com/tsukaychan/mercury/api/proto/gen/user/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

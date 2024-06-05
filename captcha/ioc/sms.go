@@ -1,8 +1,8 @@
 package ioc
 
 import (
+	smsv1 "github.com/lazywoo/mercury/api/proto/gen/sms/v1"
 	"github.com/spf13/viper"
-	smsv1 "github.com/tsukaychan/mercury/api/proto/gen/sms/v1"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"

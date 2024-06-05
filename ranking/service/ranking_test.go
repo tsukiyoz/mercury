@@ -5,15 +5,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/lazywoo/mercury/article/domain"
 
-	service2 "github.com/tsukaychan/mercury/article/service"
+	service2 "github.com/lazywoo/mercury/article/service"
 
-	domain2 "github.com/tsukaychan/mercury/interactive/domain"
+	domain2 "github.com/lazywoo/mercury/interactive/domain"
 
-	"github.com/tsukaychan/mercury/interactive/service"
+	"github.com/lazywoo/mercury/interactive/service"
 
-	svcmock "github.com/tsukaychan/mercury/ranking/service/mocks"
+	svcmock "github.com/lazywoo/mercury/ranking/service/mocks"
 
 	"github.com/stretchr/testify/assert"
 

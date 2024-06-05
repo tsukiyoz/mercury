@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"time"
 
-	oauth2v1 "github.com/tsukaychan/mercury/api/proto/gen/oauth2/v1"
-	userv1 "github.com/tsukaychan/mercury/api/proto/gen/user/v1"
+	oauth2v1 "github.com/lazywoo/mercury/api/proto/gen/oauth2/v1"
+	userv1 "github.com/lazywoo/mercury/api/proto/gen/user/v1"
 
-	"github.com/tsukaychan/mercury/pkg/ginx"
+	"github.com/lazywoo/mercury/pkg/ginx"
 
-	ijwt "github.com/tsukaychan/mercury/bff/web/jwt"
+	ijwt "github.com/lazywoo/mercury/bff/web/jwt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

@@ -8,11 +8,11 @@ import (
 
 	"google.golang.org/grpc/codes"
 
-	"github.com/tsukaychan/mercury/pkg/grpcx/interceptor"
+	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
 
 	"google.golang.org/grpc/status"
 
-	"github.com/tsukaychan/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/pkg/logger"
 	"google.golang.org/grpc"
 )
 

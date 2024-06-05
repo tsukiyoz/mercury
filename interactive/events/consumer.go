@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/IBM/sarama"
-	"github.com/tsukaychan/mercury/interactive/repository"
+	"github.com/lazywoo/mercury/interactive/repository"
 
-	"github.com/tsukaychan/mercury/pkg/logger"
-	"github.com/tsukaychan/mercury/pkg/saramax"
+	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/pkg/saramax"
 )
 
 const topicReadEvent = "article_read_event"

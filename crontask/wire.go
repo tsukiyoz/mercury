@@ -4,12 +4,12 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/tsukaychan/mercury/crontask/grpc"
-	"github.com/tsukaychan/mercury/crontask/ioc"
-	"github.com/tsukaychan/mercury/crontask/repository"
-	"github.com/tsukaychan/mercury/crontask/repository/dao"
-	"github.com/tsukaychan/mercury/crontask/service"
-	"github.com/tsukaychan/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/crontask/grpc"
+	"github.com/lazywoo/mercury/crontask/ioc"
+	"github.com/lazywoo/mercury/crontask/repository"
+	"github.com/lazywoo/mercury/crontask/repository/dao"
+	"github.com/lazywoo/mercury/crontask/service"
+	"github.com/lazywoo/mercury/pkg/wego"
 )
 
 var thirdProviderSet = wire.NewSet(

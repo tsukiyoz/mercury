@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	oauth2v1 "github.com/tsukaychan/mercury/api/proto/gen/oauth2/v1"
-	"github.com/tsukaychan/mercury/oauth2/service/wechat"
+	oauth2v1 "github.com/lazywoo/mercury/api/proto/gen/oauth2/v1"
+	"github.com/lazywoo/mercury/oauth2/service/wechat"
 	"google.golang.org/grpc"
 )
 

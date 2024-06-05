@@ -7,24 +7,24 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	ginxlogger "github.com/tsukaychan/mercury/pkg/ginx/middleware/logger"
-	"github.com/tsukaychan/mercury/pkg/ginx/middleware/metrics"
+	ginxlogger "github.com/lazywoo/mercury/pkg/ginx/middleware/logger"
+	"github.com/lazywoo/mercury/pkg/ginx/middleware/metrics"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"github.com/redis/go-redis/v9"
 
-	"github.com/tsukaychan/mercury/pkg/ratelimit"
+	"github.com/lazywoo/mercury/pkg/ratelimit"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/lazywoo/mercury/bff/web"
+	"github.com/lazywoo/mercury/bff/web/jwt"
+	"github.com/lazywoo/mercury/bff/web/middleware"
+	"github.com/lazywoo/mercury/pkg/ginx"
+	ginRatelimit "github.com/lazywoo/mercury/pkg/ginx/middleware/ratelimit"
+	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/mercury/bff/web"
-	"github.com/tsukaychan/mercury/bff/web/jwt"
-	"github.com/tsukaychan/mercury/bff/web/middleware"
-	"github.com/tsukaychan/mercury/pkg/ginx"
-	ginRatelimit "github.com/tsukaychan/mercury/pkg/ginx/middleware/ratelimit"
-	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 func InitWebServer(limiter ratelimit.Limiter, jwtHdl jwt.Handler, userHdl *web.UserHandler, oAuth2Hdl *web.OAuth2WechatHandler, articleHdl *web.ArticleHandler, commentHdl *web.CommentHandler, logger logger.Logger) *ginx.Server {

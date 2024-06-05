@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron/v3"
-	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 type CronJobBuilder struct {

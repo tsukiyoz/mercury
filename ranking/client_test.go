@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	rankingv1 "github.com/tsukaychan/mercury/api/proto/gen/ranking/v1"
+	rankingv1 "github.com/lazywoo/mercury/api/proto/gen/ranking/v1"
 
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"

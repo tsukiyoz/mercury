@@ -1,9 +1,9 @@
 package ioc
 
 import (
+	oauth2v1 "github.com/lazywoo/mercury/api/proto/gen/oauth2/v1"
+	"github.com/lazywoo/mercury/bff/web"
 	"github.com/spf13/viper"
-	oauth2v1 "github.com/tsukaychan/mercury/api/proto/gen/oauth2/v1"
-	"github.com/tsukaychan/mercury/bff/web"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"

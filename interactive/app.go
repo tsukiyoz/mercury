@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/tsukaychan/mercury/pkg/ginx"
-	"github.com/tsukaychan/mercury/pkg/grpcx"
-	"github.com/tsukaychan/mercury/pkg/saramax"
+	"github.com/lazywoo/mercury/pkg/ginx"
+	"github.com/lazywoo/mercury/pkg/grpcx"
+	"github.com/lazywoo/mercury/pkg/saramax"
 )
 
 type App struct {

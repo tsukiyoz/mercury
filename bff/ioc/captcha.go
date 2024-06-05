@@ -1,8 +1,8 @@
 package ioc
 
 import (
+	captchav1 "github.com/lazywoo/mercury/api/proto/gen/captcha/v1"
 	"github.com/spf13/viper"
-	captchav1 "github.com/tsukaychan/mercury/api/proto/gen/captcha/v1"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"

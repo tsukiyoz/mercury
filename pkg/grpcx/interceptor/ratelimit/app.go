@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/tsukaychan/mercury/pkg/ratelimit"
+	"github.com/lazywoo/mercury/pkg/ratelimit"
 
 	"google.golang.org/grpc"
 )

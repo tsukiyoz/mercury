@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tsukaychan/mercury/crontask/domain"
-	"github.com/tsukaychan/mercury/crontask/service"
+	"github.com/lazywoo/mercury/crontask/domain"
+	"github.com/lazywoo/mercury/crontask/service"
 
 	"golang.org/x/sync/semaphore"
 
-	"github.com/tsukaychan/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 // this kind of task scheduling framework is based on mysql

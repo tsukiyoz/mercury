@@ -1,6 +1,6 @@
 package main
 
-import "github.com/tsukaychan/mercury/pkg/grpcx"
+import "github.com/lazywoo/mercury/pkg/grpcx"
 
 type App struct {
 	server *grpcx.Server

@@ -7,7 +7,7 @@ import (
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 
-	smsv1 "github.com/tsukaychan/mercury/api/proto/gen/sms/v1"
+	smsv1 "github.com/lazywoo/mercury/api/proto/gen/sms/v1"
 
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"

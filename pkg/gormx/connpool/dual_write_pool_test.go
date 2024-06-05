@@ -2,8 +2,8 @@ package connpool
 
 import (
 	"github.com/ecodeclub/ekit/syncx/atomicx"
+	interactiveDao "github.com/lazywoo/mercury/interactive/repository/dao"
 	"github.com/stretchr/testify/require"
-	interactiveDao "github.com/tsukaychan/mercury/interactive/repository/dao"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"testing"

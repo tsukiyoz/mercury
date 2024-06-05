@@ -10,8 +10,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/tsukaychan/mercury/interactive/integration/startup"
-	"github.com/tsukaychan/mercury/interactive/repository/dao"
+	"github.com/lazywoo/mercury/interactive/integration/startup"
+	"github.com/lazywoo/mercury/interactive/repository/dao"
 
 	"github.com/stretchr/testify/require"
 )

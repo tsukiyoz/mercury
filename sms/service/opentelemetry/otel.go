@@ -5,7 +5,7 @@ import (
 
 	"go.opentelemetry.io/otel/attribute"
 
-	"github.com/tsukaychan/mercury/sms/service"
+	"github.com/lazywoo/mercury/sms/service"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -17,7 +17,7 @@ type Service struct {
 
 func NewService(svc service.Service) service.Service {
 	tp := otel.GetTracerProvider()
-	tracer := tp.Tracer("github.com/tsukaychan/mercury/sms/service/opentelemetry/otel.go")
+	tracer := tp.Tracer("github.com/lazywoo/mercury/sms/service/opentelemetry/otel.go")
 	return &Service{
 		svc:    svc,
 		tracer: tracer,

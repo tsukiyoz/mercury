@@ -4,14 +4,14 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/tsukaychan/mercury/article/events"
-	"github.com/tsukaychan/mercury/article/grpc"
-	"github.com/tsukaychan/mercury/article/ioc"
-	"github.com/tsukaychan/mercury/article/repository"
-	"github.com/tsukaychan/mercury/article/repository/cache"
-	"github.com/tsukaychan/mercury/article/repository/dao"
-	"github.com/tsukaychan/mercury/article/service"
-	"github.com/tsukaychan/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/article/events"
+	"github.com/lazywoo/mercury/article/grpc"
+	"github.com/lazywoo/mercury/article/ioc"
+	"github.com/lazywoo/mercury/article/repository"
+	"github.com/lazywoo/mercury/article/repository/cache"
+	"github.com/lazywoo/mercury/article/repository/dao"
+	"github.com/lazywoo/mercury/article/service"
+	"github.com/lazywoo/mercury/pkg/wego"
 )
 
 var thirdProviderSet = wire.NewSet(

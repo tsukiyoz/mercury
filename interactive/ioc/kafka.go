@@ -2,11 +2,11 @@ package ioc
 
 import (
 	"github.com/IBM/sarama"
+	"github.com/lazywoo/mercury/interactive/events"
+	"github.com/lazywoo/mercury/interactive/repository/dao"
+	migratorEvt "github.com/lazywoo/mercury/pkg/migrator/events/fixer"
+	"github.com/lazywoo/mercury/pkg/saramax"
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/mercury/interactive/events"
-	"github.com/tsukaychan/mercury/interactive/repository/dao"
-	migratorEvt "github.com/tsukaychan/mercury/pkg/migrator/events/fixer"
-	"github.com/tsukaychan/mercury/pkg/saramax"
 )
 
 func InitKafka() sarama.Client {

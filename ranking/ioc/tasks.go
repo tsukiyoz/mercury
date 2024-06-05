@@ -5,19 +5,19 @@ import (
 	"log"
 	"time"
 
-	"github.com/tsukaychan/mercury/pkg/cronx"
+	"github.com/lazywoo/mercury/pkg/cronx"
 
-	cron2 "github.com/tsukaychan/mercury/ranking/cron"
+	cron2 "github.com/lazywoo/mercury/ranking/cron"
 
-	"github.com/tsukaychan/mercury/crontask/domain"
-	"github.com/tsukaychan/mercury/crontask/service"
+	"github.com/lazywoo/mercury/crontask/domain"
+	"github.com/lazywoo/mercury/crontask/service"
 
-	service2 "github.com/tsukaychan/mercury/ranking/service"
+	service2 "github.com/lazywoo/mercury/ranking/service"
 
 	rlock "github.com/gotomicro/redis-lock"
+	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron/v3"
-	"github.com/tsukaychan/mercury/pkg/logger"
 )
 
 // -------------------------------------------

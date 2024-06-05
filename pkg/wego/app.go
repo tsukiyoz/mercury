@@ -1,10 +1,10 @@
 package wego
 
 import (
+	"github.com/lazywoo/mercury/pkg/ginx"
+	"github.com/lazywoo/mercury/pkg/grpcx"
+	"github.com/lazywoo/mercury/pkg/saramax"
 	"github.com/robfig/cron/v3"
-	"github.com/tsukaychan/mercury/pkg/ginx"
-	"github.com/tsukaychan/mercury/pkg/grpcx"
-	"github.com/tsukaychan/mercury/pkg/saramax"
 )
 
 type App struct {

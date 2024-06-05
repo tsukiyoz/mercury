@@ -3,7 +3,7 @@ package cache
 import (
 	"context"
 
-	"github.com/tsukaychan/mercury/article/domain"
+	"github.com/lazywoo/mercury/article/domain"
 )
 
 type RankingCache interface {

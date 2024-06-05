@@ -5,7 +5,7 @@ import (
 
 	gormLogger "gorm.io/gorm/logger"
 
-	"github.com/tsukaychan/mercury/pkg/gormx/connpool"
+	"github.com/lazywoo/mercury/pkg/gormx/connpool"
 	"gorm.io/plugin/opentelemetry/tracing"
 
 	"github.com/spf13/viper"
@@ -13,9 +13,9 @@ import (
 	"gorm.io/gorm"
 	gormPrometheus "gorm.io/plugin/prometheus"
 
-	"github.com/tsukaychan/mercury/interactive/repository/dao"
-	"github.com/tsukaychan/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/tsukaychan/mercury/pkg/logger"
+	"github.com/lazywoo/mercury/interactive/repository/dao"
+	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 func InitDualWriteDB(pool *connpool.DualWritePool) *gorm.DB {

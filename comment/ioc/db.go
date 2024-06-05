@@ -2,10 +2,10 @@ package ioc
 
 import (
 	"fmt"
+	"github.com/lazywoo/mercury/comment/repository/dao"
+	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
-	"github.com/tsukaychan/mercury/comment/repository/dao"
-	"github.com/tsukaychan/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/tsukaychan/mercury/pkg/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
