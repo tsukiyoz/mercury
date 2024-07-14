@@ -2,7 +2,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: "github.com/tsukaychan/mercury/api/proto/gen"
+    default: "github.com/lazywoo/mercury/api/proto/gen"
 plugins:
   - plugin: buf.build/protocolbuffers/go
     out: api/proto/gen

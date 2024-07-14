@@ -1,0 +1,20 @@
+http:
+  addr: ${MERCURY_BFF_HTTP_ADDR}
+  secure: ${MERCURY_BFF_HTTP_SECURE}
+  http_only: ${MERCURY_BFF_HTTP_HTTP_ONLY}
+
+etcd:
+  endpoints: ${MERCURY_ETCD_ENDPOINTS}
+
+grpc:
+  client:
+    user:
+      target: ${MERCURY_USER_GRPC_ADDR}
+    article:
+      target: ${MERCURY_ARTICLE_GRPC_ADDR}
+    captcha:
+      target: ${MERCURY_CAPTCHA_GRPC_ADDR}
+    interactive:
+      target: ${MERCURY_INTERACTIVE_GRPC_ADDR}
+    comment:
+      target: ${MERCURY_COMMENT_GRPC_ADDR}

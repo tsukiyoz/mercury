@@ -8,8 +8,8 @@ import (
 
 	"github.com/lazywoo/mercury/user/domain"
 
-	repomock "github.com/lazywoo/mercury/internal/repository/mocks"
 	"github.com/lazywoo/mercury/user/repository"
+	repomock "github.com/lazywoo/mercury/user/repository/mocks"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"golang.org/x/crypto/bcrypt"

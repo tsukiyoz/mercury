@@ -9,7 +9,7 @@ import (
 
 	"github.com/lazywoo/mercury/article/repository"
 
-	articlerepomocks "github.com/lazywoo/mercury/internal/repository/mocks"
+	articlerepomocks "github.com/lazywoo/mercury/article/repository/mocks"
 	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
