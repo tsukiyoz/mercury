@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package gender;
 
-option go_package = "github.com/tsukaychan/mercury/pkg/grpcx/interceptor/otel/test/inner";
+option go_package = "github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel/test/inner";
 
 enum Gender {
   Unknown = 0;
