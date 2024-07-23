@@ -1,7 +1,7 @@
 #!/bin/bash
 ROOT=$(cd `dirname $0`/..; pwd)
 
-services=" follow user sms interactive comment oauth2 crontask article captcha ranking bff "
+services=" user sms interactive comment oauth2 crontask article captcha ranking bff follow "
 
 args=$@
 if [ $# -gt 0 ]; then

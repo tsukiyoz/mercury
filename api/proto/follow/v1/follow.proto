@@ -20,7 +20,7 @@ service FollowService {
   rpc GetFollowee (GetFolloweeRequest) returns (GetFolloweeResponse); // 获取关注列表
   rpc GetFollower (GetFollowerRequest) returns (GetFollowerResponse); // 获取被关注的列表
   rpc GetRelation (GetRelationRequest) returns (GetRelationResponse); // 获取关系信息
-  rpc GetFollowStatics (GetFollowStaticsRequest) returns (GetFollowStaticsResponse); // 获取关注信息数量
+  rpc GetStatics (GetStaticsRequest) returns (GetStaticsResponse); // 获取关注信息数量
 }
 
 message FollowRequest {
@@ -61,9 +61,9 @@ message GetRelationResponse{
   Relation follow_relation = 1;
 }
 
-message GetFollowStaticsRequest{
+message GetStaticsRequest{
   int64 uid = 1;
 }
-message GetFollowStaticsResponse{
+message GetStaticsResponse{
   Statics statics = 1;
 }

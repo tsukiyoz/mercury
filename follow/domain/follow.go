@@ -1,4 +1,4 @@
-package config
+package domain
 
 type Relation struct {
 	Followee int64 // 被关注者
@@ -6,6 +6,6 @@ type Relation struct {
 }
 
 type Statics struct {
-	FollowerCount int64 // 关注者的数量
-	FolloweeCount int64 // 关注的数量
+	FolloweeCount int64 // 关注数量
+	FollowerCount int64 // 被关注数量
 }
