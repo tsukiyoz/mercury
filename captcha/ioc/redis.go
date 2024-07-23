@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+//go:generate mockgen -package=redismocks -destination=../repository/cache/mocks/redis/cmdable.mock.go github.com/redis/go-redis/v9 Cmdable
 func InitRedis() redis.Cmdable {
 	type Config struct {
 		Addr     string `yaml:"addr"`

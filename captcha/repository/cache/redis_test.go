@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	redismock "github.com/lazywoo/mercury/internal/repository/mocks/cache/redis"
+	redismock "github.com/lazywoo/mercury/captcha/repository/cache/mocks/redis"
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
