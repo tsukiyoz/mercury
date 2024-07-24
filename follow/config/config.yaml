@@ -10,4 +10,9 @@ etcd:
 
 grpc:
   server:
-    port:
+    port: 9000
+    etcd: "localhost:12379"
+    ttl: 15
+  client:
+    user:
+      target: "etcd:///service/follow"
