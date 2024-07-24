@@ -3,6 +3,8 @@ package dao
 import (
 	"context"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+	"time"
 )
 
 var _ FollowDAO = (*GORMFollowDAO)(nil)
@@ -17,37 +19,64 @@ func NewGORMFollowDAO(db *gorm.DB) FollowDAO {
 	}
 }
 
-func (G *GORMFollowDAO) FolloweeRelationList(ctx context.Context, follower int64, offset, limit int64) ([]Relation, error) {
-	//TODO implement me
-	panic("implement me")
+func (dao *GORMFollowDAO) FolloweeRelationList(ctx context.Context, follower int64, offset, limit int64) ([]Relation, error) {
+	var res []Relation
+	err := dao.db.WithContext(ctx).Model(&Relation{}).
+		Where("follower = ? AND status = ?", follower, RelationStatusActive).
+		Offset(int(offset)).
+		Limit(int(limit)).
+		Find(&res).Error
+	return res, err
 }
 
-func (G *GORMFollowDAO) FollowerRelationList(ctx context.Context, follower int64, offset, limit int64) ([]Relation, error) {
-	//TODO implement me
-	panic("implement me")
+func (dao *GORMFollowDAO) FollowerRelationList(ctx context.Context, follower int64, offset, limit int64) ([]Relation, error) {
+	var res []Relation
+	err := dao.db.WithContext(ctx).Model(&Relation{}).
+		Where("followee = ? AND status = ?", follower, RelationStatusActive).
+		Offset(int(offset)).
+		Limit(int(limit)).
+		Find(&res).Error
+	return res, err
 }
 
-func (G *GORMFollowDAO) GetRelationDetail(ctx context.Context, followee, follower int64) (Relation, error) {
-	//TODO implement me
-	panic("implement me")
+func (dao *GORMFollowDAO) GetRelationDetail(ctx context.Context, followee, follower int64) (Relation, error) {
+	var res Relation
+	err := dao.db.WithContext(ctx).Model(&Relation{}).
+		Where("followee = ? AND follower = ? AND status = ?", followee, follower, RelationStatusActive).
+		First(&res).Error
+	return res, err
 }
 
-func (G *GORMFollowDAO) CreateRelation(ctx context.Context, r Relation) error {
-	//TODO implement me
-	panic("implement me")
+func (dao *GORMFollowDAO) CreateRelation(ctx context.Context, r Relation) error {
+	return dao.db.WithContext(ctx).Model(&Relation{}).Clauses(clause.OnConflict{
+		DoNothing: true,
+	}).Create(r).Error
 }
 
-func (G *GORMFollowDAO) UpdateStatus(ctx context.Context, followee, follower int64, status uint8) error {
-	//TODO implement me
-	panic("implement me")
+func (dao *GORMFollowDAO) UpdateStatus(ctx context.Context, followee, follower int64, status uint8) error {
+	now := time.Now()
+	return dao.db.WithContext(ctx).Model(&Relation{}).
+		Where("followee = ? AND follower = ?", followee, follower).
+		Updates(map[string]any{
+			"status": status,
+			"utime":  now,
+		}).Error
 }
 
-func (G *GORMFollowDAO) CountFollowee(ctx context.Context, uid int64) (int64, error) {
-	//TODO implement me
-	panic("implement me")
+func (dao *GORMFollowDAO) CountFollowee(ctx context.Context, uid int64) (int64, error) {
+	var res int64
+	err := dao.db.WithContext(ctx).
+		Select("count(followee)").
+		Where("follower = ? AND status = ?", uid, RelationStatusActive).
+		Count(&res).Error
+	return res, err
 }
 
-func (G *GORMFollowDAO) CountFollower(ctx context.Context, uid int64) (int64, error) {
-	//TODO implement me
-	panic("implement me")
+func (dao *GORMFollowDAO) CountFollower(ctx context.Context, uid int64) (int64, error) {
+	var res int64
+	err := dao.db.WithContext(ctx).
+		Select("count(follower)").
+		Where("followee = ? AND status = ?", uid, RelationStatusActive).
+		Count(&res).Error
+	return res, err
 }
