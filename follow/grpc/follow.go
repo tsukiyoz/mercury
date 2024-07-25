@@ -5,11 +5,19 @@ import (
 	"github.com/lazywoo/mercury/api/proto/gen/follow/v1"
 	"github.com/lazywoo/mercury/follow/domain"
 	"github.com/lazywoo/mercury/follow/service"
+	"github.com/lazywoo/mercury/pkg/grpcx"
+	"google.golang.org/grpc"
 )
+
+var _ grpcx.Register = (*FollowServiceServer)(nil)
 
 type FollowServiceServer struct {
 	followv1.UnimplementedFollowServiceServer
 	svc service.FollowService
+}
+
+func (f *FollowServiceServer) Register(srv *grpc.Server) {
+	followv1.RegisterFollowServiceServer(srv, f)
 }
 
 func NewFollowServiceServer(svc service.FollowService) *FollowServiceServer {

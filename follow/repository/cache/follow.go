@@ -16,6 +16,12 @@ type RedisFollowCache struct {
 	client redis.Cmdable
 }
 
+func NewRedisFollowCache(client redis.Cmdable) FollowCache {
+	return &RedisFollowCache{
+		client: client,
+	}
+}
+
 const (
 	fieldFollowerCnt = "follower_cnt"
 	fieldFolloweeCnt = "followee_cnt"
