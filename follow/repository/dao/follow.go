@@ -3,7 +3,6 @@ package dao
 import (
 	"context"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"time"
 )
 
@@ -39,18 +38,16 @@ func (dao *GORMFollowDAO) FollowerRelationList(ctx context.Context, follower int
 	return res, err
 }
 
-func (dao *GORMFollowDAO) GetRelationDetail(ctx context.Context, followee, follower int64) (Relation, error) {
+func (dao *GORMFollowDAO) GetRelationDetail(ctx context.Context, r Relation) (Relation, error) {
 	var res Relation
 	err := dao.db.WithContext(ctx).Model(&Relation{}).
-		Where("followee = ? AND follower = ? AND status = ?", followee, follower, RelationStatusActive).
+		Where("followee = ? AND follower = ? AND status = ?", r.Followee, r.Follower, RelationStatusActive).
 		First(&res).Error
 	return res, err
 }
 
 func (dao *GORMFollowDAO) CreateRelation(ctx context.Context, r Relation) error {
-	return dao.db.WithContext(ctx).Model(&Relation{}).Clauses(clause.OnConflict{
-		DoNothing: true,
-	}).Create(r).Error
+	return dao.db.WithContext(ctx).Model(&Relation{}).Create(r).Error
 }
 
 func (dao *GORMFollowDAO) UpdateStatus(ctx context.Context, followee, follower int64, status uint8) error {

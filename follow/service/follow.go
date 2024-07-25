@@ -50,7 +50,10 @@ func (f followService) GetFollower(ctx context.Context, followee int64, offset, 
 }
 
 func (f followService) GetRelation(ctx context.Context, followee, follower int64) (domain.Relation, error) {
-	return f.repo.GetRelation(ctx, followee, follower)
+	return f.repo.GetRelation(ctx, domain.Relation{
+		Followee: followee,
+		Follower: follower,
+	})
 }
 
 func (f followService) GetStatics(ctx context.Context, uid int64) (domain.Statics, error) {
