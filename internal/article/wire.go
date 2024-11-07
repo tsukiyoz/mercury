@@ -11,7 +11,7 @@ import (
 	"github.com/lazywoo/mercury/internal/article/repository/cache"
 	"github.com/lazywoo/mercury/internal/article/repository/dao"
 	"github.com/lazywoo/mercury/internal/article/service"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(
@@ -33,12 +33,12 @@ var svcProviderSet = wire.NewSet(
 	cache.NewRedisArticleCache,
 )
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	wire.Build(
 		thirdProviderSet,
 		svcProviderSet,
 		ioc.InitGRPCxServer,
-		wire.Struct(new(wego.App), "GRPCServer"),
+		wire.Struct(new(app.App), "GRPCServer"),
 	)
-	return new(wego.App)
+	return new(app.App)
 }

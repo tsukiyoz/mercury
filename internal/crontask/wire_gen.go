@@ -13,12 +13,12 @@ import (
 	"github.com/lazywoo/mercury/internal/crontask/repository"
 	"github.com/lazywoo/mercury/internal/crontask/repository/dao"
 	"github.com/lazywoo/mercury/internal/crontask/service"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	logger := ioc.InitLogger()
 	db := ioc.InitDB(logger)
 	taskDAO := dao.NewGORMTaskDAO(db)
@@ -26,10 +26,10 @@ func InitAPP() *wego.App {
 	taskService := service.NewTaskService(taskRepository, logger)
 	cronJobServiceServer := grpc.NewCronJobServiceServer(taskService)
 	server := ioc.InitGRPCxServer(cronJobServiceServer, logger)
-	app := &wego.App{
+	appApp := &app.App{
 		GRPCServer: server,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

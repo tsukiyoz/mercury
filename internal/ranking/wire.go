@@ -9,7 +9,7 @@ import (
 	"github.com/lazywoo/mercury/internal/ranking/repository"
 	"github.com/lazywoo/mercury/internal/ranking/repository/cache"
 	"github.com/lazywoo/mercury/internal/ranking/service"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(
@@ -33,14 +33,14 @@ var cronProviderSet = wire.NewSet(
 	ioc.InitRLockClient,
 )
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	wire.Build(
 		thirdProviderSet,
 		svcProviderSet,
 		cronProviderSet,
 		grpc.NewRankingServiceServer,
 		ioc.InitGRPCxServer,
-		wire.Struct(new(wego.App), "GRPCServer", "Cron"),
+		wire.Struct(new(app.App), "GRPCServer", "Cron"),
 	)
-	return new(wego.App)
+	return new(app.App)
 }

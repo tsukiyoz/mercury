@@ -11,12 +11,12 @@ import (
 	"github.com/lazywoo/mercury/internal/bff/ioc"
 	"github.com/lazywoo/mercury/internal/bff/web"
 	"github.com/lazywoo/mercury/internal/bff/web/jwt"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	cmdable := ioc.InitRedis()
 	limiter := ioc.InitWebLimiter(cmdable)
 	handler := jwt.NewRedisJWTHandler(cmdable)
@@ -34,10 +34,10 @@ func InitAPP() *wego.App {
 	commentServiceClient := ioc.InitCommentClient(client)
 	commentHandler := web.NewCommentHandler(commentServiceClient)
 	server := ioc.InitWebServer(limiter, handler, userHandler, oAuth2WechatHandler, articleHandler, commentHandler, logger)
-	app := &wego.App{
+	appApp := &app.App{
 		WebServer: server,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

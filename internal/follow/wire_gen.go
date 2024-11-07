@@ -14,12 +14,12 @@ import (
 	"github.com/lazywoo/mercury/internal/follow/repository/cache"
 	"github.com/lazywoo/mercury/internal/follow/repository/dao"
 	"github.com/lazywoo/mercury/internal/follow/service"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	logger := ioc.InitLogger()
 	db := ioc.InitDB(logger)
 	followDAO := dao.NewGORMFollowDAO(db)
@@ -29,10 +29,10 @@ func InitAPP() *wego.App {
 	followService := service.NewFollowService(followRepository)
 	followServiceServer := grpc.NewFollowServiceServer(followService)
 	server := ioc.InitGRPCxServer(followServiceServer, logger)
-	app := &wego.App{
+	appApp := &app.App{
 		GRPCServer: server,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

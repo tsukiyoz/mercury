@@ -13,12 +13,12 @@ import (
 	"github.com/lazywoo/mercury/internal/captcha/repository"
 	"github.com/lazywoo/mercury/internal/captcha/repository/cache"
 	"github.com/lazywoo/mercury/internal/captcha/service"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	cmdable := ioc.InitRedis()
 	captchaCache := cache.NewCaptchaRedisCache(cmdable)
 	captchaRepository := repository.NewCachedCaptchaRepository(captchaCache)
@@ -28,10 +28,10 @@ func InitAPP() *wego.App {
 	captchaServiceServer := grpc.NewCaptchaServiceServer(captchaService)
 	logger := ioc.InitLogger()
 	server := ioc.InitGRPCxServer(captchaServiceServer, logger)
-	app := &wego.App{
+	appApp := &app.App{
 		GRPCServer: server,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

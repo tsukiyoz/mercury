@@ -7,7 +7,7 @@ import (
 	"github.com/lazywoo/mercury/internal/bff/ioc"
 	"github.com/lazywoo/mercury/internal/bff/web"
 	"github.com/lazywoo/mercury/internal/bff/web/jwt"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(
@@ -33,7 +33,7 @@ var cliProviderSet = wire.NewSet(
 	ioc.InitCommentClient,
 )
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	wire.Build(
 		thirdProviderSet,
 		hdlProviderSet,
@@ -41,7 +41,7 @@ func InitAPP() *wego.App {
 		ioc.InitWebLimiter,
 		ioc.InitWebServer,
 		ioc.InitWechatHandlerConfig,
-		wire.Struct(new(wego.App), "WebServer"),
+		wire.Struct(new(app.App), "WebServer"),
 	)
-	return new(wego.App)
+	return new(app.App)
 }

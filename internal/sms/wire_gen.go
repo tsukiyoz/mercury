@@ -10,20 +10,20 @@ import (
 	"github.com/google/wire"
 	"github.com/lazywoo/mercury/internal/sms/grpc"
 	"github.com/lazywoo/mercury/internal/sms/ioc"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	logger := ioc.InitFileLogger()
 	service := ioc.InitService(logger)
 	smsServiceServer := grpc.NewSmsServiceServer(service)
 	server := ioc.InitGRPCxServer(smsServiceServer, logger)
-	app := &wego.App{
+	appApp := &app.App{
 		GRPCServer: server,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

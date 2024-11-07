@@ -64,3 +64,6 @@ get_go_version = $(shell go list -m $1 | awk '{print $$2}')
 COPY_GITHOOK:=$(shell cp -f githooks/* .git/hooks/)
 
 SCRIPTS_DIR=$(MERCURY_ROOT)/scripts
+
+APIROOT ?= $(MERCURY_ROOT)/pkg/api
+APISROOT ?= $(MERCURY_ROOT)/pkg/apis

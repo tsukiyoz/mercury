@@ -6,7 +6,7 @@ import (
 	"github.com/google/wire"
 	"github.com/lazywoo/mercury/internal/sms/grpc"
 	"github.com/lazywoo/mercury/internal/sms/ioc"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(
@@ -14,13 +14,13 @@ var thirdProviderSet = wire.NewSet(
 	ioc.InitFileLogger,
 )
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	wire.Build(
 		thirdProviderSet,
 		ioc.InitService,
 		grpc.NewSmsServiceServer,
 		ioc.InitGRPCxServer,
-		wire.Struct(new(wego.App), "GRPCServer"),
+		wire.Struct(new(app.App), "GRPCServer"),
 	)
-	return new(wego.App)
+	return new(app.App)
 }

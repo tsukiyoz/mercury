@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package crontask.v1;
+option go_package = "github.com/lazywoo/mercury/pkg/api/crontask/v1";
+import "google/protobuf/timestamp.proto";
+
+message CronTask {
+  int64 id = 1;
+  string name = 2;
+  string executor = 3;
+  string cfg = 4;
+  string expression = 5;
+
+  google.protobuf.Timestamp next_time = 6;
+}
+
+service CronTaskService {
+  rpc Preempt (PreemptRequest) returns (PreemptResponse) {}
+  rpc ResetNextTime (ResetNextTimeRequest) returns (ResetNextTimeResponse){}
+  rpc AddTask(AddTaskRequest) returns (AddTaskResponse) {}
+}
+
+message  PreemptResponse {
+  CronTask crontask = 1;
+}
+
+message PreemptRequest {}
+
+message ResetNextTimeRequest {
+  CronTask task = 1;
+}
+message ResetNextTimeResponse {}
+
+message AddTaskRequest {
+  CronTask task = 1;
+}
+
+message AddTaskResponse{}

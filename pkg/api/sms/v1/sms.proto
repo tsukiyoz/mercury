@@ -1,0 +1,18 @@
+syntax="proto3";
+
+package sms.v1;
+option go_package="github.com/lazywoo/mercury/pkg/api/sms/v1";
+
+
+service SmsService {
+  rpc Send(SmsSendRequest)returns(SmsSendResponse);
+}
+
+message SmsSendRequest {
+  string tplId = 1;
+  string target = 2;
+  repeated string args = 3;
+  repeated string values = 4;
+}
+
+message SmsSendResponse{}

@@ -10,20 +10,20 @@ import (
 	"github.com/google/wire"
 	"github.com/lazywoo/mercury/internal/oauth2/grpc"
 	"github.com/lazywoo/mercury/internal/oauth2/ioc"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	logger := ioc.InitLogger()
 	service := ioc.InitWechatService(logger)
 	oAuth2ServiceServer := grpc.NewOAuth2ServiceServer(service)
 	server := ioc.InitGRPCxServer(oAuth2ServiceServer, logger)
-	app := &wego.App{
+	appApp := &app.App{
 		GRPCServer: server,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

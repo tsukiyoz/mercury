@@ -13,12 +13,12 @@ import (
 	"github.com/lazywoo/mercury/internal/ranking/repository"
 	"github.com/lazywoo/mercury/internal/ranking/repository/cache"
 	"github.com/lazywoo/mercury/internal/ranking/service"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	client := ioc.InitEtcdClient()
 	articleServiceClient := ioc.InitArticleRpcClient(client)
 	interactiveServiceClient := ioc.InitInteractiveRpcClient(client)
@@ -33,11 +33,11 @@ func InitAPP() *wego.App {
 	rlockClient := ioc.InitRLockClient(cmdable)
 	rankingJob := ioc.InitRankingJob(rankingService, rlockClient, logger)
 	cron := ioc.InitTasks(logger, rankingJob)
-	app := &wego.App{
+	appApp := &app.App{
 		GRPCServer: server,
 		Cron:       cron,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

@@ -39,4 +39,7 @@ _install.go-gitlint: ## Install go-gitlint.
 _install.gofumpt: ## Install gofumpt.
 	@$(GO) install mvdan.cc/gofumpt@$(GO_FUMPT_VERSION)
 
+.PHONY: _install.buf
+_install.buf: ## Install buf command line tool.
+	@$(GO) install github.com/bufbuild/buf/cmd/buf@$(BUF_VERSION)
 

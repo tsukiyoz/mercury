@@ -9,7 +9,7 @@ import (
 	"github.com/lazywoo/mercury/internal/captcha/repository"
 	"github.com/lazywoo/mercury/internal/captcha/repository/cache"
 	"github.com/lazywoo/mercury/internal/captcha/service"
-	"github.com/lazywoo/mercury/pkg/wego"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(
@@ -26,12 +26,12 @@ var svcProviderSet = wire.NewSet(
 	cache.NewCaptchaRedisCache,
 )
 
-func InitAPP() *wego.App {
+func InitAPP() *app.App {
 	wire.Build(
 		thirdProviderSet,
 		svcProviderSet,
 		ioc.InitGRPCxServer,
-		wire.Struct(new(wego.App), "GRPCServer"),
+		wire.Struct(new(app.App), "GRPCServer"),
 	)
-	return new(wego.App)
+	return new(app.App)
 }
