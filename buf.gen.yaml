@@ -2,14 +2,14 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: "github.com/lazywoo/mercury/api/proto/gen"
+    default: "github.com/lazywoo/mercury/pkg/api"
 plugins:
   - plugin: buf.build/protocolbuffers/go
-    out: api/proto/gen
+    out: pkg/api
     opt:
       - paths=source_relative
 
   - plugin: buf.build/grpc/go
-    out: api/proto/gen
+    out: pkg/api
     opt:
       - paths=source_relative

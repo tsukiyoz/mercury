@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lazywoo/mercury/crontask/domain"
-	"github.com/lazywoo/mercury/crontask/service"
+	"github.com/lazywoo/mercury/internal/crontask/domain"
+	"github.com/lazywoo/mercury/internal/crontask/service"
 
 	"golang.org/x/sync/semaphore"
 
