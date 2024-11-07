@@ -5,9 +5,10 @@ import (
 
 	"github.com/lazywoo/mercury/internal/interactive/domain"
 
+	"google.golang.org/grpc"
+
 	"github.com/lazywoo/mercury/internal/interactive/service"
 	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
-	"google.golang.org/grpc"
 )
 
 type InteractiveLocalAdapter struct {

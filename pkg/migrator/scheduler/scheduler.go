@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
 	"github.com/lazywoo/mercury/pkg/ginx"
 	"github.com/lazywoo/mercury/pkg/gormx/connpool"
 	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/lazywoo/mercury/pkg/migrator"
 	"github.com/lazywoo/mercury/pkg/migrator/events"
 	"github.com/lazywoo/mercury/pkg/migrator/validator"
-	"gorm.io/gorm"
 )
 
 type Scheduler[T migrator.Entity] struct {

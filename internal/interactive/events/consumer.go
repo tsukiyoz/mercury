@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/IBM/sarama"
+
 	"github.com/lazywoo/mercury/internal/interactive/repository"
 
 	"github.com/lazywoo/mercury/pkg/logger"

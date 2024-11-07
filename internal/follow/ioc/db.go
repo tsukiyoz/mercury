@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/follow/repository/dao"
-	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
 	"gorm.io/plugin/opentelemetry/tracing"
 	gormPrometheus "gorm.io/plugin/prometheus"
+
+	"github.com/lazywoo/mercury/internal/follow/repository/dao"
+	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 func InitDB(l logger.Logger) *gorm.DB {
@@ -26,7 +27,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 		panic(err)
 	}
 	db, err := gorm.Open(mysql.Open(cfg.DSN), &gorm.Config{
-		//Logger: gormLogger.Default.LogMode(gormLogger.Info),
+		// Logger: gormLogger.Default.LogMode(gormLogger.Info),
 		Logger: gormLogger.New(gormLoggerFunc(l.Debug), gormLogger.Config{
 			SlowThreshold:             time.Millisecond * 20,
 			IgnoreRecordNotFoundError: true,

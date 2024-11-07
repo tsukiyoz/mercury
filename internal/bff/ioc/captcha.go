@@ -1,12 +1,13 @@
 package ioc
 
 import (
-	captchav1 "github.com/lazywoo/mercury/pkg/api/captcha/v1"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	captchav1 "github.com/lazywoo/mercury/pkg/api/captcha/v1"
 )
 
 func InitCaptchaClient(etcdCli *clientv3.Client) captchav1.CaptchaServiceClient {

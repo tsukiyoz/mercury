@@ -1,12 +1,13 @@
 package ioc
 
 import (
-	smsv1 "github.com/lazywoo/mercury/pkg/api/sms/v1"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	smsv1 "github.com/lazywoo/mercury/pkg/api/sms/v1"
 )
 
 func InitSmsServiceClient(etcdCli *clientv3.Client) smsv1.SmsServiceClient {

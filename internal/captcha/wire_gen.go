@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/google/wire"
+
 	"github.com/lazywoo/mercury/internal/captcha/grpc"
 	"github.com/lazywoo/mercury/internal/captcha/ioc"
 	"github.com/lazywoo/mercury/internal/captcha/repository"

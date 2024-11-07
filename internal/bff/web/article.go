@@ -11,10 +11,11 @@ import (
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
+
 	ijwt "github.com/lazywoo/mercury/internal/bff/web/jwt"
 	"github.com/lazywoo/mercury/pkg/ginx"
 	"github.com/lazywoo/mercury/pkg/logger"
-	"golang.org/x/sync/errgroup"
 )
 
 var _ handler = (*ArticleHandler)(nil)

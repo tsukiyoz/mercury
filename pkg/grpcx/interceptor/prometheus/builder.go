@@ -2,12 +2,14 @@ package prometheus
 
 import (
 	"context"
-	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
+	"strings"
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
-	"strings"
-	"time"
+
+	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
 )
 
 type InterceptorBuilder struct {

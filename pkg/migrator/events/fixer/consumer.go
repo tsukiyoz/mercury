@@ -3,14 +3,16 @@ package fixer
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/IBM/sarama"
+	"gorm.io/gorm"
+
 	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/lazywoo/mercury/pkg/migrator"
 	"github.com/lazywoo/mercury/pkg/migrator/events"
 	"github.com/lazywoo/mercury/pkg/migrator/fixer"
 	"github.com/lazywoo/mercury/pkg/saramax"
-	"gorm.io/gorm"
-	"time"
 )
 
 type Consumer[T migrator.Entity] struct {

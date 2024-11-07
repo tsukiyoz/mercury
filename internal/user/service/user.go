@@ -10,10 +10,11 @@ import (
 	"errors"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/lazywoo/mercury/internal/user/domain"
 	repository2 "github.com/lazywoo/mercury/internal/user/repository"
 	"github.com/lazywoo/mercury/pkg/logger"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var (

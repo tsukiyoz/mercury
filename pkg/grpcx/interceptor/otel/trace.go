@@ -12,9 +12,10 @@ import (
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
 
 	"google.golang.org/grpc"
 )
@@ -78,8 +79,7 @@ func (bdr *TraceInterceptorBuilder) BuildUnaryClientInterceptor() grpc.UnaryClie
 func (bdr *TraceInterceptorBuilder) BuildUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	propagator := bdr.propagator
 	if propagator == nil {
-		// global
-		propagator = otel.GetTextMapPropagator()
+		propagator = otel.GetTextMapPropagator() // global
 	}
 	tracer := bdr.tracer
 	if tracer == nil {

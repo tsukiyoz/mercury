@@ -1,10 +1,11 @@
 package app
 
 import (
+	"github.com/robfig/cron/v3"
+
 	"github.com/lazywoo/mercury/pkg/ginx"
 	"github.com/lazywoo/mercury/pkg/grpcx"
 	"github.com/lazywoo/mercury/pkg/saramax"
-	"github.com/robfig/cron/v3"
 )
 
 type App struct {

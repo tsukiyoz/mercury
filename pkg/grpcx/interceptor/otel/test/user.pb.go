@@ -7,11 +7,13 @@
 package test
 
 import (
-	inner "github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel/test/inner"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+
+	inner "github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel/test/inner"
 )
 
 const (
@@ -374,15 +376,17 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_user_proto_goTypes = []interface{}{
-	(*User)(nil),        // 0: User
-	(*Address)(nil),     // 1: Address
-	(*GetByIDReq)(nil),  // 2: GetByIDReq
-	(*GetByIDResp)(nil), // 3: GetByIDResp
-	nil,                 // 4: User.AttributesEntry
-	(inner.Gender)(0),   // 5: gender.Gender
-}
+var (
+	file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+	file_user_proto_goTypes  = []interface{}{
+		(*User)(nil),        // 0: User
+		(*Address)(nil),     // 1: Address
+		(*GetByIDReq)(nil),  // 2: GetByIDReq
+		(*GetByIDResp)(nil), // 3: GetByIDResp
+		nil,                 // 4: User.AttributesEntry
+		(inner.Gender)(0),   // 5: gender.Gender
+	}
+)
 var file_user_proto_depIdxs = []int32{
 	4, // 0: User.attributes:type_name -> User.AttributesEntry
 	1, // 1: User.address:type_name -> Address

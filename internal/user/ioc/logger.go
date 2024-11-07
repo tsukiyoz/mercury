@@ -1,9 +1,10 @@
 package ioc
 
 import (
-	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 func InitLogger() logger.Logger {

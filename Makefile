@@ -10,9 +10,9 @@ include scripts/make-rules/all.mk
 .PHONY: format
 format: tools.verify.goimports tools.verify.gofumpt
 	@echo "===========> Formating codes"
-	@$(FIND) -type f -name '*.go' | $(XARGS) gofmt -w
-	@$(FIND) -type f -name '*.go' | $(XARGS) gofumpt -w
-	@$(FIND) -type f -name '*.go' | $(XARGS) goimports -w -local $(PRJ_SRC_PATH)
+	@$(FIND) ! -path './pkg/api/*' ! -name '*.mock.go' -type f -name '*.go' | $(XARGS) gofmt -w
+	@$(FIND) ! -path './pkg/api/*' ! -name '*.mock.go' -type f -name '*.go' | $(XARGS) gofumpt -w
+	@$(FIND) ! -path './pkg/api/*' ! -name '*.mock.go' -type f -name '*.go' | $(XARGS) goimports -w -local $(PRJ_SRC_PATH)
 	@$(GO) mod edit -fmt
 ifeq ($(ALL),1)
 	$(MAKE) format.protobuf
@@ -40,8 +40,13 @@ mock:
 	@go mod tidy
 
 .PHONY: grpc
-grpc:
+grpc: tools.verify.buf
 	@buf generate $(APIROOT)
+	
+.PHONY: clean
+clean:
+	@echo "===========> Cleaning"
+	@$(FIND) -path './pkg/api/*' -type f -name '*.pb.go' -delete
 	
 .PHONY: help
 help:

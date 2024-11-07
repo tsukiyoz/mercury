@@ -1,12 +1,13 @@
 package ioc
 
 import (
-	userv1 "github.com/lazywoo/mercury/pkg/api/user/v1"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	userv1 "github.com/lazywoo/mercury/pkg/api/user/v1"
 )
 
 func InitUserClient(etcdCli *clientv3.Client) userv1.UserServiceClient {

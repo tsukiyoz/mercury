@@ -3,11 +3,12 @@ package grpc
 import (
 	"context"
 
+	"google.golang.org/grpc"
+
 	"github.com/lazywoo/mercury/internal/follow/domain"
 	"github.com/lazywoo/mercury/internal/follow/service"
 	followv1 "github.com/lazywoo/mercury/pkg/api/follow/v1"
 	"github.com/lazywoo/mercury/pkg/grpcx"
-	"google.golang.org/grpc"
 )
 
 var _ grpcx.Register = (*FollowServiceServer)(nil)

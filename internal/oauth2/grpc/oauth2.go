@@ -3,9 +3,10 @@ package grpc
 import (
 	"context"
 
+	"google.golang.org/grpc"
+
 	"github.com/lazywoo/mercury/internal/oauth2/service/wechat"
 	oauth2v1 "github.com/lazywoo/mercury/pkg/api/oauth2/v1"
-	"google.golang.org/grpc"
 )
 
 type OAuth2ServiceServer struct {

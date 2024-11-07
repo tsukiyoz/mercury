@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/ecodeclub/ekit/syncx/atomicx"
+
 	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
 )
 

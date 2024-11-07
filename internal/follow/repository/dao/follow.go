@@ -2,8 +2,9 @@ package dao
 
 import (
 	"context"
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 var _ FollowDAO = (*GORMFollowDAO)(nil)

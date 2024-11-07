@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/google/wire"
+
 	"github.com/lazywoo/mercury/internal/bff/ioc"
 	"github.com/lazywoo/mercury/internal/bff/web"
 	"github.com/lazywoo/mercury/internal/bff/web/jwt"

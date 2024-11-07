@@ -5,9 +5,10 @@ import (
 
 	"go.opentelemetry.io/otel/attribute"
 
-	"github.com/lazywoo/mercury/internal/sms/service"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/lazywoo/mercury/internal/sms/service"
 )
 
 type Service struct {

@@ -2,13 +2,15 @@ package validator
 
 import (
 	"context"
+	"time"
+
 	"github.com/ecodeclub/ekit/slice"
+	"golang.org/x/sync/errgroup"
+	"gorm.io/gorm"
+
 	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/lazywoo/mercury/pkg/migrator"
 	"github.com/lazywoo/mercury/pkg/migrator/events"
-	"golang.org/x/sync/errgroup"
-	"gorm.io/gorm"
-	"time"
 )
 
 type Validator[T migrator.Entity] struct {
@@ -47,7 +49,8 @@ func NewValidator[T migrator.Entity](
 	base, target *gorm.DB,
 	producer events.InconsistentEventProducer,
 	direction migrator.Direction,
-	l logger.Logger) *Validator[T] {
+	l logger.Logger,
+) *Validator[T] {
 	return &Validator[T]{
 		base:      base,
 		target:    target,

@@ -1,13 +1,14 @@
 package ioc
 
 import (
-	"github.com/lazywoo/mercury/internal/bff/web"
-	oauth2v1 "github.com/lazywoo/mercury/pkg/api/oauth2/v1"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/lazywoo/mercury/internal/bff/web"
+	oauth2v1 "github.com/lazywoo/mercury/pkg/api/oauth2/v1"
 )
 
 func InitOAuth2Client(etcdCli *clientv3.Client) oauth2v1.Oauth2ServiceClient {

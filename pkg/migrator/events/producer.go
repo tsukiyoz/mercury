@@ -3,6 +3,7 @@ package events
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/IBM/sarama"
 )
 

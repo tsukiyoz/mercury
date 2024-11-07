@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+
 	"github.com/ecodeclub/ekit/syncx/atomicx"
 	"gorm.io/gorm"
 )
@@ -79,7 +80,8 @@ func (d *DualWritePool) startOneTx(ctx context.Context, conn gorm.ConnPool, patt
 func (d *DualWritePool) startTwoTx(ctx context.Context,
 	first, second gorm.ConnPool,
 	pattern Pattern,
-	opts *sql.TxOptions) (*DualWritePoolTx, error) {
+	opts *sql.TxOptions,
+) (*DualWritePoolTx, error) {
 	src, err := first.(gorm.TxBeginner).BeginTx(ctx, opts)
 	if err != nil {
 		return nil, err

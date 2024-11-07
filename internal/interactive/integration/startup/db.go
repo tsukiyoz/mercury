@@ -6,9 +6,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
 )
 
 var db *gorm.DB

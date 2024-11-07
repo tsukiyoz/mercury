@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/google/wire"
+
 	"github.com/lazywoo/mercury/internal/oauth2/grpc"
 	"github.com/lazywoo/mercury/internal/oauth2/ioc"
 	"github.com/lazywoo/mercury/pkg/app"

@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/google/wire"
+
 	"github.com/lazywoo/mercury/internal/interactive/events"
 	"github.com/lazywoo/mercury/internal/interactive/grpc"
 	"github.com/lazywoo/mercury/internal/interactive/ioc"

@@ -12,8 +12,9 @@ import (
 
 	"google.golang.org/grpc/status"
 
-	"github.com/lazywoo/mercury/pkg/logger"
 	"google.golang.org/grpc"
+
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 type LoggingInterceptorBuilder struct {
@@ -21,7 +22,7 @@ type LoggingInterceptorBuilder struct {
 	interceptor.Builder
 }
 
-func (bdr *LoggingInterceptorBuilder) BuildLoggingInterceptor() grpc.UnaryServerInterceptor {
+func (bdr *LoggingInterceptorBuilder) BuildLoggingServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 		if info.FullMethod == "/grpc.health.v1.Health/Check" {
 			return handler(ctx, req)
@@ -41,6 +42,7 @@ func (bdr *LoggingInterceptorBuilder) BuildLoggingInterceptor() grpc.UnaryServer
 				}
 				stack := make([]byte, 4096)
 				stack = stack[:runtime.Stack(stack, true)]
+				fields = append(fields, logger.String("stack", string(stack)))
 				evt = "recover"
 				err = status.New(codes.Internal, "panic, err: "+err.Error()).Err()
 			}

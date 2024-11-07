@@ -15,9 +15,10 @@ import (
 	service2 "github.com/lazywoo/mercury/internal/ranking/service"
 
 	rlock "github.com/gotomicro/redis-lock"
-	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron/v3"
+
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 // -------------------------------------------

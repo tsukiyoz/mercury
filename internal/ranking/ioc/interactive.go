@@ -1,12 +1,13 @@
 package ioc
 
 import (
-	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
 )
 
 func InitInteractiveRpcClient(etcdCli *clientv3.Client) interactivev1.InteractiveServiceClient {

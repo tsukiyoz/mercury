@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+
 	ginxlogger "github.com/lazywoo/mercury/pkg/ginx/middleware/logger"
 	"github.com/lazywoo/mercury/pkg/ginx/middleware/metrics"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"github.com/redis/go-redis/v9"
 
@@ -17,14 +18,15 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/spf13/viper"
+
 	"github.com/lazywoo/mercury/internal/bff/web"
 	"github.com/lazywoo/mercury/internal/bff/web/jwt"
 	"github.com/lazywoo/mercury/internal/bff/web/middleware"
 	"github.com/lazywoo/mercury/pkg/ginx"
 	ginRatelimit "github.com/lazywoo/mercury/pkg/ginx/middleware/ratelimit"
 	"github.com/lazywoo/mercury/pkg/logger"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/spf13/viper"
 )
 
 func InitWebServer(limiter ratelimit.Limiter, jwtHdl jwt.Handler, userHdl *web.UserHandler, oAuth2Hdl *web.OAuth2WechatHandler, articleHdl *web.ArticleHandler, commentHdl *web.CommentHandler, logger logger.Logger) *ginx.Server {

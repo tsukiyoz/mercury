@@ -8,6 +8,7 @@ package test
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -55,8 +56,7 @@ type UserServiceServer interface {
 }
 
 // UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedUserServiceServer struct {
-}
+type UnimplementedUserServiceServer struct{}
 
 func (UnimplementedUserServiceServer) GetByID(context.Context, *GetByIDReq) (*GetByIDResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByID not implemented")

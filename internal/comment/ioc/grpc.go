@@ -1,11 +1,12 @@
 package ioc
 
 import (
+	"github.com/spf13/viper"
+	"google.golang.org/grpc"
+
 	igrpc "github.com/lazywoo/mercury/internal/comment/grpc"
 	"github.com/lazywoo/mercury/pkg/grpcx"
 	"github.com/lazywoo/mercury/pkg/logger"
-	"github.com/spf13/viper"
-	"google.golang.org/grpc"
 )
 
 func InitGRPCxServer(comment *igrpc.CommentServiceServer, l logger.Logger) *grpcx.Server {

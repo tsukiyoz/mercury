@@ -3,6 +3,9 @@ package ioc
 import (
 	"github.com/IBM/sarama"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/spf13/viper"
+
 	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
 	"github.com/lazywoo/mercury/pkg/ginx"
 	"github.com/lazywoo/mercury/pkg/gormx/connpool"
@@ -10,8 +13,6 @@ import (
 	"github.com/lazywoo/mercury/pkg/migrator/events"
 	"github.com/lazywoo/mercury/pkg/migrator/events/fixer"
 	"github.com/lazywoo/mercury/pkg/migrator/scheduler"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/spf13/viper"
 )
 
 const topic = "migrator_interactives"

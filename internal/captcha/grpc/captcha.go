@@ -3,9 +3,10 @@ package grpc
 import (
 	"context"
 
+	"google.golang.org/grpc"
+
 	"github.com/lazywoo/mercury/internal/captcha/service"
 	captchav1 "github.com/lazywoo/mercury/pkg/api/captcha/v1"
-	"google.golang.org/grpc"
 )
 
 type CaptchaServiceServer struct {

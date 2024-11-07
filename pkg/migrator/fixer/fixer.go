@@ -2,10 +2,12 @@ package fixer
 
 import (
 	"context"
-	"github.com/lazywoo/mercury/pkg/migrator"
-	"github.com/lazywoo/mercury/pkg/migrator/events"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+
+	"github.com/lazywoo/mercury/pkg/migrator"
+	"github.com/lazywoo/mercury/pkg/migrator/events"
 )
 
 type OverrideFixer[T migrator.Entity] struct {

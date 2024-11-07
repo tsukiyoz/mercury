@@ -1,12 +1,13 @@
 package ioc
 
 import (
-	articlev1 "github.com/lazywoo/mercury/pkg/api/article/v1"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	articlev1 "github.com/lazywoo/mercury/pkg/api/article/v1"
 )
 
 func InitArticleRpcClient(etcdCli *clientv3.Client) articlev1.ArticleServiceClient {

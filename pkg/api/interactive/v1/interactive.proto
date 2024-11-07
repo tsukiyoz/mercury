@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package interactive.v1;
 option go_package = "github.com/lazywoo/mercury/pkg/api/interactive/v1";
 

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/IBM/sarama"
+
 	"github.com/lazywoo/mercury/pkg/logger"
 )
 

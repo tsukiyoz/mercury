@@ -8,6 +8,7 @@ package startup
 
 import (
 	"github.com/google/wire"
+
 	"github.com/lazywoo/mercury/internal/interactive/grpc"
 	"github.com/lazywoo/mercury/internal/interactive/repository"
 	"github.com/lazywoo/mercury/internal/interactive/repository/cache"

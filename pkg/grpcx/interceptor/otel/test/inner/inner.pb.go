@@ -7,10 +7,11 @@
 package inner
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -96,10 +97,12 @@ func file_inner_inner_proto_rawDescGZIP() []byte {
 	return file_inner_inner_proto_rawDescData
 }
 
-var file_inner_inner_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_inner_inner_proto_goTypes = []interface{}{
-	(Gender)(0), // 0: gender.Gender
-}
+var (
+	file_inner_inner_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+	file_inner_inner_proto_goTypes   = []interface{}{
+		(Gender)(0), // 0: gender.Gender
+	}
+)
 var file_inner_inner_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type

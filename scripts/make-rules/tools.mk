@@ -17,7 +17,7 @@ _tools.install.%: ## Install a specified tool.
 
 .PHONY: tools.verify.%
 tools.verify.%: ## Verify a specified tool.
-	@if ! which $* > /dev/null; then $(MAKE) tools.install.$*; fi
+	@if ! which $* > /dev/null; then $(MAKE) _tools.install.$*; fi
 
 .PHONY: _install.other
 _install.other: $(addprefix _tools.install., $(OTHER_TOOLS))

@@ -5,8 +5,9 @@ import (
 
 	gormLogger "gorm.io/gorm/logger"
 
-	"github.com/lazywoo/mercury/pkg/gormx/connpool"
 	"gorm.io/plugin/opentelemetry/tracing"
+
+	"github.com/lazywoo/mercury/pkg/gormx/connpool"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"

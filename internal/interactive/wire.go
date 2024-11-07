@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/google/wire"
+
 	"github.com/lazywoo/mercury/internal/interactive/events"
 	"github.com/lazywoo/mercury/internal/interactive/grpc"
 	"github.com/lazywoo/mercury/internal/interactive/ioc"
@@ -18,7 +19,7 @@ var thirdProvider = wire.NewSet(
 	ioc.InitDstDB,
 	ioc.InitDualWritePool,
 	ioc.InitDualWriteDB,
-	//ioc.initDB,
+	// ioc.initDB,
 	ioc.InitRedis,
 	ioc.InitKafka,
 	ioc.InitLogger,

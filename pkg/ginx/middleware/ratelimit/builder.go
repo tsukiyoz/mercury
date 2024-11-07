@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/lazywoo/mercury/pkg/ratelimit"
 )
 

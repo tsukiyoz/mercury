@@ -8,6 +8,7 @@ import (
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
+
 	ijwt "github.com/lazywoo/mercury/internal/bff/web/jwt"
 	"github.com/lazywoo/mercury/pkg/ginx"
 

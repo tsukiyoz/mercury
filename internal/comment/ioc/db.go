@@ -3,15 +3,16 @@ package ioc
 import (
 	"fmt"
 
-	"github.com/lazywoo/mercury/internal/comment/repository/dao"
-	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
 	"gorm.io/plugin/opentelemetry/tracing"
 	gormPrometheus "gorm.io/plugin/prometheus"
+
+	"github.com/lazywoo/mercury/internal/comment/repository/dao"
+	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/lazywoo/mercury/pkg/logger"
 )
 
 func InitDB(l logger.Logger) *gorm.DB {

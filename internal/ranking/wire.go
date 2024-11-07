@@ -4,6 +4,7 @@ package main
 
 import (
 	"github.com/google/wire"
+
 	"github.com/lazywoo/mercury/internal/ranking/grpc"
 	"github.com/lazywoo/mercury/internal/ranking/ioc"
 	"github.com/lazywoo/mercury/internal/ranking/repository"

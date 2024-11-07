@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/lazywoo/mercury/internal/follow/domain"
 	"github.com/redis/go-redis/v9"
+
+	"github.com/lazywoo/mercury/internal/follow/domain"
 )
 
 var ErrKeyNotExist = redis.Nil
