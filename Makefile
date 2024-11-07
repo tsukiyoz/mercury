@@ -20,7 +20,7 @@ k8s-setup-db:
 
 .PHONY: k8s-mysql-init
 k8s-mysql-init:
-	@cat script/mysql/init.sql | mysql -h 127.0.0.1 -P 3308 -u root -p'for.nothing'
+	@cat scripts/mysql/init.sql | mysql -h 127.0.0.1 -P 3308 -u root -p'for.nothing'
 
 .PHONY: k8s-setup-web
 k8s-setup-web:
@@ -60,9 +60,32 @@ grpc:
 
 .PHONYY: wire
 wire:
-	@./script/gen-wire.sh
+	@./scripts/gen-wire.sh
 
 .PHONYY: wire.%
 wire.%:
 	@echo $*
-	@./script/gen-wire.sh $*
+	@./scripts/gen-wire.sh $*
+
+# ==============================================================================
+# Includes
+
+include scripts/make-rules/common.mk
+include scripts/make-rules/all.mk
+
+.PHONY: format
+format: tools.verify.goimports tools.verify.gofumpt
+	@echo "===========> Formating codes"
+	@$(FIND) -type f -name '*.go' | $(XARGS) gofmt -w
+	@$(FIND) -type f -name '*.go' | $(XARGS) gofumpt -w
+	@$(FIND) -type f -name '*.go' | $(XARGS) goimports -w -local $(PRJ_SRC_PATH)
+	@$(GO) mod edit -fmt
+
+.PHONY: install-tools
+install-tools:
+	@echo "===========> Installing tools"
+	@$(MAKE) tools.install
+
+.PHONY: tidy
+tidy:
+	@$(GO) mod tidy

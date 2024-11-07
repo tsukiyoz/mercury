@@ -1,12 +1,10 @@
 .idea/
 .vscode/
 
+_output/
+
 mercury
-**/*.mock.go
-**/wire_gen.go
 .env
-script/grafana/grafana.ini
-/api/proto/gen/
+scripts/grafana/grafana.ini
 
 **/*.log
-**/*.pb.go

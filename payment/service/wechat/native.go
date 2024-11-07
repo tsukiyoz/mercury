@@ -5,5 +5,5 @@ import (
 )
 
 type NativePaymentService struct {
-	svc *native.Native
+	svc *native.NativeApiService
 }

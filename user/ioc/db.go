@@ -6,7 +6,6 @@ import (
 
 	"github.com/lazywoo/mercury/user/repository/dao"
 
-	interactiveDao "github.com/lazywoo/mercury/interactive/repository/dao"
 	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
 	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
@@ -19,7 +18,8 @@ import (
 
 func InitDB(l logger.Logger) *gorm.DB {
 	type Config struct {
-		DSN string `yaml:"dsn"`
+		DSN     string `yaml:"dsn"`
+		Migrate bool   `yaml:"migrate"`
 	}
 
 	var cfg Config
@@ -37,6 +37,13 @@ func InitDB(l logger.Logger) *gorm.DB {
 	})
 	if err != nil {
 		panic(err)
+	}
+
+	if cfg.Migrate {
+		err = dao.InitTable(db)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// metrics
@@ -77,16 +84,6 @@ func InitDB(l logger.Logger) *gorm.DB {
 			tracing.WithoutQueryVariables(),
 		),
 	)
-
-	err = dao.InitTable(db)
-	if err != nil {
-		panic(err)
-	}
-
-	err = interactiveDao.InitTable(db)
-	if err != nil {
-		panic(err)
-	}
 
 	return db
 }

@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: for.nothing
     volumes:
-      - ./script/mysql/:/docker-entrypoint-initdb.d/
+      - ./scripts/mysql/:/docker-entrypoint-initdb.d/
     ports:
       - "3306:3306"
   redis:
@@ -61,7 +61,7 @@ services:
     image: grafana/grafana-enterprise:10.2.0
     container_name: grafana
     volumes:
-      - ./script/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./scripts/grafana/grafana.ini:/etc/grafana/grafana.ini
     ports:
       - 3000:3000
     depends_on:

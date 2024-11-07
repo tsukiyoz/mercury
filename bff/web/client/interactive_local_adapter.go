@@ -38,6 +38,11 @@ func (i *InteractiveLocalAdapter) Favorite(ctx context.Context, in *interactivev
 	return &interactivev1.FavoriteResponse{}, err
 }
 
+func (i *InteractiveLocalAdapter) CancelFavorite(ctx context.Context, in *interactivev1.CancelFavoriteRequest, opts ...grpc.CallOption) (*interactivev1.CancelFavoriteResponse, error) {
+	err := i.svc.CancelFavorite(ctx, in.GetBiz(), in.GetBizId(), in.GetUid(), in.GetFid())
+	return &interactivev1.CancelFavoriteResponse{}, err
+}
+
 func (i *InteractiveLocalAdapter) Get(ctx context.Context, in *interactivev1.GetRequest, opts ...grpc.CallOption) (*interactivev1.GetResponse, error) {
 	res, err := i.svc.Get(ctx, in.GetBiz(), in.GetBizId(), in.GetUid())
 	if err != nil {

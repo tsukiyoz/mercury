@@ -1,5 +1,9 @@
+log:
+  mode: "dev" # prod, dev
+
 db:
   dsn: "root:for.nothing@tcp(localhost:3306)/mercury"
+  migrate: false
 
 redis:
   addr: "localhost:6379"
