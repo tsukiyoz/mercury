@@ -1,8 +1,10 @@
 syntax = "proto3";
 
 package ranking.v1;
-option go_package="github.com/lazywoo/mercury/pkg/api/ranking/v1";
+
 import "google/protobuf/timestamp.proto";
+
+option go_package = "ranking/v1;rankingv1";
 
 message Author {
   int64 id = 1;
@@ -20,20 +22,15 @@ message Article {
 }
 
 service RankingService {
-  rpc RankTopN (RankTopNRequest) returns (RankTopNResponse) {}
-  rpc TopN (TopNRequest) returns (TopNResponse) {}
+  rpc RankTopN(RankTopNRequest) returns (RankTopNResponse) {}
+  rpc TopN(TopNRequest) returns (TopNResponse) {}
 }
 
-message RankTopNRequest {
-}
+message RankTopNRequest {}
 
-message RankTopNResponse {
-}
+message RankTopNResponse {}
 
-
-message TopNRequest {
-}
-
+message TopNRequest {}
 
 message TopNResponse {
   repeated Article articles = 1;

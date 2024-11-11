@@ -1,9 +1,10 @@
 syntax = "proto3";
 
 package article.v1;
-option go_package="github.com/lazywoo/mercury/pkg/api/article/v1";
 
 import "google/protobuf/timestamp.proto"; // 使用timestamp类型
+
+option go_package = "article/v1;articlev1";
 
 message Author {
   int64 id = 1;
@@ -22,13 +23,13 @@ message Article {
 }
 
 service ArticleService {
-  rpc Save (SaveRequest) returns (SaveResponse);
-  rpc Publish (PublishRequest) returns (PublishResponse);
-  rpc Withdraw (WithdrawRequest) returns (WithdrawResponse);
-  rpc List (ListRequest) returns (ListResponse);
-  rpc GetById (GetByIdRequest) returns (GetByIdResponse);
-  rpc GetPublishedById (GetPublishedByIdRequest) returns (GetPublishedByIdResponse);
-  rpc ListPub (ListPubRequest) returns (ListPubResponse);
+  rpc Save(SaveRequest) returns (SaveResponse);
+  rpc Publish(PublishRequest) returns (PublishResponse);
+  rpc Withdraw(WithdrawRequest) returns (WithdrawResponse);
+  rpc List(ListRequest) returns (ListResponse);
+  rpc GetById(GetByIdRequest) returns (GetByIdResponse);
+  rpc GetPublishedById(GetPublishedByIdRequest) returns (GetPublishedByIdResponse);
+  rpc ListPub(ListPubRequest) returns (ListPubResponse);
 }
 
 message SaveRequest {

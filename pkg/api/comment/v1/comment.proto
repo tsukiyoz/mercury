@@ -1,22 +1,22 @@
 syntax = "proto3";
 
 package comment.v1;
-option go_package="github.com/lazywoo/mercury/pkg/api/comment/v1";
 
 import "google/protobuf/timestamp.proto";
 
+option go_package = "comment/v1;commentv1";
 
 service CommentService {
   // GetCommentList if id = 0, means get top comments
-  rpc GetCommentList (CommentListRequest) returns (CommentListResponse);
+  rpc GetCommentList(CommentListRequest) returns (CommentListResponse);
 
   // DeleteComment Delete its own and all descendant comments
-  rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentResponse);
+  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
 
   // CreateComment create a comment
-  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse);
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
 
-//  rpc GetCommentByIds (GetCommentByIdsRequest) returns (GetCommentByIdsResponse);
+  //  rpc GetCommentByIds (GetCommentByIdsRequest) returns (GetCommentByIdsResponse);
 
   rpc GetMoreReplies(GetMoreRepliesRequest) returns (GetMoreRepliesResponse);
 }
@@ -36,15 +36,13 @@ message DeleteCommentRequest {
   int64 id = 1;
 }
 
-message DeleteCommentResponse {
-}
+message DeleteCommentResponse {}
 
 message CreateCommentRequest {
   Comment comment = 1;
 }
 
-message CreateCommentResponse {
-}
+message CreateCommentResponse {}
 
 //message GetCommentByIdsRequest {
 //  repeated int64 ids = 1;

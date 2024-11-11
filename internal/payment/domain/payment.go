@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/wechatpay-apiv3/wechatpay-go/services/payments"
+
 type Amount struct {
 	Currency string
 	Total    int64
@@ -7,7 +9,7 @@ type Amount struct {
 
 type Payment struct {
 	Amt         Amount
-	BizTradeNO  string
+	BizTradeNo  string
 	Description string
 	Status      PaymentStatus
 	TxnID       string
@@ -20,9 +22,11 @@ func (s PaymentStatus) AsUint8() uint8 {
 }
 
 const (
-	PaymentStatusUnknown = iota
-	PaymentStatusInit
-	PaymentStatusSuccess
-	PaymentStatusFailed
-	PaymentStatusRefund
+	PaymentStatusUnknown PaymentStatus = iota
+	PaymentStatusInit                  // 初始化
+	PaymentStatusSuccess               // 支付成功
+	PaymentStatusFailed                // 支付失败
+	PaymentStatusRefund                // 退款
 )
+
+type Transaction payments.Transaction

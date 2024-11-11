@@ -387,6 +387,7 @@ var (
 		(inner.Gender)(0),   // 5: gender.Gender
 	}
 )
+
 var file_user_proto_depIdxs = []int32{
 	4, // 0: User.attributes:type_name -> User.AttributesEntry
 	1, // 1: User.address:type_name -> Address

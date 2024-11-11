@@ -1,7 +1,8 @@
 syntax = "proto3";
 
 package follow.v1;
-option go_package = "github.com/lazywoo/mercury/pkg/api/follow/v1";
+
+option go_package = "follow/v1;followv1";
 
 message Relation {
   int64 id = 1;
@@ -15,12 +16,12 @@ message Statics {
 }
 
 service FollowService {
-  rpc Follow (FollowRequest) returns (FollowResponse); // 关注
-  rpc CancelFollow (CancelFollowRequest) returns (CancelFollowResponse); // 取消关注
-  rpc GetFollowee (GetFolloweeRequest) returns (GetFolloweeResponse); // 获取关注列表
-  rpc GetFollower (GetFollowerRequest) returns (GetFollowerResponse); // 获取被关注的列表
-  rpc GetRelation (GetRelationRequest) returns (GetRelationResponse); // 获取关系信息
-  rpc GetStatics (GetStaticsRequest) returns (GetStaticsResponse); // 获取关注信息数量
+  rpc Follow(FollowRequest) returns (FollowResponse); // 关注
+  rpc CancelFollow(CancelFollowRequest) returns (CancelFollowResponse); // 取消关注
+  rpc GetFollowee(GetFolloweeRequest) returns (GetFolloweeResponse); // 获取关注列表
+  rpc GetFollower(GetFollowerRequest) returns (GetFollowerResponse); // 获取被关注的列表
+  rpc GetRelation(GetRelationRequest) returns (GetRelationResponse); // 获取关系信息
+  rpc GetStatics(GetStaticsRequest) returns (GetStaticsResponse); // 获取关注信息数量
 }
 
 message FollowRequest {
@@ -29,41 +30,41 @@ message FollowRequest {
 }
 message FollowResponse {}
 
-message CancelFollowRequest{
+message CancelFollowRequest {
   int64 followee = 1;
   int64 follower = 2;
 }
-message CancelFollowResponse{}
+message CancelFollowResponse {}
 
-message GetFolloweeRequest{
+message GetFolloweeRequest {
   int64 follower = 1;
   int64 offset = 2;
   int64 limit = 3;
 }
-message GetFolloweeResponse{
+message GetFolloweeResponse {
   repeated Relation follow_relation = 1;
 }
 
-message GetFollowerRequest{
+message GetFollowerRequest {
   int64 followee = 1;
   int64 offset = 2;
   int64 limit = 3;
 }
-message GetFollowerResponse{
+message GetFollowerResponse {
   repeated Relation follow_relation = 1;
 }
 
-message GetRelationRequest{
+message GetRelationRequest {
   int64 followee = 1;
   int64 follower = 2;
 }
-message GetRelationResponse{
+message GetRelationResponse {
   Relation follow_relation = 1;
 }
 
-message GetStaticsRequest{
+message GetStaticsRequest {
   int64 uid = 1;
 }
-message GetStaticsResponse{
+message GetStaticsResponse {
   Statics statics = 1;
 }

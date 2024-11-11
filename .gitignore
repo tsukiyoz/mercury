@@ -8,3 +8,5 @@ mercury
 scripts/grafana/grafana.ini
 
 **/*.log
+
+internal/payment/config/cert/

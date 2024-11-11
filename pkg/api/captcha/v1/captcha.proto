@@ -1,11 +1,12 @@
-syntax="proto3";
+syntax = "proto3";
 
 package captcha.v1;
-option go_package="github.com/lazywoo/mercury/pkg/api/captcha/v1";
+
+option go_package = "captcha/v1;captchav1";
 
 service CaptchaService {
-  rpc Send(CaptchaSendRequest)returns(CaptchaSendResponse);
-  rpc Verify(VerifyRequest)returns(VerifyResponse);
+  rpc Send(CaptchaSendRequest) returns (CaptchaSendResponse);
+  rpc Verify(VerifyRequest) returns (VerifyResponse);
 }
 
 message CaptchaSendRequest {
@@ -13,7 +14,7 @@ message CaptchaSendRequest {
   string phone = 2;
 }
 
-message CaptchaSendResponse{}
+message CaptchaSendResponse {}
 
 message VerifyRequest {
   string biz = 1;

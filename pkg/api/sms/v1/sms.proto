@@ -1,11 +1,11 @@
-syntax="proto3";
+syntax = "proto3";
 
 package sms.v1;
-option go_package="github.com/lazywoo/mercury/pkg/api/sms/v1";
 
+option go_package = "sms/v1;smsv1";
 
 service SmsService {
-  rpc Send(SmsSendRequest)returns(SmsSendResponse);
+  rpc Send(SmsSendRequest) returns (SmsSendResponse);
 }
 
 message SmsSendRequest {
@@ -15,4 +15,4 @@ message SmsSendRequest {
   repeated string values = 4;
 }
 
-message SmsSendResponse{}
+message SmsSendResponse {}

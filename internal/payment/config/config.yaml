@@ -1,0 +1,15 @@
+grpc:
+  server:
+    port: 9001
+    etcd: "localhost:12379"
+    ttl: 15
+  client:
+    sms:
+      target: "etcd:///service/payment"
+
+redis:
+  addr: "localhost:6379"
+
+etcd:
+  endpoints:
+    - "localhost:12379"

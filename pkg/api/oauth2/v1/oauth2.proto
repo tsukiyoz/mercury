@@ -1,20 +1,19 @@
-syntax="proto3";
+syntax = "proto3";
 
 package oauth2.v1;
-option go_package="github.com/lazywoo/mercury/pkg/api/oauth2/v1";
 
+option go_package = "oauth2/v1;oauth2v1";
 
 service Oauth2Service {
-  rpc AuthURL(AuthURLRequest)returns(AuthURLResponse);
-  rpc VerifyCode(VerifyCodeRequest)returns(VerifyCodeResponse);
-
+  rpc AuthURL(AuthURLRequest) returns (AuthURLResponse);
+  rpc VerifyCode(VerifyCodeRequest) returns (VerifyCodeResponse);
 }
 message AuthURLRequest {
   string state = 1;
 }
 
 message AuthURLResponse {
-  string  url = 1;
+  string url = 1;
 }
 
 message VerifyCodeRequest {
