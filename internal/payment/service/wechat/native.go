@@ -69,8 +69,8 @@ func (n *NativePaymentService) Prepay(ctx context.Context, payment domain.Paymen
 		TimeExpire:  core.Time(time.Now().Add(time.Minute * 30)),
 		NotifyUrl:   core.String(n.notifyURL),
 		Amount: &native.Amount{
-			Currency: core.String(payment.BizTradeNo),
-			Total:    core.Int64(payment.Amt.Total),
+			Currency: core.String(payment.Amount.Currency),
+			Total:    core.Int64(payment.Amount.Total),
 		},
 	})
 	if err != nil {

@@ -1,9 +1,8 @@
 package app
 
 import (
-	"sync"
-
 	"github.com/robfig/cron/v3"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/lazywoo/mercury/pkg/ginx"
 	"github.com/lazywoo/mercury/pkg/grpcx"
@@ -17,49 +16,34 @@ type App struct {
 	Cron       *cron.Cron
 }
 
-func (a *App) Run() <-chan struct{} {
-	close := make(chan struct{})
-	var wg sync.WaitGroup
+func (a *App) Run() error {
+	var eg errgroup.Group
 	if a.GRPCServer != nil {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if err := a.GRPCServer.Serve(); err != nil {
-				panic(err)
-			}
-		}()
+		eg.Go(func() error {
+			return a.GRPCServer.Serve()
+		})
 	}
 
 	if a.WebServer != nil {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			if err := a.WebServer.Start(); err != nil {
-				panic(err)
-			}
-		}()
+		eg.Go(func() error {
+			return a.WebServer.Start()
+		})
 	}
 
 	if len(a.Consumers) > 0 {
-		wg.Add(len(a.Consumers))
 		for _, consumer := range a.Consumers {
-			go func(c saramax.Consumer) {
-				defer wg.Done()
-				if err := c.Start(); err != nil {
-					panic(err)
-				}
-			}(consumer)
+			eg.Go(func() error {
+				return consumer.Start()
+			})
 		}
 	}
 
 	if a.Cron != nil {
-		a.Cron.Start()
+		eg.Go(func() error {
+			a.Cron.Start()
+			return nil
+		})
 	}
 
-	go func() {
-		wg.Wait()
-		close <- struct{}{}
-	}()
-
-	return close
+	return eg.Wait()
 }

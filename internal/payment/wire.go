@@ -5,6 +5,7 @@ package main
 import (
 	"github.com/google/wire"
 
+	"github.com/lazywoo/mercury/internal/payment/grpc"
 	"github.com/lazywoo/mercury/internal/payment/ioc"
 	"github.com/lazywoo/mercury/internal/payment/repository"
 	"github.com/lazywoo/mercury/internal/payment/repository/dao"
@@ -20,6 +21,9 @@ var thirdPartySet = wire.NewSet(
 	ioc.InitWechatNotifyHandler,
 	ioc.InitWechatConfig,
 	ioc.InitWechatClient,
+	ioc.InitCronJobs,
+	ioc.InitRedis,
+	ioc.InitRLockClient,
 )
 
 func InitAPP() *app.App {
@@ -30,9 +34,11 @@ func InitAPP() *app.App {
 		repository.NewPaymentRepository,
 		ioc.InitWechatNativeService,
 		web.NewWechatHandler,
+		grpc.NewWechatPaymentServiceServer,
+		ioc.InitSyncWechatPaymentJob,
 		ioc.InitWebServer,
 		ioc.InitGRPCxServer,
-		wire.Struct(new(app.App), "WebServer", "GRPCServer"),
+		wire.Struct(new(app.App), "WebServer", "GRPCServer", "Cron"),
 	)
 	return &app.App{}
 }

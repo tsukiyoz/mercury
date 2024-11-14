@@ -53,7 +53,7 @@ func InitDB(l logger.Logger) *gorm.DB {
 	}
 
 	prom := metrics.NewCallbacks(
-		"tsukiyo",
+		"lazywoo",
 		"mercury",
 		"prometheus_query",
 		"instance-0",

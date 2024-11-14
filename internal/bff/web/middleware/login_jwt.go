@@ -1,8 +1,3 @@
-/**
- * @author tsukiyo
- * @date 2023-08-29 02:57
- */
-
 package middleware
 
 import (

@@ -9,6 +9,7 @@ package main
 import (
 	"github.com/google/wire"
 
+	"github.com/lazywoo/mercury/internal/payment/grpc"
 	"github.com/lazywoo/mercury/internal/payment/ioc"
 	"github.com/lazywoo/mercury/internal/payment/repository"
 	"github.com/lazywoo/mercury/internal/payment/repository/dao"
@@ -31,14 +32,20 @@ func InitAPP() *app.App {
 	nativePaymentService := ioc.InitWechatNativeService(client, paymentRepository, logger, producer, wechatConfig)
 	wechatHandler := web.NewWechatHandler(handler, logger, nativePaymentService)
 	server := ioc.InitWebServer(wechatHandler)
-	grpcxServer := ioc.InitGRPCxServer()
+	wechatServiceServer := grpc.NewWechatPaymentServiceServer(nativePaymentService)
+	grpcxServer := ioc.InitGRPCxServer(wechatServiceServer, logger)
+	cmdable := ioc.InitRedis()
+	rlockClient := ioc.InitRLockClient(cmdable)
+	syncWechatOrderJob := ioc.InitSyncWechatPaymentJob(nativePaymentService, rlockClient, logger)
+	cron := ioc.InitCronJobs(logger, syncWechatOrderJob)
 	appApp := &app.App{
 		WebServer:  server,
 		GRPCServer: grpcxServer,
+		Cron:       cron,
 	}
 	return appApp
 }
 
 // wire.go:
 
-var thirdPartySet = wire.NewSet(ioc.InitDB, ioc.InitLogger, ioc.InitKafka, ioc.InitProducer, ioc.InitWechatNotifyHandler, ioc.InitWechatConfig, ioc.InitWechatClient)
+var thirdPartySet = wire.NewSet(ioc.InitDB, ioc.InitLogger, ioc.InitKafka, ioc.InitProducer, ioc.InitWechatNotifyHandler, ioc.InitWechatConfig, ioc.InitWechatClient, ioc.InitCronJobs, ioc.InitRedis, ioc.InitRLockClient)

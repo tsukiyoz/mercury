@@ -8,7 +8,7 @@ type Amount struct {
 }
 
 type Payment struct {
-	Amt         Amount
+	Amount      Amount
 	BizTradeNo  string
 	Description string
 	Status      PaymentStatus

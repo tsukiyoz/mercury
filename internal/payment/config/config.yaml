@@ -1,3 +1,6 @@
+log:
+  mode: "prod" # prod, dev
+
 grpc:
   server:
     port: 9001
@@ -13,3 +16,14 @@ redis:
 etcd:
   endpoints:
     - "localhost:12379"
+    
+db:
+  dsn: "root:for.nothing@tcp(localhost:3306)/mercury"
+  migrate: true
+  
+kafka:
+  addrs:
+    - "localhost:9094"
+    
+http:
+  addr: ":8080"

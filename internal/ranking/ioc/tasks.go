@@ -32,7 +32,7 @@ func InitRankingJob(svc service2.RankingService, rlockClient *rlock.Client, l lo
 func InitTasks(l logger.Logger, ranking *cron2.RankingJob) *cron.Cron {
 	croj := cron.New(cron.WithSeconds())
 	bdr := cronx.NewCronJobBuilder(prometheus.SummaryOpts{
-		Namespace: "tsukiyo",
+		Namespace: "lazywoo",
 		Subsystem: "mercury",
 		Name:      "cron_job",
 		Help:      "metrics cron job",

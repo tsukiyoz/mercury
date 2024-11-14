@@ -38,7 +38,7 @@ func InitMigratorWeb(
 ) *ginx.Server {
 	web := gin.Default()
 	ginx.InitCounterVec(prometheus.CounterOpts{
-		Namespace: "tsukiyo",
+		Namespace: "lazywoo",
 		Subsystem: "webook_interactive",
 		Name:      "http_biz_code",
 		Help:      "HTTP Request in GIN",

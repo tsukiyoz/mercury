@@ -20,7 +20,8 @@ type paymentRepository struct {
 }
 
 func (p *paymentRepository) AddPayment(ctx context.Context, payment domain.Payment) error {
-	return p.dao.Insert(ctx, p.toEntity(payment))
+	err := p.dao.Insert(ctx, p.toEntity(payment))
+	return err
 }
 
 func (p *paymentRepository) UpdatePayment(ctx context.Context, payment domain.Payment) error {
@@ -51,8 +52,8 @@ func (p *paymentRepository) GetPayment(ctx context.Context, bizTradeNo string) (
 
 func (p *paymentRepository) toEntity(payment domain.Payment) dao.Payment {
 	return dao.Payment{
-		Amount:      payment.Amt.Total,
-		Currency:    payment.Amt.Currency,
+		Amount:      payment.Amount.Total,
+		Currency:    payment.Amount.Currency,
 		Description: payment.Description,
 		BizTradeNo:  payment.BizTradeNo,
 		TxnID:       sql.NullString{String: payment.TxnID},
@@ -64,7 +65,7 @@ func (p *paymentRepository) toEntity(payment domain.Payment) dao.Payment {
 
 func (p *paymentRepository) toDomain(payment dao.Payment) domain.Payment {
 	return domain.Payment{
-		Amt:         domain.Amount{Currency: payment.Currency, Total: payment.Amount},
+		Amount:      domain.Amount{Currency: payment.Currency, Total: payment.Amount},
 		BizTradeNo:  payment.BizTradeNo,
 		Description: payment.Description,
 		Status:      domain.PaymentStatus(payment.Status),

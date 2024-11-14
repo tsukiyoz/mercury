@@ -85,14 +85,14 @@ func InitMiddlewares(limiter ratelimit.Limiter, l logger.Logger, jwtHdl jwt.Hand
 		accessLogBdr.AllowRespBody(viper.GetBool("web.log.resp"))
 	})
 	metricsBdr := &metrics.PrometheusBuilder{
-		Namespace:  "tsukiyo",
+		Namespace:  "lazywoo",
 		Subsystem:  "mercury",
 		Name:       "gin_http",
 		Help:       "metrics gin http interface",
 		InstanceID: "instance_id",
 	}
 	ginx.InitCounterVec(prometheus.CounterOpts{
-		Namespace: "tsukiyo",
+		Namespace: "lazywoo",
 		Subsystem: "mercury",
 		Name:      "biz_code",
 		Help:      "metrics http biz code",
@@ -134,7 +134,7 @@ func corsHdl() gin.HandlerFunc {
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			return strings.HasPrefix(origin, "http://localhost") || strings.HasPrefix(origin, "http://124.70.190.134") || strings.HasSuffix(origin, "tsukiyo.top")
+			return strings.HasPrefix(origin, "http://localhost")
 		},
 		ExposeHeaders: []string{"x-jwt-token", "x-refresh-token"},
 		MaxAge:        20 * time.Second,

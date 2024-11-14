@@ -13,7 +13,7 @@ func main() {
 	initViper()
 	initLogger()
 	app := InitAPP()
-	<-app.Run()
+	app.Run()
 }
 
 func initViper() {

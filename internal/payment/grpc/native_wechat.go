@@ -27,9 +27,10 @@ func (a *WechatServiceServer) Register(server grpc.ServiceRegistrar) {
 
 func (w *WechatServiceServer) NativePrePay(ctx context.Context, payment *paymentv1.PrePayRequest) (*paymentv1.NativePrePayResponse, error) {
 	codeUrl, err := w.svc.Prepay(ctx, domain.Payment{
-		Amt:         domain.Amount{Currency: payment.Amount.Currency, Total: payment.Amount.Total},
+		Amount:      domain.Amount{Currency: payment.Amount.Currency, Total: payment.Amount.Total},
 		BizTradeNo:  payment.BizTradeNo,
 		Description: payment.Description,
+		Status:      domain.PaymentStatusInit,
 	})
 	if err != nil {
 		return nil, err

@@ -25,7 +25,7 @@ func NewWechatHandler(hdl *notify.Handler, l logger.Logger, svc *wechat.NativePa
 }
 
 func (h *WechatHandler) RegisterRoutes(server *gin.Engine) {
-	server.Any("/pay/callback", ginx.Wrap(h.HandleNative))
+	server.POST("/pay/callback", ginx.Wrap(h.HandleNative))
 }
 
 func (h *WechatHandler) HandleNative(ctx *gin.Context) (ginx.Result, error) {
