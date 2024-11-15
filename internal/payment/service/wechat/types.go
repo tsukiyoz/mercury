@@ -14,5 +14,6 @@ type PaymentService interface {
 	SyncInfo(ctx context.Context, bizTradeNo string) error
 	FindExpiredPayments(ctx context.Context, offset int, limit int, t time.Time) ([]domain.Payment, error)
 	GetPayment(ctx context.Context, bizTradeNo string) (domain.Payment, error)
+	Refund(ctx context.Context, refund domain.Payment) error
 	HandleCallback(ctx context.Context, transaction *payments.Transaction) error
 }

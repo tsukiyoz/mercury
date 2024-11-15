@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	WechatPaymentService_NativePrePay_FullMethodName = "/payment.v1.WechatPaymentService/NativePrePay"
-	WechatPaymentService_GetPayment_FullMethodName   = "/payment.v1.WechatPaymentService/GetPayment"
+	WechatPaymentService_NativePrePay_FullMethodName  = "/payment.v1.WechatPaymentService/NativePrePay"
+	WechatPaymentService_GetPayment_FullMethodName    = "/payment.v1.WechatPaymentService/GetPayment"
+	WechatPaymentService_RefundPayment_FullMethodName = "/payment.v1.WechatPaymentService/RefundPayment"
 )
 
 // WechatPaymentServiceClient is the client API for WechatPaymentService service.
@@ -29,6 +30,7 @@ const (
 type WechatPaymentServiceClient interface {
 	NativePrePay(ctx context.Context, in *PrePayRequest, opts ...grpc.CallOption) (*NativePrePayResponse, error)
 	GetPayment(ctx context.Context, in *GetPaymentRequest, opts ...grpc.CallOption) (*GetPaymentResponse, error)
+	RefundPayment(ctx context.Context, in *RefundPaymentRequest, opts ...grpc.CallOption) (*RefundPaymentResponse, error)
 }
 
 type wechatPaymentServiceClient struct {
@@ -59,12 +61,23 @@ func (c *wechatPaymentServiceClient) GetPayment(ctx context.Context, in *GetPaym
 	return out, nil
 }
 
+func (c *wechatPaymentServiceClient) RefundPayment(ctx context.Context, in *RefundPaymentRequest, opts ...grpc.CallOption) (*RefundPaymentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RefundPaymentResponse)
+	err := c.cc.Invoke(ctx, WechatPaymentService_RefundPayment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WechatPaymentServiceServer is the server API for WechatPaymentService service.
 // All implementations must embed UnimplementedWechatPaymentServiceServer
 // for forward compatibility.
 type WechatPaymentServiceServer interface {
 	NativePrePay(context.Context, *PrePayRequest) (*NativePrePayResponse, error)
 	GetPayment(context.Context, *GetPaymentRequest) (*GetPaymentResponse, error)
+	RefundPayment(context.Context, *RefundPaymentRequest) (*RefundPaymentResponse, error)
 	mustEmbedUnimplementedWechatPaymentServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedWechatPaymentServiceServer) NativePrePay(context.Context, *Pr
 }
 func (UnimplementedWechatPaymentServiceServer) GetPayment(context.Context, *GetPaymentRequest) (*GetPaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPayment not implemented")
+}
+func (UnimplementedWechatPaymentServiceServer) RefundPayment(context.Context, *RefundPaymentRequest) (*RefundPaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefundPayment not implemented")
 }
 func (UnimplementedWechatPaymentServiceServer) mustEmbedUnimplementedWechatPaymentServiceServer() {}
 func (UnimplementedWechatPaymentServiceServer) testEmbeddedByValue()                              {}
@@ -138,6 +154,24 @@ func _WechatPaymentService_GetPayment_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WechatPaymentService_RefundPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefundPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WechatPaymentServiceServer).RefundPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WechatPaymentService_RefundPayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WechatPaymentServiceServer).RefundPayment(ctx, req.(*RefundPaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WechatPaymentService_ServiceDesc is the grpc.ServiceDesc for WechatPaymentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var WechatPaymentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPayment",
 			Handler:    _WechatPaymentService_GetPayment_Handler,
+		},
+		{
+			MethodName: "RefundPayment",
+			Handler:    _WechatPaymentService_RefundPayment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

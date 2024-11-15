@@ -49,3 +49,8 @@ func (w *WechatServiceServer) GetPayment(ctx context.Context, payment *paymentv1
 		Status: paymentv1.PaymentStatus(res.Status),
 	}, nil
 }
+
+func (w *WechatServiceServer) RefundPayment(ctx context.Context, req *paymentv1.RefundPaymentRequest) (*paymentv1.RefundPaymentResponse, error) {
+	err := w.svc.Refund(ctx, domain.Payment{BizTradeNo: req.BizTradeNo}, req.RefundReason)
+	return &paymentv1.RefundPaymentResponse{}, err
+}

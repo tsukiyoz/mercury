@@ -10,6 +10,7 @@ import (
 	"github.com/wechatpay-apiv3/wechatpay-go/core/notify"
 	"github.com/wechatpay-apiv3/wechatpay-go/core/option"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/native"
+	"github.com/wechatpay-apiv3/wechatpay-go/services/refunddomestic"
 	"github.com/wechatpay-apiv3/wechatpay-go/utils"
 
 	"github.com/lazywoo/mercury/internal/payment/events"
@@ -62,9 +63,8 @@ func InitWechatNativeService(
 	cfg WechatConfig,
 ) *wechat.NativePaymentService {
 	return wechat.NewNativePaymentService(
-		&native.NativeApiService{
-			Client: cli,
-		},
+		&native.NativeApiService{Client: cli},
+		&refunddomestic.RefundsApiService{Client: cli},
 		cfg.AppID, cfg.MchID, repo, l, producer,
 	)
 }
