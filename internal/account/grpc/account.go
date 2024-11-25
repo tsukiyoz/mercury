@@ -7,6 +7,7 @@ import (
 	"github.com/lazywoo/mercury/internal/account/service"
 	accountv1 "github.com/lazywoo/mercury/pkg/api/account/v1"
 	"github.com/samber/lo"
+	"google.golang.org/grpc"
 )
 
 type AccountServiceServer struct {
@@ -16,6 +17,10 @@ type AccountServiceServer struct {
 
 func NewAccountServiceServer(svc service.AccountService) *AccountServiceServer {
 	return &AccountServiceServer{svc: svc}
+}
+
+func (a *AccountServiceServer) Register(server grpc.ServiceRegistrar) {
+	accountv1.RegisterAccountServiceServer(server, a)
 }
 
 func (a *AccountServiceServer) Credit(ctx context.Context, credit *accountv1.CreditRequest) (*accountv1.CreditResponse, error) {
