@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package account.v1;
+option go_package="account/v1";
+
+service AccountService {
+    rpc Credit(CreditRequest) returns (CreditResponse);
+}
+
+message CreditItem {
+    int64 account = 1;
+    AccountType account_type = 2;
+    int64 amount = 3;
+    string currency = 4;
+    int64 uid = 5;
+}
+
+message CreditRequest {
+    string biz = 1;
+    string biz_id = 2;
+    repeated CreditItem items = 3;
+}
+
+message CreditResponse {}
+
+enum AccountType {
+    AccountTypeUnknown = 0;
+    AccountTypeReward = 1; // 个人赞赏账号
+    AccountTypeSystem = 2; // 平台分成账号
+}
