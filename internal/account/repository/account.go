@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/samber/lo"
+
 	"github.com/lazywoo/mercury/internal/account/domain"
 	"github.com/lazywoo/mercury/internal/account/repository/dao"
-	"github.com/samber/lo"
 )
 
 type accountRepository struct {

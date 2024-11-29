@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/account/repository/dao"
-	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/lazywoo/mercury/pkg/logger"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/plugin/opentelemetry/tracing"
+
+	"github.com/lazywoo/mercury/internal/account/repository/dao"
+	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/lazywoo/mercury/pkg/logger"
 
 	gormLogger "gorm.io/gorm/logger"
 	gormPrometheus "gorm.io/plugin/prometheus"

@@ -3,11 +3,12 @@ package grpc
 import (
 	"context"
 
+	"github.com/samber/lo"
+	"google.golang.org/grpc"
+
 	"github.com/lazywoo/mercury/internal/account/domain"
 	"github.com/lazywoo/mercury/internal/account/service"
 	accountv1 "github.com/lazywoo/mercury/pkg/api/account/v1"
-	"github.com/samber/lo"
-	"google.golang.org/grpc"
 )
 
 type AccountServiceServer struct {
