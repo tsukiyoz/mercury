@@ -93,14 +93,12 @@ func (c *commentDAO) FindRepliesByRid(ctx context.Context, rid int64, id int64, 
 }
 
 type Comment struct {
-	ID    int64  `gorm:"column:id;primaryKey" json:"id"`
-	UID   int64  `gorm:"column:uid;index" json:"uid"`
-	Biz   string `gorm:"column:biz;index:biz_type_id" json:"biz"`
-	BizID int64  `gorm:"column:biz_id;index:biz_type_id" json:"biz_id"`
-	// RootID 0 means root comment
-	RootID sql.NullInt64 `gorm:"column:root_id;index" json:"root_id"`
-	// PID parent comment ID
-	PID           sql.NullInt64 `gorm:"column:pid;index" json:"pid"`
+	ID            int64         `gorm:"column:id;primaryKey" json:"id"`
+	UID           int64         `gorm:"column:uid;index" json:"uid"`
+	Biz           string        `gorm:"column:biz;index:biz_type_id" json:"biz"`
+	BizID         int64         `gorm:"column:biz_id;index:biz_type_id" json:"biz_id"`
+	RootID        sql.NullInt64 `gorm:"column:root_id;index" json:"root_id"` // RootID 0 means root comment
+	PID           sql.NullInt64 `gorm:"column:pid;index" json:"pid"`         // PID parent comment ID
 	ParentComment *Comment      `gorm:"ForeignKey:PID;AssociationForeignKey:ID;constraint:OnDelete:CASCADE" json:"parent_comment"`
 	Content       string        `gorm:"type:text;column:content" json:"content"`
 	Ctime         int64         `gorm:"column:ctime;" json:"ctime"`
