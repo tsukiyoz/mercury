@@ -43,7 +43,7 @@ func (svc *captchaService) Send(ctx context.Context, biz string, phone string) e
 	if err != nil {
 		return err
 	}
-	_, err = svc.smsSvc.Send(ctx, &smsv1.SmsSendRequest{
+	_, err = svc.smsSvc.Send(ctx, &smsv1.SendRequest{
 		TplId:  svc.tplId,
 		Target: phone,
 		Args:   []string{"captcha"},

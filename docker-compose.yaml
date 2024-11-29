@@ -2,7 +2,7 @@ version: '3.0'
 services:
   mysql-8:
     image: mysql:8.0.20
-    container_name: mysql
+    container_name: mercury_mysql
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: for.nothing
@@ -12,21 +12,21 @@ services:
       - "3306:3306"
   redis:
     image: 'bitnami/redis:7.2'
-    container_name: redis
+    container_name: mercury_redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - '6379:6379'
   etcd:
     image: 'bitnami/etcd:3.5.11'
-    container_name: etcd
+    container_name: mercury_etcd
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
     ports:
       - 12379:2379
   mongo:
     image: mongo:6.0
-    container_name: mongo
+    container_name: mercury_mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: for.nothing
@@ -34,7 +34,7 @@ services:
       - 27017:27017
   kafka:
     image: 'bitnami/kafka:3.6.1'
-    container_name: kafka
+    container_name: mercury_kafka
     ports:
       - '9092:9092'
       - '9094:9094'
@@ -49,7 +49,7 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
   prometheus:
     image: prom/prometheus:v2.50.1
-    container_name: prometheus
+    container_name: mercury_prometheus
     volumes:
       - ./scripts/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
     ports:
@@ -59,7 +59,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
   grafana:
     image: grafana/grafana-enterprise:10.2.0
-    container_name: grafana
+    container_name: mercury_grafana
     volumes:
       - ./scripts/grafana/grafana.ini:/etc/grafana/grafana.ini
     ports:
@@ -68,12 +68,12 @@ services:
       - prometheus
   zipkin:
     image: openzipkin/zipkin-slim:2.24
-    container_name: zipkin
+    container_name: mercury_zipkin
     ports:
       - '9411:9411'
   jaeger:
     image: jaegertracing/all-in-one:1.21
-    container_name: jaeger
+    container_name: mercury_jaeger
     environment:
       - COLLECTOR_ZIPKIN_HTTP_PORT=9411
     ports:

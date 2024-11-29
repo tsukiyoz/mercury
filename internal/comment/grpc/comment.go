@@ -30,7 +30,7 @@ func (c *CommentServiceServer) Register(srv *grpc.Server) {
 	commentv1.RegisterCommentServiceServer(srv, c)
 }
 
-func (c *CommentServiceServer) GetCommentList(ctx context.Context, request *commentv1.CommentListRequest) (*commentv1.CommentListResponse, error) {
+func (c *CommentServiceServer) GetCommentList(ctx context.Context, request *commentv1.GetCommentListRequest) (*commentv1.GetCommentListResponse, error) {
 	minID := request.GetMinId()
 	if minID <= 0 {
 		minID = math.MaxInt64
@@ -39,7 +39,7 @@ func (c *CommentServiceServer) GetCommentList(ctx context.Context, request *comm
 	if err != nil {
 		return nil, err
 	}
-	return &commentv1.CommentListResponse{
+	return &commentv1.GetCommentListResponse{
 		Comments: c.toDTO(bizComments),
 	}, nil
 }
@@ -125,6 +125,8 @@ func (c *CommentServiceServer) toDomain(comment *commentv1.Comment) domain.Comme
 		Biz:     comment.GetBiz(),
 		BizID:   comment.GetBizId(),
 		Content: comment.GetContent(),
+		CTime:   comment.GetCtime().AsTime(),
+		UTime:   comment.GetUtime().AsTime(),
 	}
 	if comment.GetRootComment() != nil {
 		bizComment.RootComment = &domain.Comment{

@@ -1,0 +1,91 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "payment/v1/payment.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "WechatPaymentService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Amount": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "string",
+          "format": "int64"
+        },
+        "currency": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetPaymentResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/v1PaymentStatus"
+        }
+      }
+    },
+    "v1NativePrePayResponse": {
+      "type": "object",
+      "properties": {
+        "codeUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "v1PaymentStatus": {
+      "type": "string",
+      "enum": [
+        "PAYMENT_STATUS_UNSPECIFIED",
+        "PAYMENT_STATUS_INIT",
+        "PAYMENT_STATUS_SUCCESS",
+        "PAYMENT_STATUS_FAILED",
+        "PAYMENT_STATUS_REFUND"
+      ],
+      "default": "PAYMENT_STATUS_UNSPECIFIED"
+    },
+    "v1RefundPaymentResponse": {
+      "type": "object"
+    }
+  }
+}

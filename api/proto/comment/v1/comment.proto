@@ -8,7 +8,7 @@ option go_package = "comment/v1;commentv1";
 
 service CommentService {
   // GetCommentList if id = 0, means get top comments
-  rpc GetCommentList(CommentListRequest) returns (CommentListResponse);
+  rpc GetCommentList(GetCommentListRequest) returns (GetCommentListResponse);
 
   // DeleteComment Delete its own and all descendant comments
   rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
@@ -21,14 +21,14 @@ service CommentService {
   rpc GetMoreReplies(GetMoreRepliesRequest) returns (GetMoreRepliesResponse);
 }
 
-message CommentListRequest {
+message GetCommentListRequest {
   string biz = 1;
   int64 biz_id = 2;
   int64 min_id = 3;
   int64 limit = 4;
 }
 
-message CommentListResponse {
+message GetCommentListResponse {
   repeated Comment comments = 1;
 }
 
@@ -43,14 +43,6 @@ message CreateCommentRequest {
 }
 
 message CreateCommentResponse {}
-
-//message GetCommentByIdsRequest {
-//  repeated int64 ids = 1;
-//}
-//
-//message GetCommentByIdsResponse {
-//  repeated Comment comments = 1;
-//}
 
 message GetMoreRepliesRequest {
   int64 rid = 1;

@@ -57,8 +57,8 @@ func (cache *RedisFollowCache) SetStatics(ctx context.Context, uid int64, s doma
 
 func (cache *RedisFollowCache) updateStatics(ctx context.Context, r domain.Relation, delta int64) error {
 	tx := cache.client.TxPipeline()
-	tx.HIncrBy(ctx, cache.staticsKey(r.Followee), fieldFolloweeCnt, delta)
-	tx.HIncrBy(ctx, cache.staticsKey(r.Follower), fieldFollowerCnt, delta)
+	tx.HIncrBy(ctx, cache.staticsKey(r.Followee), fieldFollowerCnt, delta)
+	tx.HIncrBy(ctx, cache.staticsKey(r.Follower), fieldFolloweeCnt, delta)
 	_, err := tx.Exec(ctx)
 	return err
 }

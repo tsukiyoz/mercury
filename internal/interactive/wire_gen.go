@@ -8,7 +8,6 @@ package main
 
 import (
 	"github.com/google/wire"
-
 	"github.com/lazywoo/mercury/internal/interactive/events"
 	"github.com/lazywoo/mercury/internal/interactive/grpc"
 	"github.com/lazywoo/mercury/internal/interactive/ioc"
@@ -16,11 +15,12 @@ import (
 	"github.com/lazywoo/mercury/internal/interactive/repository/cache"
 	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
 	"github.com/lazywoo/mercury/internal/interactive/service"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *App {
+func InitAPP() *app.App {
 	logger := ioc.InitLogger()
 	srcDB := ioc.InitSrcDB(logger)
 	dstDB := ioc.InitDstDB(logger)
@@ -34,18 +34,14 @@ func InitAPP() *App {
 	interactiveServiceServer := grpc.NewInteractiveServiceServer(interactiveService)
 	server := ioc.InitGRPCxServer(interactiveServiceServer, logger)
 	client := ioc.InitKafka()
-	syncProducer := ioc.NewSyncProducer(client)
-	producer := ioc.InitMigratorProducer(syncProducer)
-	ginxServer := ioc.InitMigratorWeb(srcDB, dstDB, dualWritePool, producer, logger)
 	interactiveReadEventConsumer := events.NewInteractiveReadEventConsumer(client, interactiveRepository, logger)
 	consumer := ioc.InitFixDataConsumer(srcDB, dstDB, client, logger)
 	v := ioc.NewConsumers(interactiveReadEventConsumer, consumer)
-	app := &App{
-		server:    server,
-		web:       ginxServer,
-		consumers: v,
+	appApp := &app.App{
+		GRPCServer: server,
+		Consumers:  v,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

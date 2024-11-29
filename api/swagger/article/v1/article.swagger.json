@@ -1,0 +1,156 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "article/v1/article.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ArticleService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Article": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "content": {
+          "type": "string"
+        },
+        "author": {
+          "$ref": "#/definitions/v1Author"
+        },
+        "ctime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "utime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "abstract": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Author": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetByIdResponse": {
+      "type": "object",
+      "properties": {
+        "article": {
+          "$ref": "#/definitions/v1Article"
+        }
+      }
+    },
+    "v1GetPublishedByIdResponse": {
+      "type": "object",
+      "properties": {
+        "article": {
+          "$ref": "#/definitions/v1Article"
+        }
+      }
+    },
+    "v1ListPubResponse": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Article"
+          }
+        }
+      }
+    },
+    "v1ListResponse": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Article"
+          }
+        }
+      }
+    },
+    "v1PublishResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1SaveResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1WithdrawResponse": {
+      "type": "object",
+      "title": "定义 Withdraw 方法的响应"
+    }
+  }
+}

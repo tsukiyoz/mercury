@@ -1,0 +1,116 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "comment/v1/comment.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "CommentService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Comment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "biz": {
+          "type": "string"
+        },
+        "bizId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "content": {
+          "type": "string"
+        },
+        "rootComment": {
+          "$ref": "#/definitions/v1Comment"
+        },
+        "parentComment": {
+          "$ref": "#/definitions/v1Comment"
+        },
+        "ctime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "utime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1CreateCommentResponse": {
+      "type": "object"
+    },
+    "v1DeleteCommentResponse": {
+      "type": "object"
+    },
+    "v1GetCommentListResponse": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Comment"
+          }
+        }
+      }
+    },
+    "v1GetMoreRepliesResponse": {
+      "type": "object",
+      "properties": {
+        "replies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Comment"
+          }
+        }
+      }
+    }
+  }
+}

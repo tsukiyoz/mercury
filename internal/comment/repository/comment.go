@@ -40,26 +40,27 @@ func (c *commentRepository) FindByBiz(ctx context.Context, biz string, bizId, mi
 	if err != nil {
 		return nil, err
 	}
-	bizComments := make([]domain.Comment, 0, len(dbComments))
+	bizComments := make([]domain.Comment, len(dbComments))
 	var eg errgroup.Group
 	downgraded := ctx.Value("downgraded") == "true"
-	for _, dbComment := range dbComments {
-		dbComment := dbComment
-		bizComment := c.toDomain(dbComment)
-		bizComments = append(bizComments, bizComment)
+	for i := range dbComments {
+		idx := i
+		bizComments[idx] = c.toDomain(dbComments[idx])
+
 		if downgraded {
 			continue
 		}
+
 		eg.Go(func() error {
 			// show only three
-			bizComment.Children = make([]domain.Comment, 0, 3)
-			rs, err := c.dao.FindRepliesByPid(ctx, dbComment.ID, 0, 3)
+			bizComments[idx].Children = make([]domain.Comment, 0, 3)
+			rs, err := c.dao.FindRepliesByPid(ctx, bizComments[idx].ID, 0, 3)
 			if err != nil {
 				c.l.Error("get child comment failed", logger.Error(err))
 				return nil
 			}
 			for _, r := range rs {
-				bizComment.Children = append(bizComment.Children, c.toDomain(r))
+				bizComments[idx].Children = append(bizComments[idx].Children, c.toDomain(r))
 			}
 			return nil
 		})

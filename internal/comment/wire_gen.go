@@ -8,17 +8,17 @@ package main
 
 import (
 	"github.com/google/wire"
-
 	"github.com/lazywoo/mercury/internal/comment/grpc"
 	"github.com/lazywoo/mercury/internal/comment/ioc"
 	"github.com/lazywoo/mercury/internal/comment/repository"
 	"github.com/lazywoo/mercury/internal/comment/repository/dao"
 	"github.com/lazywoo/mercury/internal/comment/service"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:
 
-func InitAPP() *App {
+func InitAPP() *app.App {
 	logger := ioc.InitLogger()
 	db := ioc.InitDB(logger)
 	commentDAO := dao.NewCommentDAO(db)
@@ -26,10 +26,10 @@ func InitAPP() *App {
 	commentService := service.NewCommentService(commentRepository)
 	commentServiceServer := grpc.NewCommentServiceServer(commentService)
 	server := ioc.InitGRPCxServer(commentServiceServer, logger)
-	app := &App{
-		server: server,
+	appApp := &app.App{
+		GRPCServer: server,
 	}
-	return app
+	return appApp
 }
 
 // wire.go:

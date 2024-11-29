@@ -36,7 +36,7 @@ func (c *CommentHandler) RegisterRoutes(server *gin.Engine) {
 }
 
 func (c *CommentHandler) GetCommentList(ctx *gin.Context, req GetCommentListReq, uc ijwt.UserClaims) (ginx.Result, error) {
-	resp, err := c.commentSvc.GetCommentList(ctx, &commentv1.CommentListRequest{
+	resp, err := c.commentSvc.GetCommentList(ctx, &commentv1.GetCommentListRequest{
 		Biz:   req.Biz,
 		BizId: req.BizId,
 		MinId: req.MinId,

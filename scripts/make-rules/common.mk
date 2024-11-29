@@ -72,5 +72,4 @@ COPY_GITHOOK:=$(shell cp -f githooks/* .git/hooks/)
 
 SCRIPTS_DIR=$(MERCURY_ROOT)/scripts
 
-APIROOT ?= $(MERCURY_ROOT)/pkg/api
-APISROOT ?= $(MERCURY_ROOT)/pkg/apis
+APIROOT ?= $(MERCURY_ROOT)/api

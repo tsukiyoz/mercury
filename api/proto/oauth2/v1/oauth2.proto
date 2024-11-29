@@ -21,6 +21,6 @@ message VerifyCodeRequest {
 }
 
 message VerifyCodeResponse {
-  string openId = 1;
-  string UnionId = 2;
+  string open_id = 1;
+  string union_id = 2;
 }

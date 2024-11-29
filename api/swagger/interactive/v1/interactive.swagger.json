@@ -1,0 +1,113 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "interactive/v1/interactive.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "InteractiveService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CancelFavoriteResponse": {
+      "type": "object"
+    },
+    "v1CancelLikeResponse": {
+      "type": "object"
+    },
+    "v1FavoriteResponse": {
+      "type": "object"
+    },
+    "v1GetByIdsResponse": {
+      "type": "object",
+      "properties": {
+        "interactives": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/v1Interactive"
+          }
+        }
+      }
+    },
+    "v1GetResponse": {
+      "type": "object",
+      "properties": {
+        "interactive": {
+          "$ref": "#/definitions/v1Interactive"
+        }
+      }
+    },
+    "v1IncrReadCntResponse": {
+      "type": "object"
+    },
+    "v1Interactive": {
+      "type": "object",
+      "properties": {
+        "biz": {
+          "type": "string"
+        },
+        "bizId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "readCnt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "likeCnt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "favoriteCnt": {
+          "type": "string",
+          "format": "int64"
+        },
+        "liked": {
+          "type": "boolean"
+        },
+        "favorited": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1LikeResponse": {
+      "type": "object"
+    }
+  }
+}

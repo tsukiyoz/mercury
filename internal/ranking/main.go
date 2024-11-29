@@ -14,10 +14,7 @@ func main() {
 	initLogger()
 
 	app := InitAPP()
-
-	app.Cron.Start()
-	err := app.GRPCServer.Serve()
-	if err != nil {
+	if err := app.Run(); err != nil {
 		panic(err)
 	}
 }

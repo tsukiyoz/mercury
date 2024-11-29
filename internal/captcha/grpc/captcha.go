@@ -24,9 +24,9 @@ func (c *CaptchaServiceServer) Register(server grpc.ServiceRegistrar) {
 	captchav1.RegisterCaptchaServiceServer(server, c)
 }
 
-func (c *CaptchaServiceServer) Send(ctx context.Context, req *captchav1.CaptchaSendRequest) (*captchav1.CaptchaSendResponse, error) {
+func (c *CaptchaServiceServer) Send(ctx context.Context, req *captchav1.SendRequest) (*captchav1.SendResponse, error) {
 	err := c.svc.Send(ctx, req.Biz, req.Phone)
-	return &captchav1.CaptchaSendResponse{}, err
+	return &captchav1.SendResponse{}, err
 }
 
 func (c *CaptchaServiceServer) Verify(ctx context.Context, req *captchav1.VerifyRequest) (*captchav1.VerifyResponse, error) {

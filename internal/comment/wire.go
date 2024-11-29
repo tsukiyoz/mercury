@@ -10,6 +10,7 @@ import (
 	"github.com/lazywoo/mercury/internal/comment/repository"
 	"github.com/lazywoo/mercury/internal/comment/repository/dao"
 	"github.com/lazywoo/mercury/internal/comment/service"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(
@@ -24,12 +25,12 @@ var serviceProviderSet = wire.NewSet(
 	dao.NewCommentDAO,
 )
 
-func InitAPP() *App {
+func InitAPP() *app.App {
 	wire.Build(
 		thirdProviderSet,
 		serviceProviderSet,
 		ioc.InitGRPCxServer,
-		wire.Struct(new(App), "*"),
+		wire.Struct(new(app.App), "GRPCServer"),
 	)
-	return new(App)
+	return new(app.App)
 }

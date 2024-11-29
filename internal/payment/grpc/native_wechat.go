@@ -25,7 +25,7 @@ func (a *WechatServiceServer) Register(server grpc.ServiceRegistrar) {
 	paymentv1.RegisterWechatPaymentServiceServer(server, a)
 }
 
-func (w *WechatServiceServer) NativePrePay(ctx context.Context, payment *paymentv1.PrePayRequest) (*paymentv1.NativePrePayResponse, error) {
+func (w *WechatServiceServer) NativePrePay(ctx context.Context, payment *paymentv1.NativePrePayRequest) (*paymentv1.NativePrePayResponse, error) {
 	codeUrl, err := w.svc.Prepay(ctx, domain.Payment{
 		Amount:      domain.Amount{Currency: payment.Amount.Currency, Total: payment.Amount.Total},
 		BizTradeNo:  payment.BizTradeNo,

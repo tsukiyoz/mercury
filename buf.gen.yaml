@@ -7,14 +7,27 @@ managed:
     - file_option: go_package_prefix
       value: github.com/lazywoo/mercury/api/gen
 plugins:
-  - remote: buf.build/protocolbuffers/go
+  - local: protoc-gen-go
     out: api/gen
     opt: paths=source_relative
+  - local: protoc-gen-go-grpc
+    out: api/gen
+    opt: paths=source_relative
+  - local: protoc-gen-grpc-gateway
+    out: api/gen
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
+  - local: protoc-gen-openapiv2
+    out: api/swagger
+  # - remote: buf.build/protocolbuffers/go
+  #   out: api/gen
+  #   opt: paths=source_relative
   # - remote: buf.build/connectrpc/go
   #   out: api/gen
   #   opt: paths=source_relative
-  - remote: buf.build/grpc/go
-    out: api/gen
-    opt: paths=source_relative
+  # - remote: buf.build/grpc/go
+  #   out: api/gen
+  #   opt: paths=source_relative
 inputs:
   - directory: api/proto

@@ -12,6 +12,7 @@ import (
 	"github.com/lazywoo/mercury/internal/interactive/repository/cache"
 	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
 	"github.com/lazywoo/mercury/internal/interactive/service"
+	"github.com/lazywoo/mercury/pkg/app"
 )
 
 var thirdProvider = wire.NewSet(
@@ -39,7 +40,7 @@ var migratorSet = wire.NewSet(
 	ioc.InitMigratorWeb,
 )
 
-func InitAPP() *App {
+func InitAPP() *app.App {
 	wire.Build(
 		thirdProvider,
 		interactiveSvcProvider,
@@ -48,7 +49,7 @@ func InitAPP() *App {
 		events.NewInteractiveReadEventConsumer,
 		ioc.InitGRPCxServer,
 		ioc.NewConsumers,
-		wire.Struct(new(App), "*"),
+		wire.Struct(new(app.App), "GRPCServer", "Consumers"),
 	)
-	return new(App)
+	return new(app.App)
 }

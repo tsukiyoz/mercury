@@ -10,8 +10,7 @@ func main() {
 	initViper()
 	initLogger()
 	app := InitAPP()
-	err := app.server.Serve()
-	if err != nil {
+	if err := app.Run(); err != nil {
 		panic(err)
 	}
 }

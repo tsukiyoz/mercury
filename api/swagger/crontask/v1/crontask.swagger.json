@@ -1,0 +1,88 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "crontask/v1/crontask.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "CronTaskService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AddTaskResponse": {
+      "type": "object"
+    },
+    "v1CronTask": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "executor": {
+          "type": "string"
+        },
+        "cfg": {
+          "type": "string"
+        },
+        "expression": {
+          "type": "string"
+        },
+        "nextTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1PreemptResponse": {
+      "type": "object",
+      "properties": {
+        "crontask": {
+          "$ref": "#/definitions/v1CronTask"
+        }
+      }
+    },
+    "v1ResetNextTimeResponse": {
+      "type": "object"
+    }
+  }
+}

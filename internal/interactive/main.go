@@ -15,21 +15,8 @@ func main() {
 	initLogger()
 
 	app := InitAPP()
-	for _, c := range app.consumers {
-		err := c.Start()
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	go func() {
-		err := app.web.Start()
-		log.Println(err)
-	}()
-
-	err := app.server.Serve()
-	if err != nil {
-		panic(err)
+	if err := app.Run(); err != nil {
+		log.Fatal(err)
 	}
 }
 

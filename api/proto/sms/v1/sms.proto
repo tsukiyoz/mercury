@@ -5,14 +5,14 @@ package sms.v1;
 option go_package = "sms/v1;smsv1";
 
 service SmsService {
-  rpc Send(SmsSendRequest) returns (SmsSendResponse);
+  rpc Send(SendRequest) returns (SendResponse);
 }
 
-message SmsSendRequest {
-  string tplId = 1;
+message SendRequest {
+  string tpl_id = 1;
   string target = 2;
   repeated string args = 3;
   repeated string values = 4;
 }
 
-message SmsSendResponse {}
+message SendResponse {}

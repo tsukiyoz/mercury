@@ -5,16 +5,16 @@ package captcha.v1;
 option go_package = "captcha/v1;captchav1";
 
 service CaptchaService {
-  rpc Send(CaptchaSendRequest) returns (CaptchaSendResponse);
+  rpc Send(SendRequest) returns (SendResponse);
   rpc Verify(VerifyRequest) returns (VerifyResponse);
 }
 
-message CaptchaSendRequest {
+message SendRequest {
   string biz = 1;
   string phone = 2;
 }
 
-message CaptchaSendResponse {}
+message SendResponse {}
 
 message VerifyRequest {
   string biz = 1;

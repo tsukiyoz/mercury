@@ -255,7 +255,7 @@ func (h *UserHandler) SendLoginCaptcha(ctx *gin.Context, req SendLoginCaptchaReq
 		}, nil
 	}
 
-	_, err := h.captchaService.Send(ctx, &captchav1.CaptchaSendRequest{Biz: bizLogin, Phone: req.Phone})
+	_, err := h.captchaService.Send(ctx, &captchav1.SendRequest{Biz: bizLogin, Phone: req.Phone})
 	switch err {
 	case nil:
 		return ginx.Result{

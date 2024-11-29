@@ -1,0 +1,125 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "follow/v1/follow.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "FollowService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CancelFollowResponse": {
+      "type": "object"
+    },
+    "v1FollowResponse": {
+      "type": "object"
+    },
+    "v1GetFolloweeResponse": {
+      "type": "object",
+      "properties": {
+        "followRelation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Relation"
+          }
+        }
+      }
+    },
+    "v1GetFollowerResponse": {
+      "type": "object",
+      "properties": {
+        "followRelation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Relation"
+          }
+        }
+      }
+    },
+    "v1GetRelationResponse": {
+      "type": "object",
+      "properties": {
+        "followRelation": {
+          "$ref": "#/definitions/v1Relation"
+        }
+      }
+    },
+    "v1GetStaticsResponse": {
+      "type": "object",
+      "properties": {
+        "statics": {
+          "$ref": "#/definitions/v1Statics"
+        }
+      }
+    },
+    "v1Relation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "follower": {
+          "type": "string",
+          "format": "int64"
+        },
+        "followee": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1Statics": {
+      "type": "object",
+      "properties": {
+        "followerCount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "followeeCount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    }
+  }
+}
