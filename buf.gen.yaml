@@ -1,15 +1,20 @@
-version: v1
+version: v2
 managed:
   enabled: true
-  go_package_prefix:
-    default: "github.com/lazywoo/mercury/pkg/api"
+  disable:
+    - module: buf.build/googleapis/googleapis
+  override:
+    - file_option: go_package_prefix
+      value: github.com/lazywoo/mercury/api/gen
 plugins:
-  - plugin: buf.build/protocolbuffers/go
-    out: pkg/api
-    opt:
-      - paths=source_relative
-
-  - plugin: buf.build/grpc/go
-    out: pkg/api
-    opt:
-      - paths=source_relative
+  - remote: buf.build/protocolbuffers/go
+    out: api/gen
+    opt: paths=source_relative
+  # - remote: buf.build/connectrpc/go
+  #   out: api/gen
+  #   opt: paths=source_relative
+  - remote: buf.build/grpc/go
+    out: api/gen
+    opt: paths=source_relative
+inputs:
+  - directory: api/proto

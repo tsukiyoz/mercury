@@ -44,8 +44,8 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.24.0
 	golang.org/x/sync v0.7.0
-	google.golang.org/grpc v1.64.0
-	google.golang.org/protobuf v1.34.1
+	google.golang.org/grpc v1.64.1
+	google.golang.org/protobuf v1.35.2
 	gorm.io/driver/mysql v1.5.6
 	gorm.io/gorm v1.25.10
 	gorm.io/plugin/opentelemetry v0.1.4
@@ -53,6 +53,14 @@ require (
 )
 
 require (
+	connectrpc.com/connect v1.17.0 // indirect
+	google.golang.org/genproto v0.0.0-20240213162025-012b6fc9bca9 // indirect
+)
+
+require (
+	buf.build/gen/go/tsukiyo/mercuryapis/connectrpc/go v1.17.0-20241129164231-3b80ee664701.1 // indirect
+	buf.build/gen/go/tsukiyo/mercuryapis/grpc/go v1.5.1-20241129164231-3b80ee664701.1 // indirect
+	buf.build/gen/go/tsukiyo/mercuryapis/protocolbuffers/go v1.35.2-20241129164231-3b80ee664701.1
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.27.2 // indirect
@@ -141,7 +149,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
-	golang.org/x/net v0.25.0 // indirect
+	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240318140521-94a12d6c2237 // indirect

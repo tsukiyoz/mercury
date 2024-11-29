@@ -1,7 +1,7 @@
 package web
 
 import (
-	articlev1 "github.com/lazywoo/mercury/pkg/api/article/v1"
+	articlev1 "github.com/lazywoo/mercury/api/gen/article/v1"
 )
 
 type ArticleVO struct {

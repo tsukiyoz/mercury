@@ -9,8 +9,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	rankingv1 "github.com/lazywoo/mercury/api/gen/ranking/v1"
 	"github.com/lazywoo/mercury/internal/ranking/service"
-	rankingv1 "github.com/lazywoo/mercury/pkg/api/ranking/v1"
 )
 
 type RankingServiceServer struct {

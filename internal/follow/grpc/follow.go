@@ -5,9 +5,9 @@ import (
 
 	"google.golang.org/grpc"
 
+	followv1 "github.com/lazywoo/mercury/api/gen/follow/v1"
 	"github.com/lazywoo/mercury/internal/follow/domain"
 	"github.com/lazywoo/mercury/internal/follow/service"
-	followv1 "github.com/lazywoo/mercury/pkg/api/follow/v1"
 	"github.com/lazywoo/mercury/pkg/grpcx"
 )
 

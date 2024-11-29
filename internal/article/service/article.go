@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	userv1 "github.com/lazywoo/mercury/pkg/api/user/v1"
+	userv1 "github.com/lazywoo/mercury/api/gen/user/v1"
 
 	"golang.org/x/sync/errgroup"
 

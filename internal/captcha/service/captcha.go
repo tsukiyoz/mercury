@@ -8,7 +8,7 @@ import (
 
 	"github.com/lazywoo/mercury/internal/captcha/repository"
 
-	smsv1 "github.com/lazywoo/mercury/pkg/api/sms/v1"
+	smsv1 "github.com/lazywoo/mercury/api/gen/sms/v1"
 )
 
 var (

@@ -8,7 +8,7 @@ import (
 
 	"github.com/ecodeclub/ekit/syncx/atomicx"
 
-	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
+	interactivev1 "github.com/lazywoo/mercury/api/gen/interactive/v1"
 )
 
 type InteractiveClient struct {

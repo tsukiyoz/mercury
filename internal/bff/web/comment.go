@@ -12,7 +12,7 @@ import (
 	ijwt "github.com/lazywoo/mercury/internal/bff/web/jwt"
 	"github.com/lazywoo/mercury/pkg/ginx"
 
-	commentv1 "github.com/lazywoo/mercury/pkg/api/comment/v1"
+	commentv1 "github.com/lazywoo/mercury/api/gen/comment/v1"
 )
 
 var _ handler = (*CommentHandler)(nil)

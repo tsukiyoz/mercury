@@ -6,9 +6,9 @@ import (
 	"github.com/samber/lo"
 	"google.golang.org/grpc"
 
+	accountv1 "github.com/lazywoo/mercury/api/gen/account/v1"
 	"github.com/lazywoo/mercury/internal/account/domain"
 	"github.com/lazywoo/mercury/internal/account/service"
-	accountv1 "github.com/lazywoo/mercury/pkg/api/account/v1"
 )
 
 type AccountServiceServer struct {

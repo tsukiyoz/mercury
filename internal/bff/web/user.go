@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"time"
 
-	captchav1 "github.com/lazywoo/mercury/pkg/api/captcha/v1"
+	captchav1 "github.com/lazywoo/mercury/api/gen/captcha/v1"
 
 	"github.com/lazywoo/mercury/internal/captcha/repository"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	userv1 "github.com/lazywoo/mercury/pkg/api/user/v1"
+	userv1 "github.com/lazywoo/mercury/api/gen/user/v1"
 
 	"github.com/lazywoo/mercury/internal/user/errs"
 	repository2 "github.com/lazywoo/mercury/internal/user/repository"

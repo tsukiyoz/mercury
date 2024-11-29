@@ -5,8 +5,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	captchav1 "github.com/lazywoo/mercury/api/gen/captcha/v1"
 	"github.com/lazywoo/mercury/internal/captcha/service"
-	captchav1 "github.com/lazywoo/mercury/pkg/api/captcha/v1"
 )
 
 type CaptchaServiceServer struct {

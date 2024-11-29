@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
+	interactivev1 "github.com/lazywoo/mercury/api/gen/interactive/v1"
 )
 
 func InitInteractiveRpcClient(etcdCli *clientv3.Client) interactivev1.InteractiveServiceClient {

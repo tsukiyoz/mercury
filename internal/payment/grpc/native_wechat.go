@@ -5,9 +5,9 @@ import (
 
 	"google.golang.org/grpc"
 
+	paymentv1 "github.com/lazywoo/mercury/api/gen/payment/v1"
 	"github.com/lazywoo/mercury/internal/payment/domain"
 	"github.com/lazywoo/mercury/internal/payment/service/wechat"
-	paymentv1 "github.com/lazywoo/mercury/pkg/api/payment/v1"
 )
 
 type WechatServiceServer struct {

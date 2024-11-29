@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	smsv1 "github.com/lazywoo/mercury/pkg/api/sms/v1"
+	smsv1 "github.com/lazywoo/mercury/api/gen/sms/v1"
 )
 
 func InitSmsServiceClient(etcdCli *clientv3.Client) smsv1.SmsServiceClient {

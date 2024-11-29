@@ -9,8 +9,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	crontaskv1 "github.com/lazywoo/mercury/api/gen/crontask/v1"
 	"github.com/lazywoo/mercury/internal/crontask/service"
-	crontaskv1 "github.com/lazywoo/mercury/pkg/api/crontask/v1"
 )
 
 type CronJobServiceServer struct {

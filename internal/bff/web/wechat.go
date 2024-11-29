@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	oauth2v1 "github.com/lazywoo/mercury/pkg/api/oauth2/v1"
-	userv1 "github.com/lazywoo/mercury/pkg/api/user/v1"
+	oauth2v1 "github.com/lazywoo/mercury/api/gen/oauth2/v1"
+	userv1 "github.com/lazywoo/mercury/api/gen/user/v1"
 
 	"github.com/lazywoo/mercury/pkg/ginx"
 

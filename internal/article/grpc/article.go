@@ -9,8 +9,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	articlev1 "github.com/lazywoo/mercury/api/gen/article/v1"
 	"github.com/lazywoo/mercury/internal/article/service"
-	articlev1 "github.com/lazywoo/mercury/pkg/api/article/v1"
 )
 
 type ArticleServiceServer struct {

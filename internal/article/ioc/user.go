@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	userv1 "github.com/lazywoo/mercury/pkg/api/user/v1"
+	userv1 "github.com/lazywoo/mercury/api/gen/user/v1"
 )
 
 func InitUserRpcClient(etcdCli *clientv3.Client) userv1.UserServiceClient {

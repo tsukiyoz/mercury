@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	articlev1 "github.com/lazywoo/mercury/pkg/api/article/v1"
+	articlev1 "github.com/lazywoo/mercury/api/gen/article/v1"
 
-	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
+	interactivev1 "github.com/lazywoo/mercury/api/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"

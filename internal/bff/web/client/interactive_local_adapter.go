@@ -7,8 +7,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	interactivev1 "github.com/lazywoo/mercury/api/gen/interactive/v1"
 	"github.com/lazywoo/mercury/internal/interactive/service"
-	interactivev1 "github.com/lazywoo/mercury/pkg/api/interactive/v1"
 )
 
 type InteractiveLocalAdapter struct {
