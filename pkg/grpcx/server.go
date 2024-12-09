@@ -94,8 +94,22 @@ func (srv *Server) register(ctx context.Context) error {
 		srv.l.Error("keep alive failed", logger.Error(err))
 	}
 	go func() {
-		for ka := range kaCh {
-			srv.l.Debug("keep alive received", logger.String("message", ka.String()))
+		failedCount := 0
+		for {
+			select {
+			case <-time.After(time.Duration(srv.EtcdTTL) * time.Second):
+				failedCount++
+				if failedCount > 3 {
+					srv.l.Error("keep alive failed", logger.Int("failedCount", failedCount))
+				}
+			case ka, ok := <-kaCh:
+				if !ok {
+					srv.l.Error("keep alive channel closed")
+					return
+				}
+				failedCount = 0
+				srv.l.Debug("keep alive received", logger.String("message", ka.String()))
+			}
 		}
 	}()
 

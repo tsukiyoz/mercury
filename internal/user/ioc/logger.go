@@ -3,6 +3,7 @@ package ioc
 import (
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 
 	"github.com/lazywoo/mercury/pkg/logger"
 )
@@ -10,6 +11,7 @@ import (
 func InitLogger() logger.Logger {
 	type Config struct {
 		Mode             string   `yaml:"mode"`
+		Level            *int8    `yaml:"level"`
 		Encoding         string   `yaml:"encoding"`
 		OutputPaths      []string `yaml:"outputPaths"`
 		ErrorOutputPaths []string `yaml:"errorOutputPaths"`
@@ -28,6 +30,9 @@ func InitLogger() logger.Logger {
 		cfg = zap.NewProductionConfig()
 	}
 
+	if c.Level != nil {
+		cfg.Level = zap.NewAtomicLevelAt(zapcore.Level(*c.Level))
+	}
 	if c.Encoding != "" {
 		cfg.Encoding = c.Encoding
 	}
