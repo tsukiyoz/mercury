@@ -27,7 +27,7 @@ func (u *UserServiceServer) Register(server grpc.ServiceRegistrar) {
 	userv1.RegisterUserServiceServer(server, u)
 }
 
-func (u *UserServiceServer) Signup(ctx context.Context, request *userv1.SignUpRequest) (*userv1.SignUpResponse, error) {
+func (u *UserServiceServer) SignUp(ctx context.Context, request *userv1.SignUpRequest) (*userv1.SignUpResponse, error) {
 	err := u.service.SignUp(ctx, convertToDomain(request.User))
 	return &userv1.SignUpResponse{}, err
 }

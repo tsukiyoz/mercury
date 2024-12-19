@@ -1,5 +1,8 @@
 log:
   mode: "dev" # prod, dev
+  # +optional
+  # debug : -1, info : 0, warn : 1, error : 2, fatal : 3, panic : 4
+  level: "0" 
 
 db:
   dsn: "root:for.nothing@tcp(localhost:3306)/mercury"
