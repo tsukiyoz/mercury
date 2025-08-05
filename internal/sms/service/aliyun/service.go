@@ -11,7 +11,7 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	"github.com/bytedance/sonic"
 
-	"github.com/lazywoo/mercury/internal/sms/service"
+	"github.com/tsukiyo/mercury/internal/sms/service"
 )
 
 type Service struct {

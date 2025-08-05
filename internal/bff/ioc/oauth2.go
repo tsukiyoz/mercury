@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	oauth2v1 "github.com/lazywoo/mercury/api/gen/oauth2/v1"
-	"github.com/lazywoo/mercury/internal/bff/web"
+	oauth2v1 "github.com/tsukiyo/mercury/api/gen/oauth2/v1"
+	"github.com/tsukiyo/mercury/internal/bff/web"
 )
 
 func InitOAuth2Client(etcdCli *clientv3.Client) oauth2v1.Oauth2ServiceClient {

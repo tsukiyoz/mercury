@@ -8,11 +8,11 @@ import (
 	"github.com/IBM/sarama"
 	"gorm.io/gorm"
 
-	"github.com/lazywoo/mercury/pkg/logger"
-	"github.com/lazywoo/mercury/pkg/migrator"
-	"github.com/lazywoo/mercury/pkg/migrator/events"
-	"github.com/lazywoo/mercury/pkg/migrator/fixer"
-	"github.com/lazywoo/mercury/pkg/saramax"
+	"github.com/tsukiyo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/migrator"
+	"github.com/tsukiyo/mercury/pkg/migrator/events"
+	"github.com/tsukiyo/mercury/pkg/migrator/fixer"
+	"github.com/tsukiyo/mercury/pkg/saramax"
 )
 
 type Consumer[T migrator.Entity] struct {

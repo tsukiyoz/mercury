@@ -9,11 +9,11 @@ package startup
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/interactive/grpc"
-	"github.com/lazywoo/mercury/internal/interactive/repository"
-	"github.com/lazywoo/mercury/internal/interactive/repository/cache"
-	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
-	"github.com/lazywoo/mercury/internal/interactive/service"
+	"github.com/tsukiyo/mercury/internal/interactive/grpc"
+	"github.com/tsukiyo/mercury/internal/interactive/repository"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/cache"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/dao"
+	"github.com/tsukiyo/mercury/internal/interactive/service"
 )
 
 // Injectors from wire.go:

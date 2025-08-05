@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/account/domain"
-	"github.com/lazywoo/mercury/internal/account/repository/dao"
+	"github.com/tsukiyo/mercury/internal/account/domain"
+	"github.com/tsukiyo/mercury/internal/account/repository/dao"
 )
 
 type AccountRepository interface {

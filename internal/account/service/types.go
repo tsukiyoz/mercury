@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/account/domain"
+	"github.com/tsukiyo/mercury/internal/account/domain"
 )
 
 type AccountService interface {

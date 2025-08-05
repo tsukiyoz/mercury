@@ -7,9 +7,9 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/lazywoo/mercury/internal/user/domain"
-	repository2 "github.com/lazywoo/mercury/internal/user/repository"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/user/domain"
+	repository2 "github.com/tsukiyo/mercury/internal/user/repository"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 var (

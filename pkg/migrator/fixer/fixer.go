@@ -6,8 +6,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	"github.com/lazywoo/mercury/pkg/migrator"
-	"github.com/lazywoo/mercury/pkg/migrator/events"
+	"github.com/tsukiyo/mercury/pkg/migrator"
+	"github.com/tsukiyo/mercury/pkg/migrator/events"
 )
 
 type OverrideFixer[T migrator.Entity] struct {

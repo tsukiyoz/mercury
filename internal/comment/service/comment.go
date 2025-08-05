@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/comment/domain"
-	"github.com/lazywoo/mercury/internal/comment/repository"
+	"github.com/tsukiyo/mercury/internal/comment/domain"
+	"github.com/tsukiyo/mercury/internal/comment/repository"
 )
 
 type CommentService interface {

@@ -5,10 +5,10 @@ import (
 
 	"google.golang.org/grpc"
 
-	followv1 "github.com/lazywoo/mercury/api/gen/follow/v1"
-	"github.com/lazywoo/mercury/internal/follow/domain"
-	"github.com/lazywoo/mercury/internal/follow/service"
-	"github.com/lazywoo/mercury/pkg/grpcx"
+	followv1 "github.com/tsukiyo/mercury/api/gen/follow/v1"
+	"github.com/tsukiyo/mercury/internal/follow/domain"
+	"github.com/tsukiyo/mercury/internal/follow/service"
+	"github.com/tsukiyo/mercury/pkg/grpcx"
 )
 
 var _ grpcx.Register = (*FollowServiceServer)(nil)

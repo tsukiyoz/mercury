@@ -7,10 +7,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron/v3"
 
-	"github.com/lazywoo/mercury/internal/payment/cronjob"
-	"github.com/lazywoo/mercury/internal/payment/service/wechat"
-	"github.com/lazywoo/mercury/pkg/cronx"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/payment/cronjob"
+	"github.com/tsukiyo/mercury/internal/payment/service/wechat"
+	"github.com/tsukiyo/mercury/pkg/cronx"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 func InitCronJobs(l logger.Logger, syncWechatPaymentJob *cronjob.SyncWechatOrderJob) *cron.Cron {

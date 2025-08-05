@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/crontask/domain"
-	"github.com/lazywoo/mercury/internal/crontask/repository"
+	"github.com/tsukiyo/mercury/internal/crontask/domain"
+	"github.com/tsukiyo/mercury/internal/crontask/repository"
 
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 type TaskService interface {

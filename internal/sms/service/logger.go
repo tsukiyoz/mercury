@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/logger"
 
 	"go.uber.org/zap"
 )

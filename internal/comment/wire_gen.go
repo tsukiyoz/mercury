@@ -8,12 +8,12 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/lazywoo/mercury/internal/comment/grpc"
-	"github.com/lazywoo/mercury/internal/comment/ioc"
-	"github.com/lazywoo/mercury/internal/comment/repository"
-	"github.com/lazywoo/mercury/internal/comment/repository/dao"
-	"github.com/lazywoo/mercury/internal/comment/service"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/comment/grpc"
+	"github.com/tsukiyo/mercury/internal/comment/ioc"
+	"github.com/tsukiyo/mercury/internal/comment/repository"
+	"github.com/tsukiyo/mercury/internal/comment/repository/dao"
+	"github.com/tsukiyo/mercury/internal/comment/service"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:

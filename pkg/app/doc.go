@@ -1,1 +1,1 @@
-package app // import "github.com/lazywoo/mercury/pkg/app"
+package app // import "github.com/tsukiyo/mercury/pkg/app"

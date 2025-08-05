@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/follow/domain"
+	"github.com/tsukiyo/mercury/internal/follow/domain"
 )
 
 type FollowRepository interface {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments"
 
-	"github.com/lazywoo/mercury/internal/payment/domain"
+	"github.com/tsukiyo/mercury/internal/payment/domain"
 )
 
 type PaymentService interface {

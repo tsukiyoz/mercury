@@ -9,12 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"github.com/lazywoo/mercury/pkg/ginx"
-	"github.com/lazywoo/mercury/pkg/gormx/connpool"
-	"github.com/lazywoo/mercury/pkg/logger"
-	"github.com/lazywoo/mercury/pkg/migrator"
-	"github.com/lazywoo/mercury/pkg/migrator/events"
-	"github.com/lazywoo/mercury/pkg/migrator/validator"
+	"github.com/tsukiyo/mercury/pkg/ginx"
+	"github.com/tsukiyo/mercury/pkg/gormx/connpool"
+	"github.com/tsukiyo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/migrator"
+	"github.com/tsukiyo/mercury/pkg/migrator/events"
+	"github.com/tsukiyo/mercury/pkg/migrator/validator"
 )
 
 type Scheduler[T migrator.Entity] struct {

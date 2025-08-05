@@ -4,7 +4,7 @@ import (
 	"github.com/IBM/sarama"
 	"github.com/spf13/viper"
 
-	"github.com/lazywoo/mercury/internal/payment/events"
+	"github.com/tsukiyo/mercury/internal/payment/events"
 )
 
 func InitKafka() sarama.Client {

@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	dao "github.com/lazywoo/mercury/internal/user/repository/dao"
+	dao "github.com/tsukiyo/mercury/internal/user/repository/dao"
 	gomock "go.uber.org/mock/gomock"
 )
 

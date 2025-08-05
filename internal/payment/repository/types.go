@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/payment/domain"
+	"github.com/tsukiyo/mercury/internal/payment/domain"
 )
 
 type PaymentRepository interface {

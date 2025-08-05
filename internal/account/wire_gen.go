@@ -9,12 +9,12 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/account/grpc"
-	"github.com/lazywoo/mercury/internal/account/ioc"
-	"github.com/lazywoo/mercury/internal/account/repository"
-	"github.com/lazywoo/mercury/internal/account/repository/dao"
-	"github.com/lazywoo/mercury/internal/account/service"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/account/grpc"
+	"github.com/tsukiyo/mercury/internal/account/ioc"
+	"github.com/tsukiyo/mercury/internal/account/repository"
+	"github.com/tsukiyo/mercury/internal/account/repository/dao"
+	"github.com/tsukiyo/mercury/internal/account/service"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:

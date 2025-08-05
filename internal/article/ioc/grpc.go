@@ -4,9 +4,9 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
-	igrpc "github.com/lazywoo/mercury/internal/article/grpc"
-	"github.com/lazywoo/mercury/pkg/grpcx"
-	"github.com/lazywoo/mercury/pkg/logger"
+	igrpc "github.com/tsukiyo/mercury/internal/article/grpc"
+	"github.com/tsukiyo/mercury/pkg/grpcx"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 func InitGRPCxServer(article *igrpc.ArticleServiceServer, l logger.Logger) *grpcx.Server {

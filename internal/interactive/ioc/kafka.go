@@ -4,10 +4,10 @@ import (
 	"github.com/IBM/sarama"
 	"github.com/spf13/viper"
 
-	"github.com/lazywoo/mercury/internal/interactive/events"
-	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
-	migratorEvt "github.com/lazywoo/mercury/pkg/migrator/events/fixer"
-	"github.com/lazywoo/mercury/pkg/saramax"
+	"github.com/tsukiyo/mercury/internal/interactive/events"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/dao"
+	migratorEvt "github.com/tsukiyo/mercury/pkg/migrator/events/fixer"
+	"github.com/tsukiyo/mercury/pkg/saramax"
 )
 
 func InitKafka() sarama.Client {

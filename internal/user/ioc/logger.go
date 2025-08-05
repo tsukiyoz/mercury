@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 func InitLogger() logger.Logger {

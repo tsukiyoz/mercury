@@ -5,11 +5,11 @@ package startup
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/interactive/grpc"
-	repository2 "github.com/lazywoo/mercury/internal/interactive/repository"
-	"github.com/lazywoo/mercury/internal/interactive/repository/cache"
-	dao2 "github.com/lazywoo/mercury/internal/interactive/repository/dao"
-	service2 "github.com/lazywoo/mercury/internal/interactive/service"
+	"github.com/tsukiyo/mercury/internal/interactive/grpc"
+	repository2 "github.com/tsukiyo/mercury/internal/interactive/repository"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/cache"
+	dao2 "github.com/tsukiyo/mercury/internal/interactive/repository/dao"
+	service2 "github.com/tsukiyo/mercury/internal/interactive/service"
 )
 
 var thirdProvider = wire.NewSet(

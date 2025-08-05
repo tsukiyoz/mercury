@@ -5,12 +5,12 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/ranking/grpc"
-	"github.com/lazywoo/mercury/internal/ranking/ioc"
-	"github.com/lazywoo/mercury/internal/ranking/repository"
-	"github.com/lazywoo/mercury/internal/ranking/repository/cache"
-	"github.com/lazywoo/mercury/internal/ranking/service"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/ranking/grpc"
+	"github.com/tsukiyo/mercury/internal/ranking/ioc"
+	"github.com/tsukiyo/mercury/internal/ranking/repository"
+	"github.com/tsukiyo/mercury/internal/ranking/repository/cache"
+	"github.com/tsukiyo/mercury/internal/ranking/service"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(

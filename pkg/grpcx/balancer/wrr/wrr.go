@@ -4,15 +4,14 @@ import (
 	"context"
 	"sync"
 
-	"google.golang.org/grpc/codes"
-
-	"google.golang.org/grpc/status"
-
+	"github.com/spf13/cast"
 	"google.golang.org/grpc/balancer"
 	"google.golang.org/grpc/balancer/base"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-const name = "custom"
+const name = "custom-wrr"
 
 func init() {
 	balancer.Register(base.NewBalancerBuilder(
@@ -31,11 +30,7 @@ func (p *PickerBuilder) Build(info base.PickerBuildInfo) balancer.Picker {
 	for sc, scinfo := range info.ReadySCs {
 		cc := &conn{cc: sc, available: true}
 
-		md, ok := scinfo.Address.Metadata.(map[string]any)
-		if ok {
-			weight, _ := md["weight"].(float64)
-			cc.weight = int(weight)
-		}
+		cc.weight = cast.ToInt(scinfo.Address.Attributes.Value("weight"))
 
 		if cc.weight == 0 {
 			cc.weight = 10

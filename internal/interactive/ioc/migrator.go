@@ -6,13 +6,13 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/viper"
 
-	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
-	"github.com/lazywoo/mercury/pkg/ginx"
-	"github.com/lazywoo/mercury/pkg/gormx/connpool"
-	"github.com/lazywoo/mercury/pkg/logger"
-	"github.com/lazywoo/mercury/pkg/migrator/events"
-	"github.com/lazywoo/mercury/pkg/migrator/events/fixer"
-	"github.com/lazywoo/mercury/pkg/migrator/scheduler"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/dao"
+	"github.com/tsukiyo/mercury/pkg/ginx"
+	"github.com/tsukiyo/mercury/pkg/gormx/connpool"
+	"github.com/tsukiyo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/migrator/events"
+	"github.com/tsukiyo/mercury/pkg/migrator/events/fixer"
+	"github.com/tsukiyo/mercury/pkg/migrator/scheduler"
 )
 
 const topic = "migrator_interactives"

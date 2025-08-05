@@ -4,9 +4,9 @@ import (
 	"github.com/robfig/cron/v3"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/lazywoo/mercury/pkg/ginx"
-	"github.com/lazywoo/mercury/pkg/grpcx"
-	"github.com/lazywoo/mercury/pkg/saramax"
+	"github.com/tsukiyo/mercury/pkg/ginx"
+	"github.com/tsukiyo/mercury/pkg/grpcx"
+	"github.com/tsukiyo/mercury/pkg/saramax"
 )
 
 type App struct {

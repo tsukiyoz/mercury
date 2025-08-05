@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 func InitLogger() logger.Logger {

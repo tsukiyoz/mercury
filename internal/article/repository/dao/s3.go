@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/article/domain"
+	"github.com/tsukiyo/mercury/internal/article/domain"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"gorm.io/gorm"

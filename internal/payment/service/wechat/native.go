@@ -13,10 +13,10 @@ import (
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/native"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/refunddomestic"
 
-	"github.com/lazywoo/mercury/internal/payment/domain"
-	"github.com/lazywoo/mercury/internal/payment/events"
-	"github.com/lazywoo/mercury/internal/payment/repository"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/payment/domain"
+	"github.com/tsukiyo/mercury/internal/payment/events"
+	"github.com/tsukiyo/mercury/internal/payment/repository"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 var errUnknownTransactionState = errors.New("unknwon wechat transaction status")

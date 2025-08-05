@@ -9,9 +9,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/plugin/opentelemetry/tracing"
 
-	"github.com/lazywoo/mercury/internal/account/repository/dao"
-	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/account/repository/dao"
+	"github.com/tsukiyo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/tsukiyo/mercury/pkg/logger"
 
 	gormLogger "gorm.io/gorm/logger"
 	gormPrometheus "gorm.io/plugin/prometheus"

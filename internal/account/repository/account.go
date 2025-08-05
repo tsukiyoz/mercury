@@ -6,8 +6,8 @@ import (
 
 	"github.com/samber/lo"
 
-	"github.com/lazywoo/mercury/internal/account/domain"
-	"github.com/lazywoo/mercury/internal/account/repository/dao"
+	"github.com/tsukiyo/mercury/internal/account/domain"
+	"github.com/tsukiyo/mercury/internal/account/repository/dao"
 )
 
 type accountRepository struct {

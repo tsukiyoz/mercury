@@ -1,9 +1,9 @@
 package ioc
 
 import (
-	"github.com/lazywoo/mercury/internal/sms/service"
-	"github.com/lazywoo/mercury/internal/sms/service/memory"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/sms/service"
+	"github.com/tsukiyo/mercury/internal/sms/service/memory"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 func InitService(l logger.Logger) service.Service {

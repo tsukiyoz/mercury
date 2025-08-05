@@ -5,13 +5,13 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/user/grpc"
-	"github.com/lazywoo/mercury/internal/user/ioc"
-	"github.com/lazywoo/mercury/internal/user/repository"
-	"github.com/lazywoo/mercury/internal/user/repository/cache"
-	"github.com/lazywoo/mercury/internal/user/repository/dao"
-	"github.com/lazywoo/mercury/internal/user/service"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/user/grpc"
+	"github.com/tsukiyo/mercury/internal/user/ioc"
+	"github.com/tsukiyo/mercury/internal/user/repository"
+	"github.com/tsukiyo/mercury/internal/user/repository/cache"
+	"github.com/tsukiyo/mercury/internal/user/repository/dao"
+	"github.com/tsukiyo/mercury/internal/user/service"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(

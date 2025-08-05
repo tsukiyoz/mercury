@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync/atomic"
 
-	"github.com/lazywoo/mercury/internal/sms/service"
+	"github.com/tsukiyo/mercury/internal/sms/service"
 )
 
 type TimeoutFailoverSMSService struct {

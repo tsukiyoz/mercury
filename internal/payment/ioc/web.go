@@ -5,8 +5,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/viper"
 
-	"github.com/lazywoo/mercury/internal/payment/web"
-	"github.com/lazywoo/mercury/pkg/ginx"
+	"github.com/tsukiyo/mercury/internal/payment/web"
+	"github.com/tsukiyo/mercury/pkg/ginx"
 )
 
 func InitWebServer(hdl *web.WechatHandler) *ginx.Server {

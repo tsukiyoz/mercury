@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	captchav1 "github.com/lazywoo/mercury/api/gen/captcha/v1"
+	captchav1 "github.com/tsukiyo/mercury/api/gen/captcha/v1"
 )
 
 func InitCaptchaClient(etcdCli *clientv3.Client) captchav1.CaptchaServiceClient {

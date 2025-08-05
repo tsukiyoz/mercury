@@ -5,7 +5,7 @@ import (
 	"errors"
 	"sync/atomic"
 
-	"github.com/lazywoo/mercury/internal/sms/service"
+	"github.com/tsukiyo/mercury/internal/sms/service"
 )
 
 type FailoverSMSService struct {

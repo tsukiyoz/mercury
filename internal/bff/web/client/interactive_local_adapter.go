@@ -3,12 +3,12 @@ package client
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/interactive/domain"
+	"github.com/tsukiyo/mercury/internal/interactive/domain"
 
 	"google.golang.org/grpc"
 
-	interactivev1 "github.com/lazywoo/mercury/api/gen/interactive/v1"
-	"github.com/lazywoo/mercury/internal/interactive/service"
+	interactivev1 "github.com/tsukiyo/mercury/api/gen/interactive/v1"
+	"github.com/tsukiyo/mercury/internal/interactive/service"
 )
 
 type InteractiveLocalAdapter struct {

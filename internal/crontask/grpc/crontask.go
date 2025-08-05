@@ -5,12 +5,12 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/lazywoo/mercury/internal/crontask/domain"
+	"github.com/tsukiyo/mercury/internal/crontask/domain"
 
 	"google.golang.org/grpc"
 
-	crontaskv1 "github.com/lazywoo/mercury/api/gen/crontask/v1"
-	"github.com/lazywoo/mercury/internal/crontask/service"
+	crontaskv1 "github.com/tsukiyo/mercury/api/gen/crontask/v1"
+	"github.com/tsukiyo/mercury/internal/crontask/service"
 )
 
 type CronJobServiceServer struct {

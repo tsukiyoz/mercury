@@ -11,9 +11,9 @@ import (
 	"gorm.io/plugin/opentelemetry/tracing"
 	gormPrometheus "gorm.io/plugin/prometheus"
 
-	"github.com/lazywoo/mercury/internal/crontask/repository/dao"
-	"github.com/lazywoo/mercury/pkg/gormx/callbacks/metrics"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/crontask/repository/dao"
+	"github.com/tsukiyo/mercury/pkg/gormx/callbacks/metrics"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 func InitDB(l logger.Logger) *gorm.DB {

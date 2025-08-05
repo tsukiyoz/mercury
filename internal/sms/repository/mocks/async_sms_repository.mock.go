@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	domain "github.com/lazywoo/mercury/internal/sms/domain"
+	domain "github.com/tsukiyo/mercury/internal/sms/domain"
 	gomock "go.uber.org/mock/gomock"
 )
 

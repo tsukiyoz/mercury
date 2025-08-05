@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/follow/domain"
-	"github.com/lazywoo/mercury/internal/follow/repository"
+	"github.com/tsukiyo/mercury/internal/follow/domain"
+	"github.com/tsukiyo/mercury/internal/follow/repository"
 )
 
 type FollowService interface {

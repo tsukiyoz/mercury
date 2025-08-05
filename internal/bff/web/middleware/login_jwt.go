@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	ijwt "github.com/lazywoo/mercury/internal/bff/web/jwt"
+	ijwt "github.com/tsukiyo/mercury/internal/bff/web/jwt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

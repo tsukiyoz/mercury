@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
 
-	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
+	"github.com/tsukiyo/mercury/pkg/grpcx/interceptor"
 )
 
 type InterceptorBuilder struct {

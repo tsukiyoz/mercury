@@ -7,8 +7,8 @@ import (
 
 	rlock "github.com/gotomicro/redis-lock"
 
-	"github.com/lazywoo/mercury/internal/payment/service/wechat"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/payment/service/wechat"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 type SyncWechatOrderJob struct {

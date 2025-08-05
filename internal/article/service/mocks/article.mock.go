@@ -14,7 +14,7 @@ import (
 	reflect "reflect"
 	time "time"
 
-	domain "github.com/lazywoo/mercury/internal/article/domain"
+	domain "github.com/tsukiyo/mercury/internal/article/domain"
 	gomock "go.uber.org/mock/gomock"
 )
 

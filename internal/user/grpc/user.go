@@ -3,13 +3,13 @@ package grpc
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/user/domain"
+	"github.com/tsukiyo/mercury/internal/user/domain"
 
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	userv1 "github.com/lazywoo/mercury/api/gen/user/v1"
-	"github.com/lazywoo/mercury/internal/user/service"
+	userv1 "github.com/tsukiyo/mercury/api/gen/user/v1"
+	"github.com/tsukiyo/mercury/internal/user/service"
 )
 
 type UserServiceServer struct {

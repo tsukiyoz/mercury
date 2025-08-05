@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/account/domain"
-	"github.com/lazywoo/mercury/internal/account/repository"
+	"github.com/tsukiyo/mercury/internal/account/domain"
+	"github.com/tsukiyo/mercury/internal/account/repository"
 )
 
 type accountService struct {

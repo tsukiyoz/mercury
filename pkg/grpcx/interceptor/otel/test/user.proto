@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel/test";
+option go_package = "github.com/tsukiyo/mercury/pkg/grpcx/interceptor/otel/test";
 
 import "inner/inner.proto";
 

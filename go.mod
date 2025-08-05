@@ -1,4 +1,4 @@
-module github.com/lazywoo/mercury
+module github.com/tsukiyo/mercury
 
 go 1.22.3
 

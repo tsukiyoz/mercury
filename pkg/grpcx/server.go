@@ -11,8 +11,8 @@ import (
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"google.golang.org/grpc"
 
-	"github.com/lazywoo/mercury/pkg/logger"
-	"github.com/lazywoo/mercury/pkg/netx"
+	"github.com/tsukiyo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/netx"
 )
 
 type Server struct {

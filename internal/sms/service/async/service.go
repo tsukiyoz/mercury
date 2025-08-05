@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/sms/domain"
+	"github.com/tsukiyo/mercury/internal/sms/domain"
 
-	"github.com/lazywoo/mercury/internal/sms/repository"
+	"github.com/tsukiyo/mercury/internal/sms/repository"
 
-	"github.com/lazywoo/mercury/internal/sms/service"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/sms/service"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 var _ service.Service = (*SMSService)(nil)

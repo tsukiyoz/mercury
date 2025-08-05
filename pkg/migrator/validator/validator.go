@@ -8,9 +8,9 @@ import (
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 
-	"github.com/lazywoo/mercury/pkg/logger"
-	"github.com/lazywoo/mercury/pkg/migrator"
-	"github.com/lazywoo/mercury/pkg/migrator/events"
+	"github.com/tsukiyo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/migrator"
+	"github.com/tsukiyo/mercury/pkg/migrator/events"
 )
 
 type Validator[T migrator.Entity] struct {

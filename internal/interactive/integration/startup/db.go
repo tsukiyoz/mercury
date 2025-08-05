@@ -9,7 +9,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/dao"
 )
 
 var db *gorm.DB

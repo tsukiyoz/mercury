@@ -5,12 +5,12 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/payment/grpc"
-	"github.com/lazywoo/mercury/internal/payment/ioc"
-	"github.com/lazywoo/mercury/internal/payment/repository"
-	"github.com/lazywoo/mercury/internal/payment/repository/dao"
-	"github.com/lazywoo/mercury/internal/payment/web"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/payment/grpc"
+	"github.com/tsukiyo/mercury/internal/payment/ioc"
+	"github.com/tsukiyo/mercury/internal/payment/repository"
+	"github.com/tsukiyo/mercury/internal/payment/repository/dao"
+	"github.com/tsukiyo/mercury/internal/payment/web"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 var thirdPartySet = wire.NewSet(

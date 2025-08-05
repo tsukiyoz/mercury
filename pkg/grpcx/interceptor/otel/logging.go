@@ -8,13 +8,13 @@ import (
 
 	"google.golang.org/grpc/codes"
 
-	"github.com/lazywoo/mercury/pkg/grpcx/interceptor"
+	"github.com/tsukiyo/mercury/pkg/grpcx/interceptor"
 
 	"google.golang.org/grpc/status"
 
 	"google.golang.org/grpc"
 
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 type LoggingInterceptorBuilder struct {

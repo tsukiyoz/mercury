@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/user/domain"
-	"github.com/lazywoo/mercury/internal/user/repository/cache"
-	"github.com/lazywoo/mercury/internal/user/repository/dao"
+	"github.com/tsukiyo/mercury/internal/user/domain"
+	"github.com/tsukiyo/mercury/internal/user/repository/cache"
+	"github.com/tsukiyo/mercury/internal/user/repository/dao"
 )
 
 var (

@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/lazywoo/mercury/pkg/ratelimit"
+	"github.com/tsukiyo/mercury/pkg/ratelimit"
 )
 
 type Builder struct {

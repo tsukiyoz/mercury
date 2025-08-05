@@ -9,9 +9,9 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/sms/grpc"
-	"github.com/lazywoo/mercury/internal/sms/ioc"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/sms/grpc"
+	"github.com/tsukiyo/mercury/internal/sms/ioc"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:

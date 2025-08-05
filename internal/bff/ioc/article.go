@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	articlev1 "github.com/lazywoo/mercury/api/gen/article/v1"
+	articlev1 "github.com/tsukiyo/mercury/api/gen/article/v1"
 )
 
 func InitArticleClient(etcdCli *clientv3.Client) articlev1.ArticleServiceClient {

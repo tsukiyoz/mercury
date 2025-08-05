@@ -13,10 +13,10 @@ import (
 	"github.com/wechatpay-apiv3/wechatpay-go/services/refunddomestic"
 	"github.com/wechatpay-apiv3/wechatpay-go/utils"
 
-	"github.com/lazywoo/mercury/internal/payment/events"
-	"github.com/lazywoo/mercury/internal/payment/repository"
-	"github.com/lazywoo/mercury/internal/payment/service/wechat"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/payment/events"
+	"github.com/tsukiyo/mercury/internal/payment/repository"
+	"github.com/tsukiyo/mercury/internal/payment/service/wechat"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 type WechatConfig struct {

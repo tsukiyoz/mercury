@@ -5,8 +5,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	oauth2v1 "github.com/lazywoo/mercury/api/gen/oauth2/v1"
-	"github.com/lazywoo/mercury/internal/oauth2/service/wechat"
+	oauth2v1 "github.com/tsukiyo/mercury/api/gen/oauth2/v1"
+	"github.com/tsukiyo/mercury/internal/oauth2/service/wechat"
 )
 
 type OAuth2ServiceServer struct {

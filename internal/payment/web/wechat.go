@@ -5,9 +5,9 @@ import (
 	"github.com/wechatpay-apiv3/wechatpay-go/core/notify"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments"
 
-	"github.com/lazywoo/mercury/internal/payment/service/wechat"
-	"github.com/lazywoo/mercury/pkg/ginx"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/payment/service/wechat"
+	"github.com/tsukiyo/mercury/pkg/ginx"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 type WechatHandler struct {

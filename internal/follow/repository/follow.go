@@ -3,10 +3,10 @@ package repository
 import (
 	"context"
 
-	"github.com/lazywoo/mercury/internal/follow/domain"
-	"github.com/lazywoo/mercury/internal/follow/repository/cache"
-	"github.com/lazywoo/mercury/internal/follow/repository/dao"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/follow/domain"
+	"github.com/tsukiyo/mercury/internal/follow/repository/cache"
+	"github.com/tsukiyo/mercury/internal/follow/repository/dao"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 var _ FollowRepository = (*CachedFollowRepository)(nil)

@@ -8,14 +8,14 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/lazywoo/mercury/internal/interactive/events"
-	"github.com/lazywoo/mercury/internal/interactive/grpc"
-	"github.com/lazywoo/mercury/internal/interactive/ioc"
-	"github.com/lazywoo/mercury/internal/interactive/repository"
-	"github.com/lazywoo/mercury/internal/interactive/repository/cache"
-	"github.com/lazywoo/mercury/internal/interactive/repository/dao"
-	"github.com/lazywoo/mercury/internal/interactive/service"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/interactive/events"
+	"github.com/tsukiyo/mercury/internal/interactive/grpc"
+	"github.com/tsukiyo/mercury/internal/interactive/ioc"
+	"github.com/tsukiyo/mercury/internal/interactive/repository"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/cache"
+	"github.com/tsukiyo/mercury/internal/interactive/repository/dao"
+	"github.com/tsukiyo/mercury/internal/interactive/service"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 // Injectors from wire.go:

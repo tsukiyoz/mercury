@@ -5,11 +5,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lazywoo/mercury/pkg/cronx"
+	"github.com/tsukiyo/mercury/pkg/cronx"
 
-	"github.com/lazywoo/mercury/internal/ranking/service"
+	"github.com/tsukiyo/mercury/internal/ranking/service"
 
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/logger"
 
 	rlock "github.com/gotomicro/redis-lock"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/lazywoo/mercury/pkg/migrator"
+	"github.com/tsukiyo/mercury/pkg/migrator"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

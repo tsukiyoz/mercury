@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
 
-	gatewayv1 "github.com/lazywoo/mercury/api/gen/gateway/v1"
+	gatewayv1 "github.com/tsukiyo/mercury/api/gen/gateway/v1"
 	healthv1 "google.golang.org/grpc/health/grpc_health_v1"
 )
 

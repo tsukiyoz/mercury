@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	commentv1 "github.com/lazywoo/mercury/api/gen/comment/v1"
-	"github.com/lazywoo/mercury/internal/comment/domain"
-	"github.com/lazywoo/mercury/internal/comment/service"
+	commentv1 "github.com/tsukiyo/mercury/api/gen/comment/v1"
+	"github.com/tsukiyo/mercury/internal/comment/domain"
+	"github.com/tsukiyo/mercury/internal/comment/service"
 )
 
 type CommentServiceServer struct {

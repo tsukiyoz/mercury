@@ -5,17 +5,17 @@ import (
 	"strconv"
 	"time"
 
-	articlev1 "github.com/lazywoo/mercury/api/gen/article/v1"
+	articlev1 "github.com/tsukiyo/mercury/api/gen/article/v1"
 
-	interactivev1 "github.com/lazywoo/mercury/api/gen/interactive/v1"
+	interactivev1 "github.com/tsukiyo/mercury/api/gen/interactive/v1"
 
 	"github.com/ecodeclub/ekit/slice"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 
-	ijwt "github.com/lazywoo/mercury/internal/bff/web/jwt"
-	"github.com/lazywoo/mercury/pkg/ginx"
-	"github.com/lazywoo/mercury/pkg/logger"
+	ijwt "github.com/tsukiyo/mercury/internal/bff/web/jwt"
+	"github.com/tsukiyo/mercury/pkg/ginx"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 var _ handler = (*ArticleHandler)(nil)

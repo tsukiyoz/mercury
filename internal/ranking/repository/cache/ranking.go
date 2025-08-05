@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/lazywoo/mercury/internal/article/domain"
+	"github.com/tsukiyo/mercury/internal/article/domain"
 
 	"github.com/redis/go-redis/v9"
 )

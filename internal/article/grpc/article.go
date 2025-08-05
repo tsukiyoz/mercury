@@ -5,12 +5,12 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/lazywoo/mercury/internal/article/domain"
+	"github.com/tsukiyo/mercury/internal/article/domain"
 
 	"google.golang.org/grpc"
 
-	articlev1 "github.com/lazywoo/mercury/api/gen/article/v1"
-	"github.com/lazywoo/mercury/internal/article/service"
+	articlev1 "github.com/tsukiyo/mercury/api/gen/article/v1"
+	"github.com/tsukiyo/mercury/internal/article/service"
 )
 
 type ArticleServiceServer struct {

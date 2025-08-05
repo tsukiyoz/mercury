@@ -6,7 +6,7 @@ import (
 
 	sms "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms/v20210111"
 
-	"github.com/lazywoo/mercury/pkg/ratelimit"
+	"github.com/tsukiyo/mercury/pkg/ratelimit"
 )
 
 type Service struct {

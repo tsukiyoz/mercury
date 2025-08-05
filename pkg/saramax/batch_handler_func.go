@@ -7,7 +7,7 @@ import (
 
 	"github.com/IBM/sarama"
 
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 type BatchHandler[Evt any] struct {

@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	cache2 "github.com/lazywoo/mercury/internal/ranking/repository/cache"
+	cache2 "github.com/tsukiyo/mercury/internal/ranking/repository/cache"
 
-	"github.com/lazywoo/mercury/internal/article/domain"
+	"github.com/tsukiyo/mercury/internal/article/domain"
 )
 
 type RankingRepository interface {

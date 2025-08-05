@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	commentv1 "github.com/lazywoo/mercury/api/gen/comment/v1"
+	commentv1 "github.com/tsukiyo/mercury/api/gen/comment/v1"
 )
 
 func InitCommentClient(etcdCli *clientv3.Client) commentv1.CommentServiceClient {

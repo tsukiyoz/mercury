@@ -13,7 +13,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 
-	inner "github.com/lazywoo/mercury/pkg/grpcx/interceptor/otel/test/inner"
+	inner "github.com/tsukiyo/mercury/pkg/grpcx/interceptor/otel/test/inner"
 )
 
 const (

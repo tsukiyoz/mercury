@@ -7,9 +7,9 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/lazywoo/mercury/internal/comment/domain"
-	"github.com/lazywoo/mercury/internal/comment/repository/dao"
-	"github.com/lazywoo/mercury/pkg/logger"
+	"github.com/tsukiyo/mercury/internal/comment/domain"
+	"github.com/tsukiyo/mercury/internal/comment/repository/dao"
+	"github.com/tsukiyo/mercury/pkg/logger"
 )
 
 type CommentRepository interface {

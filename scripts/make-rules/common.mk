@@ -52,7 +52,7 @@ else
 	IMAGE_PLAT := $(PLATFORM)
 endif
 
-PRJ_SRC_PATH := github.com/lazywoo/mercury
+PRJ_SRC_PATH := github.com/tsukiyo/mercury
 
 FIND := find . ! -path './third_party/*' ! -path './vendor/*'
 XARGS := xargs --no-run-if-empty

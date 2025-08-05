@@ -5,10 +5,10 @@ package main
 import (
 	"github.com/google/wire"
 
-	"github.com/lazywoo/mercury/internal/bff/ioc"
-	"github.com/lazywoo/mercury/internal/bff/web"
-	"github.com/lazywoo/mercury/internal/bff/web/jwt"
-	"github.com/lazywoo/mercury/pkg/app"
+	"github.com/tsukiyo/mercury/internal/bff/ioc"
+	"github.com/tsukiyo/mercury/internal/bff/web"
+	"github.com/tsukiyo/mercury/internal/bff/web/jwt"
+	"github.com/tsukiyo/mercury/pkg/app"
 )
 
 var thirdProviderSet = wire.NewSet(

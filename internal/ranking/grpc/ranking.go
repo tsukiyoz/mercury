@@ -5,12 +5,12 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/lazywoo/mercury/internal/article/domain"
+	"github.com/tsukiyo/mercury/internal/article/domain"
 
 	"google.golang.org/grpc"
 
-	rankingv1 "github.com/lazywoo/mercury/api/gen/ranking/v1"
-	"github.com/lazywoo/mercury/internal/ranking/service"
+	rankingv1 "github.com/tsukiyo/mercury/api/gen/ranking/v1"
+	"github.com/tsukiyo/mercury/internal/ranking/service"
 )
 
 type RankingServiceServer struct {
